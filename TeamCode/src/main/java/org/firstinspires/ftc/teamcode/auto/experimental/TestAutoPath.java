@@ -18,7 +18,7 @@ public class TestAutoPath extends TestAuto {
 
     @Override
     protected Pose getStartingPose() {
-        return new Pose(72,36,Math.toRadians(90));
+        return new Pose(0,0,Math.toRadians(0));
     }
 
     @Override

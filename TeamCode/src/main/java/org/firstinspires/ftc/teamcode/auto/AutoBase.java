@@ -55,6 +55,8 @@ public abstract class AutoBase extends LinearOpMode {
                 task = createCycleTask();
             }
             telemetry.addData("status", "running");
+            telemetry.addData("position", robot.getPose().getX()+" "+robot.getPose().getY());
+            telemetry.addData("heading", robot.getHeading());
             telemetry.update();
 
             Log.i("edbug loop times", cycleTimer.milliseconds()+"");

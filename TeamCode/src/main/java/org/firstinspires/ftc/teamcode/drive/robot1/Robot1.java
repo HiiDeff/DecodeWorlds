@@ -7,6 +7,7 @@ import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
+import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -23,9 +24,9 @@ public class Robot1 extends RobotBase {
             .forwardZeroPowerAcceleration(-34.85468883462399)
             .lateralZeroPowerAcceleration(-60.980555558410465)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.08, 0.0, 0.005, 0.02))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0.0, 0.006, 0.02))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.032,0.0,0.000002,0.6,0.02));
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.25, 0.0, 0.020, 0.04))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.3, 0.0, 0.05, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01,0.0,0.000002,0.6,0.048));
 
     public static MecanumConstants DRIVE_CONSTANTS
             = new MecanumConstants().rightFrontMotorName("rightFront")
@@ -50,11 +51,24 @@ public class Robot1 extends RobotBase {
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
+    // path constraints (pedro)
+    public static double T_VALUE_CONSTRAINT = 0.99,
+            TIMEOUT_CONSTRAINT = 100,
+            BRAKING_STRENGTH = 0.8,
+            BRAKING_START = 1;
+
     public Robot1(HardwareMap hardwareMap) {
         super(hardwareMap,
                 FOLLOWER_CONSTANTS,
                 DRIVE_CONSTANTS,
-                new PinpointLocalizer(hardwareMap, PINPOINT_CONSTANTS)
+                new PinpointLocalizer(hardwareMap, PINPOINT_CONSTANTS),
+                getPathConstraints()
         );
+    }
+
+    public static PathConstraints getPathConstraints() {
+        PathConstraints pc = new PathConstraints(T_VALUE_CONSTRAINT, TIMEOUT_CONSTRAINT, BRAKING_STRENGTH, BRAKING_START);
+        PathConstraints.setDefaultConstraints(pc);
+        return pc;
     }
 }
