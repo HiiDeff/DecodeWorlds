@@ -17,15 +17,11 @@ public abstract class AutoBase extends LinearOpMode {
 
     public static int AA_TOTAL_TIME_MILLIS = 30000;
 
-    public static int AA_NUM_OF_SPIKE_MARKS = 3, AA_NUM_OF_CYCLES = 4;
+    public static int AA_NUM_OF_CYCLES = 3;
 
     public static int INIT_DELAY_TIME = 0;
     public static int AA_TIME_FOR_A_CYCLE = 2000;
     public static int AA_TIME_FOR_PARK = 0000; //0 for now because prioritize delivering a sample over 3 point hang
-
-    // Moving velocity constraints
-    public static double HIGH_SPEED = 35;
-    public static double LOW_SPEED = 30;
 
     protected final ElapsedTime timer = new ElapsedTime();
     protected RobotBase robot;
@@ -51,8 +47,16 @@ public abstract class AutoBase extends LinearOpMode {
         boolean done = false;
         while (opModeIsActive() && !done && task != null) {
             robot.updateEverything();
-            if(task.perform()) {
-                task = createCycleTask();
+            if(timeToFinish() && state!=AutoState.FINISH) {
+                task.cancel();
+                task = createFinishTask();
+            }else if(task.perform()) {
+                if(hasTimeForOneMoreCycle()){
+                    autoStates.setCycleNumber(autoStates.getCycleNumber()+1);
+                    task = createCycleTask();
+                } else {
+                    task = createFinishTask();
+                }
             }
             telemetry.addData("status", "running");
             telemetry.addData("position", robot.getPose().getX()+" "+robot.getPose().getY());
@@ -69,12 +73,7 @@ public abstract class AutoBase extends LinearOpMode {
         return timer.milliseconds() > AA_TOTAL_TIME_MILLIS - AA_TIME_FOR_PARK;
     }
 
-    private boolean hasSpikeMarksLeft() {
-        return autoStates.getSpikeMarkNumber() < AA_NUM_OF_SPIKE_MARKS;
-    }
-
     private boolean hasTimeForOneMoreCycle() {
-        // Go ahead if there are still 10 seconds left and
         return autoStates.getCycleNumber() < AA_NUM_OF_CYCLES &&
                 timer.milliseconds() < AA_TOTAL_TIME_MILLIS - AA_TIME_FOR_A_CYCLE;
     }

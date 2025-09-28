@@ -10,10 +10,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="Motors Test", group="Test")
 public class MotorsTest extends LinearOpMode {
     public static double POW = 0.0, POW2 = 0.0, BOTHPOW = 0.0;
+    public static double SERVO_POS = 0.0;
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotorEx motor1 = hardwareMap.get(DcMotorEx.class, "motor");
         DcMotorEx motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
+        Servo servo = hardwareMap.get(Servo.class, "servo");
         motor2.setDirection(DcMotorEx.Direction.REVERSE);
         motor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -26,6 +28,7 @@ public class MotorsTest extends LinearOpMode {
                 motor1.setPower(POW);
                 motor2.setPower(POW2);
             }
+            servo.setPosition(SERVO_POS);
         }
     }
 }

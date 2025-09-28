@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.common;
 
 public class AutoStates {
-    private int spikeMarkNumber;
     private int cycleNumber;
-    private int intakenSampleCnt;
+    private int artifactCnt;
     private boolean isRed;
-    public int getSpikeMarkNumber() { return spikeMarkNumber; }
-    public void setSpikeMarkNumber(int spikeMarkNumber) { this.spikeMarkNumber = spikeMarkNumber; }
     public int getCycleNumber() {
         return cycleNumber;
     }
@@ -14,8 +11,8 @@ public class AutoStates {
     public void setCycleNumber(int cycleNumber) {
         this.cycleNumber = cycleNumber;
     }
-    public int getIntakenSampleCnt() { return intakenSampleCnt; }
-    public void setIntakenSampleCnt(int intakenSampleCnt) { this.intakenSampleCnt = intakenSampleCnt; }
+    public int getArtifactCnt() { return artifactCnt; }
+    public void setArtifactCnt(int artifactCnt) { this.artifactCnt = artifactCnt; }
 
     public boolean isRed() {
         return isRed;

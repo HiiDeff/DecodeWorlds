@@ -25,8 +25,8 @@ public class Robot1 extends RobotBase {
             .lateralZeroPowerAcceleration(-60.980555558410465)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
             .translationalPIDFCoefficients(new PIDFCoefficients(0.25, 0.0, 0.020, 0.04))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.3, 0.0, 0.05, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01,0.0,0.000002,0.6,0.048));
+            .headingPIDFCoefficients(new PIDFCoefficients(1.7, 0.0, 0.06, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.013,0.0,0.0002,0.6,0.048));
 
     public static MecanumConstants DRIVE_CONSTANTS
             = new MecanumConstants().rightFrontMotorName("rightFront")
