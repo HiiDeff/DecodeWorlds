@@ -63,5 +63,6 @@ public abstract class PIDModel {
     // Need to be public for PID tuning tools
     public abstract double getError();
     protected abstract double getStopError();
+    //maximum error derivative to be deemed at the target position:
     protected abstract double getStopErrorDerivative();
 }

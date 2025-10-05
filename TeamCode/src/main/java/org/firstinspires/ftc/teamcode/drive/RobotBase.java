@@ -29,6 +29,10 @@ public abstract class RobotBase extends MecanumDrive {
         //get hardware
     }
 
+    protected double getFlywheelVelocity() {
+        return 0.0;
+    }
+
     public void updateEverything() {
         update();
     }

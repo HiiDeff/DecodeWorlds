@@ -24,7 +24,7 @@ public class FlywheelPID extends VelocityPIDModel {
 
     @Override
     public double getError() {
-        return robot.getFlywheelVelocity()- targetVelocity; //return error of position
+        return robot.getFlywheelVelocity()- targetVelocity; //return error of velocity
     }
 
     @Override
@@ -33,7 +33,7 @@ public class FlywheelPID extends VelocityPIDModel {
     } //minimum error to stop adjusting
 
     @Override
-    protected double getStopSpeed() {
+    protected double getStopErrorDerivative() {
         return 1; //0.001 ticks/ms = 1 ticks/sec
-    } //minimum speed to stop adjusting (ticks per ms)
+    } //minimum acceleration to stop adjusting (ticks per ms^2)
 }

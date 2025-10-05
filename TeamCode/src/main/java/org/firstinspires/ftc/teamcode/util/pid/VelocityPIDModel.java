@@ -76,5 +76,7 @@ public abstract class VelocityPIDModel {
     // Need to be public for PID tuning tools
     public abstract double getError();
     protected abstract double getStopError();
+    //maximum error derivative to be deemed at the target velocity:
     protected abstract double getStopErrorDerivative();
+
 }
