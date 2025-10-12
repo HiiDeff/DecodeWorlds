@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
+import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 
@@ -134,13 +135,11 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     ///////////////////* PIVOT UTILS *///////////////////
-    public double getPivotPosition(){
-        return pivotLeft.getPosition();
-    }
+    public abstract double getPivotPosition(PivotTask.PivotPosition position);
 
-    public void setPivotPosition(double position){
-        pivotLeft.setPosition(position);
-        pivotRight.setPosition(position);
+    public void setPivotPosition(PivotTask.PivotPosition position){
+        pivotLeft.setPosition(getPivotPosition(position));
+        pivotRight.setPosition(getPivotPosition(position));
     }
 
 }

@@ -11,9 +11,9 @@ public class PivotTask extends TimedTask {
     private final RobotBase robot;
 
     private boolean started;
-    private final double position;
+    private final PivotPosition position;
 
-    public PivotTask(RobotBase robot, double position){
+    public PivotTask(RobotBase robot, PivotPosition position){
         this.robot = robot;
         this.position = position;
     }
@@ -21,17 +21,23 @@ public class PivotTask extends TimedTask {
     @Override
     public boolean performInternal(){
         if(!started){
-            double currPos = robot.getPivotPosition();
-            double targetPos = position;
+            double currPos = robot.pivotLeft.getPosition();
+            double targetPos = robot.getPivotPosition(position);
 
             setFinishTimeMillis(Utils.getEstimatedServoTime(RPM, MAX_ROTATION_DEGREE,
                     targetPos - currPos));
 
-            robot.setPivotPosition(targetPos);
+            robot.setPivotPosition(position);
 
             started = true;
         }
 
         return false;
+    }
+
+    public enum PivotPosition{
+        CLOSE,
+        MID,
+        FAR
     }
 }

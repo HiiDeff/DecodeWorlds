@@ -14,9 +14,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
+import org.firstinspires.ftc.teamcode.task.KickerTask;
+import org.firstinspires.ftc.teamcode.task.PivotTask;
+import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 
 @Config
 public class Robot1 extends RobotBase {
+
+    public static double KICKER_UP = 0.65, KICKER_DOWN = 0.9;
+
+    public static PIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new PIDCoefficients(0, 1.0,  0.00001, 0.0, 0.001,0);
+
+    public static double PIVOT_CLOSE = 0.0, PIVOT_MID = 0.0, PIVOT_FAR = 0.0;
 
     public static FollowerConstants FOLLOWER_CONSTANTS
             = new FollowerConstants()
@@ -70,5 +79,34 @@ public class Robot1 extends RobotBase {
         PathConstraints pc = new PathConstraints(T_VALUE_CONSTRAINT, TIMEOUT_CONSTRAINT, BRAKING_STRENGTH, BRAKING_START);
         PathConstraints.setDefaultConstraints(pc);
         return pc;
+    }
+
+    @Override
+    public double getKickerPosition(KickerTask.KickerPosition position) {
+        switch (position){
+            case UP:
+                return KICKER_UP;
+            default:
+            case DOWN:
+                return KICKER_DOWN;
+        }
+    }
+
+    @Override
+    public PIDCoefficients getVelocityPIDCoefficients() {
+        return FLYWHEEL_VELOCITY_PID_COEFFICIENTS;
+    }
+
+    @Override
+    public double getPivotPosition(PivotTask.PivotPosition position) {
+        switch (position){
+            case FAR:
+                return PIVOT_FAR;
+            case MID:
+                return PIVOT_MID;
+            default:
+            case CLOSE:
+                return PIVOT_CLOSE;
+        }
     }
 }
