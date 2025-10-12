@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
+import org.firstinspires.ftc.teamcode.util.Utils;
+import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 
 public abstract class RobotBase extends MecanumDrive {
 
@@ -26,6 +28,8 @@ public abstract class RobotBase extends MecanumDrive {
     public final Servo kicker;
     public final Servo pivotLeft, pivotRight;
     public final Servo pusher;
+
+    public final FlywheelPID flywheelPID;
 
 
     public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
@@ -55,6 +59,8 @@ public abstract class RobotBase extends MecanumDrive {
         pivotLeft = hardwareMap.get(Servo.class, "servo");
         pivotRight = hardwareMap.get(Servo.class, "servo2");
         pusher = hardwareMap.get(Servo.class, "servo4");
+
+        flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
     }
 
     ///////////////////* INIT *///////////////////
@@ -69,6 +75,12 @@ public abstract class RobotBase extends MecanumDrive {
     ///////////////////* UPDATES *///////////////////
     public void updateEverything(){
         update();
+        updatePIDs();
+    }
+
+    public void updatePIDs() {
+        flywheelPID.updatePID(getVelocityPIDCoefficients());
+        setFlywheelPower(getVelocityPIDCoefficients().feedForward + flywheelPID.getPower());
     }
 
     ///////////////////* INTAKE UTILS *///////////////////
@@ -102,17 +114,23 @@ public abstract class RobotBase extends MecanumDrive {
 
 
     ///////////////////* FLYWHEEL UTILS *///////////////////
-    protected double getFlywheelVelocity() {
-        return 0.0;
+    public abstract PIDCoefficients getVelocityPIDCoefficients();
+
+    public void setFlywheelPower(double power){
+        flywheelLeft.setPower(Utils.clamp(power, -1, 1));
+        flywheelRight.setPower(Utils.clamp(power, -1, 1));
     }
 
-    public void setFlywheelSpeed(double power){
-        flywheelLeft.setPower(power);
-        flywheelRight.setPower(power);
+    public void setFlywheelVelocity(double velocityTicksPerSecond){
+        flywheelPID.setTargetVelocity(velocityTicksPerSecond);
+    }
+
+    public double getFlywheelVelocity(){
+        return (double)(flywheelLeft.getVelocity());
     }
 
     public void stopFlywheel(){
-        setFlywheelSpeed(0.0);
+        setFlywheelVelocity(0.0);
     }
 
     ///////////////////* PIVOT UTILS *///////////////////
