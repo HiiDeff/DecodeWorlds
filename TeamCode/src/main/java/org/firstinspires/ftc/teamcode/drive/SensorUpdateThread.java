@@ -19,6 +19,7 @@ public class SensorUpdateThread extends Thread {
 //        elapsedTime = new ElapsedTime();
         try {
             while(true) {
+                robot.updateSensor();
                 Thread.sleep(THREAD_SLEEP_TIME);
 //                Log.i("loop time: ", ""+elapsedTime.milliseconds());
 //                elapsedTime.reset();

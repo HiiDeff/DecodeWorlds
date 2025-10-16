@@ -6,6 +6,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -33,6 +34,10 @@ public abstract class RobotBase extends MecanumDrive {
     public final Servo pusher;
 
     public final FlywheelPID flywheelPID;
+
+    public RevColorSensorV3 leftColorSensor, rightColorSensor;
+
+    ArtifactState artifactState;
 
 
     public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
@@ -63,6 +68,10 @@ public abstract class RobotBase extends MecanumDrive {
         pivotRight = hardwareMap.get(Servo.class, "servo2");
         pusher = hardwareMap.get(Servo.class, "servo4");
 
+        leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
+        rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
+
+
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
     }
 
@@ -78,11 +87,16 @@ public abstract class RobotBase extends MecanumDrive {
     public void updateEverything(){
         update();
         updatePIDs();
+        updateSensor();
     }
 
     public void updatePIDs() {
         flywheelPID.updatePID(getVelocityPIDCoefficients());
         setFlywheelPower(getVelocityPIDCoefficients().feedForward + flywheelPID.getPower());
+    }
+
+    public void updateSensor(){
+        artifactState.update();
     }
 
     ///////////////////* INTAKE UTILS *///////////////////
@@ -141,6 +155,10 @@ public abstract class RobotBase extends MecanumDrive {
     public void setPivotPosition(PivotTask.PivotPosition position){
         pivotLeft.setPosition(getPivotPosition(position));
         pivotRight.setPosition(getPivotPosition(position));
+    }
+
+    public boolean hasArtifact(){
+        return artifactState.getArtifactState();
     }
 
 }
