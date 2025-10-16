@@ -20,7 +20,7 @@ public class FlywheelTask extends TimedTask {
     protected boolean performInternal(){
         if(!started){
             started = true;
-            robot.setFlywheelSpeed(flywheelSpeed);
+            robot.setFlywheelPower(flywheelSpeed);
         }
         return false;
     }

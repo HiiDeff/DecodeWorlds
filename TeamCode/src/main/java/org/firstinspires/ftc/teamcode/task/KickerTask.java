@@ -4,14 +4,14 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.util.Utils;
 
 public class KickerTask extends TimedTask{
-    RobotBase robot;
-    KickerPosition position;
+    private final RobotBase robot;
+    private final KickerPosition position;
 
     private static final int RPM = 90;
     private static final int MAX_ROTATION_DEGREE = 300;
 
 
-    boolean started = false;
+    private boolean started = false;
 
     public KickerTask(RobotBase robot, KickerPosition position){
         this.robot = robot;

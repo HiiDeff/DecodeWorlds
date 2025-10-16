@@ -4,14 +4,14 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 
 public class IntakeTask extends TimedTask{
 
-    RobotBase robot;
-    double intakeSpeed;
+    private final RobotBase robot;
+    private final double power;
 
     private boolean started = false;
 
-    public IntakeTask(RobotBase robot, int finishTimeMillis, double intakeSpeed){
+    public IntakeTask(RobotBase robot, int finishTimeMillis, double power){
         this.robot = robot;
-        this.intakeSpeed = intakeSpeed;
+        this.power = power;
         setFinishTimeMillis(finishTimeMillis);
     }
 
@@ -19,7 +19,7 @@ public class IntakeTask extends TimedTask{
     protected boolean performInternal(){
         if (!started){
             started = true;
-            robot.runIntakeWithPower(intakeSpeed);
+            robot.runIntakeWithPower(power);
         }
         return false;
     }
