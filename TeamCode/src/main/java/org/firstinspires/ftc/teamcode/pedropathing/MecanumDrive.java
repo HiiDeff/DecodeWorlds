@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public abstract class MecanumDrive extends Follower {
-    private final Pose startPose = new Pose(0,0,0.0);
+    private Pose startPose = new Pose(0,0,0.0);
 
     public MecanumDrive(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
         super(followerConstants,
@@ -22,7 +22,8 @@ public abstract class MecanumDrive extends Follower {
         );
     }
 
-    public void init() {
+    public void init(Pose startPose) {
+        this.startPose = startPose;
         setStartingPose(startPose);
     }
 

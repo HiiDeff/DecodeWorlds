@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -34,13 +35,17 @@ public class V1RobotTeleOp extends LinearOpMode {
         gp1 = new GamePad(gamepad1);
         gp2 = new GamePad(gamepad2);
 
+        robot.init(new Pose());
+
         waitForStart();
+
+        robot.startTeleopDrive();
 
         sensorUpdateThread = new SensorUpdateThread(robot);
         sensorUpdateThread.start();
 
         while (opModeIsActive()){
-            driveRobot();
+            drive();
 
             elapsedTime.reset();
 
@@ -59,17 +64,17 @@ public class V1RobotTeleOp extends LinearOpMode {
         telemetry.update();
     }
 
-    private void driveRobot() {
+    private void drive() {
         double x = 0, y = 0, a = 0;
-        if (gp1.dpadLeft() || gp1.dpadRight()) {
-            a = 0.5 * (gp1.dpadLeft() ? 1 : -1);
-        } else if (gp1.dpadUp() || gp1.dpadDown()) {
-            x = 0.3 * (gp1.dpadUp() ? 1 : -1);
-        } else {
-            x = -gp1.leftStickY();
-            y = -gp1.leftStickX();
-            a = -gp1.rightStickX() * 0.9;
-        }
+//        if (gp1.dpadLeft() || gp1.dpadRight()) {
+//            a = 0.5 * (gp1.dpadLeft() ? 1 : -1);
+//        } else if (gp1.dpadUp() || gp1.dpadDown()) {
+//            x = 0.3 * (gp1.dpadUp() ? 1 : -1);
+//        } else {
+        x = -gp1.leftStickY();
+        y = -gp1.leftStickX();
+        a = -gp1.rightStickX() * 0.7;
+//        }
         double pow = Math.sqrt(x * x + y * y);
 //        double limPow = driveLim.calculate(pow);
 //        if (pow > MIN_DRIVE_POW) {
@@ -78,6 +83,7 @@ public class V1RobotTeleOp extends LinearOpMode {
 //        }
 //        a = turnLim.calculate(a);
 //        telemetry.addData("driving", x + " " + y + " " + a);
-        //robot.setDrivePowers(new PoseVelocity2d(new Vector2d(x, y), a));
+
+        robot.setTeleOpDrive(x, y, a, true);
     }
 }

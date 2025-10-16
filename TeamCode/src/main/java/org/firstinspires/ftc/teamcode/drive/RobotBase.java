@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
@@ -72,7 +74,6 @@ public abstract class RobotBase extends MecanumDrive {
     public void autoInit()  {
 
     }
-
     ///////////////////* UPDATES *///////////////////
     public void updateEverything(){
         update();
