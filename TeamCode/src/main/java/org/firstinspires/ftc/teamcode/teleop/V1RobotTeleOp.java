@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
+import org.firstinspires.ftc.teamcode.task.Preset;
 
 @TeleOp(name = "V1 TeleOp")
 @Config
@@ -98,16 +100,6 @@ public class V1RobotTeleOp extends LinearOpMode {
         );
     }
 
-    private SeriesTask createShooterTask(){
-        return new SeriesTask(
-                new FlywheelTask(robot, FLYWHEEL_VELOCITY, false, FLYWHEEL_WARM_UP_TIME + FLYWHEEL_SHOOT_TIME),
-                new SleepTask(FLYWHEEL_WARM_UP_TIME),
-                new KickerTask(robot, KickerTask.Position.UP),
-                new SleepTask(FLYWHEEL_SHOOT_TIME),
-                new KickerTask(robot, KickerTask.Position.DOWN)
-        );
-    }
-
     private void runUnjam(){
         if (gp2.rightTrigger() > 0.3){
             unjamming = true;
@@ -135,7 +127,7 @@ public class V1RobotTeleOp extends LinearOpMode {
             shootTask = new SeriesTask(
                     new DecisionTask(
                             () -> robot.hasArtifact(),
-                            createShooterTask(),
+                            Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME),
                             new SeriesTask(
                                     new ConditionalParallelTask(
                                             () -> !robot.hasArtifact(),
@@ -144,7 +136,7 @@ public class V1RobotTeleOp extends LinearOpMode {
 
                                     ),
                                     new ConditionalTask(() -> robot.hasArtifact()),
-                                    createShooterTask()
+                                    Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME)
                             )
                     ),
                     new FlywheelTask(robot, FLYWHEEL_IDLE_VELOCITY, false, FLYWHEEL_WIND_DOWN_TIME)
