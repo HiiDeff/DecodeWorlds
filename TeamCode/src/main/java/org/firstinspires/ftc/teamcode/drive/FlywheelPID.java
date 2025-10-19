@@ -19,21 +19,24 @@ public class FlywheelPID extends VelocityPIDModel {
 
     @Override
     public void cancel() {
-        //what to do if cancel? probably just holding power but don't use cancel()
+        // do nothing if cancel (maintain velocity)
     }
 
     @Override
     public double getError() {
-        return targetVelocity - robot.getFlywheelVelocityTicksPerSecond(); //return error of velocity
+        return targetVelocity - robot.getFlywheelVelocityTicksPerSecond();
     }
 
     @Override
     protected double getStopError() {
-        return 5;
-    } //minimum error to stop adjusting
+        // minimum error to stop adjusting, in ticks per second
+        // ticks per second for 70 RPM
+        return 70.0*28/60;
+    }
 
     @Override
     protected double getStopErrorDerivative() {
-        return 1; //0.001 ticks/ms = 1 ticks/sec
-    } //minimum acceleration to stop adjusting (ticks per ms^2)
+        //minimum dError_dT to stop adjusting (ticks per ms^2)
+        return 0.2;
+    }
 }
