@@ -3,16 +3,15 @@ package org.firstinspires.ftc.teamcode.task;
 import org.firstinspires.ftc.teamcode.common.Condition;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 
-public class ArtifactReadyCondition implements Condition {
+public class ArtifactUnreadyCondition implements Condition {
 
     private final RobotBase robot;
 
-    public ArtifactReadyCondition(RobotBase robot){
+    public ArtifactUnreadyCondition(RobotBase robot){
         this.robot = robot;
     }
 
     public boolean shouldContinue(){
-        return true;
-        //return robot.hasArtifact();
+        return !robot.hasArtifact();
     }
 }

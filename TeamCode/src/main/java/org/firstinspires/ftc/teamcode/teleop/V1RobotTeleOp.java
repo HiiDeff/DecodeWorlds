@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
 import org.firstinspires.ftc.teamcode.task.ArtifactReadyCondition;
+import org.firstinspires.ftc.teamcode.task.ArtifactUnreadyCondition;
 import org.firstinspires.ftc.teamcode.task.ConditionalParallelTask;
 import org.firstinspires.ftc.teamcode.task.ConditionalTask;
 import org.firstinspires.ftc.teamcode.task.DecisionTask;
@@ -71,15 +72,15 @@ public class V1RobotTeleOp extends LinearOpMode {
         sensorUpdateThread = new SensorUpdateThread(robot);
         sensorUpdateThread.start();
 
-        while (opModeIsActive()){
-            drive();
+        while (opModeIsActive()) {
+            update();
+
             runIntake();
             runShooter();
             runUnjam();
 
             elapsedTime.reset();
-
-            update();
+            drive();
         }
     }
 
@@ -101,7 +102,7 @@ public class V1RobotTeleOp extends LinearOpMode {
     }
 
     private void runUnjam(){
-        if (gp2.rightTrigger() > 0.3){
+        if (gp2.leftTrigger() > 0.3){
             unjamming = true;
 
             robot.runIntakeReversed();
@@ -126,16 +127,16 @@ public class V1RobotTeleOp extends LinearOpMode {
             }
             shootTask = new SeriesTask(
                     new DecisionTask(
-                            () -> robot.hasArtifact(),
+                            new ArtifactReadyCondition(robot),
                             Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME),
                             new SeriesTask(
                                     new ConditionalParallelTask(
-                                            () -> !robot.hasArtifact(),
+                                            new ArtifactUnreadyCondition(robot),
                                             new IntakeTask(robot,robot.INTAKE_POWER, false, 3000),
                                             new PusherTask(robot, false, 3000)
 
                                     ),
-                                    new ConditionalTask(() -> robot.hasArtifact()),
+                                    new ConditionalTask(new ArtifactReadyCondition(robot)),
                                     Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME)
                             )
                     ),

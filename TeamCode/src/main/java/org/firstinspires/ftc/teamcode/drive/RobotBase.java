@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 public abstract class RobotBase extends MecanumDrive {
 
     // Constants
-    public static double INTAKE_POWER = 0.5, OUTTAKE_POWER = 0.5;
+    public static double INTAKE_POWER = 0.5, OUTTAKE_POWER = -0.5;
     public static double PUSHER_POWER = 1.0;
 
     // Common
@@ -79,6 +79,7 @@ public abstract class RobotBase extends MecanumDrive {
 
         // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
+        artifactState = new ArtifactState(this);
     }
 
     ///////////////////* INIT *///////////////////
