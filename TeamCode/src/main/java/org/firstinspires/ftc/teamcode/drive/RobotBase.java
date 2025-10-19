@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -14,7 +13,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
@@ -74,7 +72,7 @@ public abstract class RobotBase extends MecanumDrive {
         kicker = hardwareMap.get(Servo.class, "kicker");
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
-        pusher = hardwareMap.get(CRServoImplEx.class, "pusher");
+        pusher = hardwareMap.get(CRServo.class, "pusher");
         // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
@@ -105,7 +103,7 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     public void updateSensors() { //public for multithreading
-        artifactState.update();
+//        artifactState.update();
     }
 
     private void updateProfilers() {}
@@ -168,12 +166,16 @@ public abstract class RobotBase extends MecanumDrive {
         rightFlywheel.setPower(Utils.clamp(power, -1, 1));
     }
 
-    public void setFlywheelTargetVelocity(double velocityTicksPerSecond){
-        flywheelPID.setTargetVelocity(velocityTicksPerSecond);
+    public void setFlywheelTargetVelocity(double velocityRpm){
+        flywheelPID.setTargetVelocity(velocityRpm*28/60);
         flywheelOn = true;
     }
 
-    public double getFlywheelVelocity(){
+    public double getFlywheelVelocityRpm(){
+        return flywheelVelocityTicksPerSecond/28*60;
+    }
+
+    public double getFlywheelVelocityTicksPerSecond() {
         return flywheelVelocityTicksPerSecond;
     }
 

@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode.util.pid;
 
+import android.util.Log;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Config
 public abstract class VelocityPIDModel {
+    public static int CYCLE_WAIT_CNT = 5;
     private double minPower;
     private double maxPower;
     private double kP;
@@ -36,6 +41,7 @@ public abstract class VelocityPIDModel {
     private boolean integralStarted = false;
 
     private double prevPower = 0.0;
+    private int cycleWaitTimer = 0;
 
     public double getPower() {
         double error = getError();
@@ -43,9 +49,15 @@ public abstract class VelocityPIDModel {
             lastError = error;
             timer = new ElapsedTime();
         }
-        double deltaT = timer.milliseconds();
-        timer.reset();
-        dError_dT = (error - lastError) / deltaT;
+        cycleWaitTimer = (cycleWaitTimer+1)%CYCLE_WAIT_CNT;
+        if(cycleWaitTimer==0) {
+            double deltaT = timer.milliseconds();
+            timer.reset();
+            dError_dT = (error - lastError) / deltaT;
+            lastError = error;
+            Log.i("edbug dError_dT", ""+dError_dT);
+            Log.i("edbug dT", ""+deltaT);
+        }
 
 //        if (integralStarted) {
 //            integral += error * deltaT;
@@ -66,7 +78,6 @@ public abstract class VelocityPIDModel {
                 power = error > 0 ? minPower : -minPower;
             }
         }
-        lastError = error;
 
         power = power + feedForward;
         return power;

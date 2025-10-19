@@ -9,6 +9,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -47,7 +48,7 @@ public class TeleopTest extends LinearOpMode {
 
     public Servo kicker;
     public Servo pivotL, pivotR;
-    public Servo pusher;
+    public CRServo pusher;
     private Follower robot;
 
     @Override
@@ -60,8 +61,8 @@ public class TeleopTest extends LinearOpMode {
         gp1 = new GamePad(gamepad2);
         gp2 = new GamePad(gamepad1);
 
-        flywheelLeft = hardwareMap.get(DcMotorEx.class, "flywheelLeft");
-        flywheelRight = hardwareMap.get(DcMotorEx.class, "flywheelRight");
+        flywheelLeft = hardwareMap.get(DcMotorEx.class, "leftFlywheel");
+        flywheelRight = hardwareMap.get(DcMotorEx.class, "rightFlywheel");
         flywheelLeft.setDirection(DcMotor.Direction.REVERSE);
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
 
@@ -69,9 +70,9 @@ public class TeleopTest extends LinearOpMode {
         flywheelRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         kicker = hardwareMap.get(Servo.class, "kicker");
-        pivotL = hardwareMap.get(Servo.class, "pivotLeft");
-        pivotR = hardwareMap.get(Servo.class, "pivotRight");
-        pusher = hardwareMap.get(Servo.class, "pusher");
+        pivotL = hardwareMap.get(Servo.class, "leftPivot");
+        pivotR = hardwareMap.get(Servo.class, "rightPivot");
+        pusher = hardwareMap.get(CRServo.class, "pusher");
 
         pivotL.setDirection(Servo.Direction.REVERSE);
 
@@ -115,8 +116,12 @@ public class TeleopTest extends LinearOpMode {
             } else intakeMotor.setPower(0);
 
             if(gp1.rightBumper()) {
-                pusher.setPosition(1.0);
-            } else pusher.setPosition(0.5);
+                pusher.setPower(1.0);
+            } else if(gp1.leftBumper()) {
+                pusher.setPower(-1.0);
+            } else {
+                pusher.setPower(0);
+            }
 
             if(gp1.onceA()) {
                 kickerUp = !kickerUp;

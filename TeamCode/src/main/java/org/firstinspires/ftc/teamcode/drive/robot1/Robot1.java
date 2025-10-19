@@ -24,7 +24,7 @@ public class Robot1 extends RobotBase {
     // Constants
     public static double KICKER_UP = 0.65, KICKER_DOWN = 0.9;
 
-    public static PIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new PIDCoefficients(0, 1.0,  0.00001, 0.0, 0.001,0);
+    public static PIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new PIDCoefficients(0, 1.0,  0.00001, 0.0, 0.017,0);
 
     public static double LEFT_PIVOT_CLOSE = 0.0, LEFT_PIVOT_MID = 0.0, LEFT_PIVOT_FAR = 0.0;
     public static double RIGHT_PIVOT_CLOSE = 0.0, RIGHT_PIVOT_MID = 0.0, RIGHT_PIVOT_FAR = 0.0;

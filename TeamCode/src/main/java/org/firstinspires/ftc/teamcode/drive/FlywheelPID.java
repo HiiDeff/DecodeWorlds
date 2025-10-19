@@ -24,7 +24,7 @@ public class FlywheelPID extends VelocityPIDModel {
 
     @Override
     public double getError() {
-        return robot.getFlywheelVelocity() - targetVelocity; //return error of velocity
+        return targetVelocity - robot.getFlywheelVelocityTicksPerSecond(); //return error of velocity
     }
 
     @Override
