@@ -7,6 +7,8 @@ import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,141 +23,174 @@ import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 
 public abstract class RobotBase extends MecanumDrive {
 
-    public static double INTAKE_POWER, OUTTAKE_POWER;
+    // Constants
+    public static double INTAKE_POWER = 0.5, OUTTAKE_POWER = 0.5;
+    public static double PUSHER_POWER = 1.0;
 
-
+    // Common
     protected final HardwareMap hardwareMap;
 
-    public final DcMotorEx flywheelLeft, flywheelRight;
-    public final DcMotor intake;
-
-    public final Servo kicker;
-    public final Servo pivotLeft, pivotRight;
-    public final Servo pusher;
-
+    // Motors
+    public final DcMotorEx leftFlywheel;
+    public final DcMotorEx rightFlywheel;
+    private boolean flywheelOn;
     public final FlywheelPID flywheelPID;
+    public final DcMotorEx intake;
+    private boolean intakeOn;
 
-    public RevColorSensorV3 leftColorSensor, rightColorSensor;
+    // Servos
+    public final Servo leftPivot;
+    public final Servo rightPivot;
+    public final Servo kicker;
+    public final CRServo pusher;
 
+    // Sensors
+    public final RevColorSensorV3 leftColorSensor;
+    public final RevColorSensorV3 rightColorSensor;
+
+    // States
     ArtifactState artifactState;
 
+    // Cached Encoder Values
+    private double flywheelVelocityTicksPerSecond = 0.0;
 
     public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
-        super(hardwareMap,
-                followerConstants,
-                driveConstants,
-                localizer,
-                pathConstraints
-        );
+        super(hardwareMap, followerConstants, driveConstants, localizer, pathConstraints);
         this.hardwareMap = hardwareMap;
-
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
-
-        //get hardware
-
-        flywheelLeft = hardwareMap.get(DcMotorEx.class, "motor");
-        flywheelRight = hardwareMap.get(DcMotorEx.class, "motor2");
-        flywheelLeft.setDirection(DcMotor.Direction.REVERSE);
-        intake = hardwareMap.get(DcMotor.class, "motor3");
-
-        flywheelLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheelRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        kicker = hardwareMap.get(Servo.class, "servo3");
-        pivotLeft = hardwareMap.get(Servo.class, "servo");
-        pivotRight = hardwareMap.get(Servo.class, "servo2");
-        pusher = hardwareMap.get(Servo.class, "servo4");
-
+        // Motors:
+        leftFlywheel = hardwareMap.get(DcMotorEx.class, "leftFlywheel");
+        leftFlywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFlywheel = hardwareMap.get(DcMotorEx.class, "rightFlywheel");
+        rightFlywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFlywheel.setDirection(DcMotor.Direction.REVERSE);
+        flywheelOn = false;
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeOn = false;
+        // Servos:
+        kicker = hardwareMap.get(Servo.class, "kicker");
+        leftPivot = hardwareMap.get(Servo.class, "leftPivot");
+        rightPivot = hardwareMap.get(Servo.class, "rightPivot");
+        pusher = hardwareMap.get(CRServoImplEx.class, "pusher");
+        // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
 
-
+        // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
     }
 
     ///////////////////* INIT *///////////////////
-    public void teleOpInit(){
+    public void teleOpInit() {}
 
-    }
-
-    public void autoInit()  {
-
-    }
+    public void autoInit() {}
     ///////////////////* UPDATES *///////////////////
-    public void updateEverything(){
-        update();
+    public void updateEverything() {
+        updatePoseEstimate();
+        updateEncoders();
+        updateSensors();
+        updateProfilers();
         updatePIDs();
-        updateSensor();
     }
 
-    public void updatePIDs() {
-        flywheelPID.updatePID(getVelocityPIDCoefficients());
-        setFlywheelPower(getVelocityPIDCoefficients().feedForward + flywheelPID.getPower());
+    private void updatePoseEstimate() {
+        update();
     }
 
-    public void updateSensor(){
+    private void updateEncoders() {
+        flywheelVelocityTicksPerSecond = leftFlywheel.getVelocity();
+    }
+
+    public void updateSensors() { //public for multithreading
         artifactState.update();
     }
 
+    private void updateProfilers() {}
+
+    private void updatePIDs() {
+        if(flywheelOn) setFlywheelPower(flywheelPID.getPower());
+    }
+
     ///////////////////* INTAKE UTILS *///////////////////
-    public void runIntakeWithPower(double power){
+    public void runIntakeWithPower(double power) {
         intake.setPower(power);
+        intakeOn = true;
     }
 
-    public void runIntakeIn() {
+    public void runIntake() {
         intake.setPower(INTAKE_POWER);
+        intakeOn = true;
     }
 
-    public void runIntakeOut(){
-        intake.setPower(OUTTAKE_POWER);}
+    public void runIntakeReversed() {
+        intake.setPower(OUTTAKE_POWER);
+        intakeOn = true;
+    }
 
-    public void stopIntake(){
+    public void stopIntake() {
         intake.setPower(0);
+        intakeOn = false;
     }
-
-    ///////////////////* KICKER UTILS *///////////////////
-    public abstract double getKickerPosition(KickerTask.KickerPosition position);
-
-    public void setKickerPosition(KickerTask.KickerPosition position){
-        kicker.setPosition(getKickerPosition(position));
+    public void toggleIntake() {
+        intakeOn = !intakeOn;
+        if(intakeOn) runIntake();
+        else stopIntake();
     }
 
     ///////////////////* PUSHER UTILS *///////////////////
-    public void setPusherPosition(double position){
-        pusher.setPosition(position);
+    public void runPusher() {
+        pusher.setPower(PUSHER_POWER);
     }
 
+    public void runPusherReversed() {
+        pusher.setPower(-PUSHER_POWER);
+    }
 
+    public void stopPusher() {
+        pusher.setPower(0);
+    }
+
+    ///////////////////* KICKER UTILS *///////////////////
+    public abstract double getKickerPosition(KickerTask.Position position);
+
+    public void setKickerPosition(KickerTask.Position position){
+        kicker.setPosition(getKickerPosition(position));
+    }
 
     ///////////////////* FLYWHEEL UTILS *///////////////////
     public abstract PIDCoefficients getVelocityPIDCoefficients();
 
     public void setFlywheelPower(double power){
-        flywheelLeft.setPower(Utils.clamp(power, -1, 1));
-        flywheelRight.setPower(Utils.clamp(power, -1, 1));
+        leftFlywheel.setPower(Utils.clamp(power, -1, 1));
+        rightFlywheel.setPower(Utils.clamp(power, -1, 1));
     }
 
-    public void setFlywheelVelocity(double velocityTicksPerSecond){
+    public void setFlywheelTargetVelocity(double velocityTicksPerSecond){
         flywheelPID.setTargetVelocity(velocityTicksPerSecond);
+        flywheelOn = true;
     }
 
     public double getFlywheelVelocity(){
-        return (double)(flywheelLeft.getVelocity());
+        return flywheelVelocityTicksPerSecond;
     }
 
     public void stopFlywheel(){
-        setFlywheelVelocity(0.0);
+        setFlywheelTargetVelocity(0.0);
+        flywheelOn = false;
     }
 
     ///////////////////* PIVOT UTILS *///////////////////
-    public abstract double getPivotPosition(PivotTask.PivotPosition position);
+    public abstract double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position);
 
-    public void setPivotPosition(PivotTask.PivotPosition position){
-        pivotLeft.setPosition(getPivotPosition(position));
-        pivotRight.setPosition(getPivotPosition(position));
+    public void setPivotPosition(PivotTask.Position position){
+        leftPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.LEFT, position));
+        rightPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.RIGHT, position));
     }
+
+    ///////////////////* COLOR SENSOR UTILS *///////////////////
 
     public boolean hasArtifact(){
         return artifactState.getArtifactState();

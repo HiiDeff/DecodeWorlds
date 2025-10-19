@@ -19,9 +19,9 @@ public class SensorUpdateThread extends Thread {
 //        elapsedTime = new ElapsedTime();
         try {
             while(true) {
-                robot.updateSensor();
+                robot.updateSensors();
                 Thread.sleep(THREAD_SLEEP_TIME);
-//                Log.i("loop time: ", ""+elapsedTime.milliseconds());
+//                Log.i("edbug sensor loop times: ", ""+elapsedTime.milliseconds());
 //                elapsedTime.reset();
             }
         } catch (InterruptedException e) {

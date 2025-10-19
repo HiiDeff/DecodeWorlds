@@ -12,14 +12,26 @@ import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 @Config
 @Autonomous(name = "Test Auto", group = "Test")
 public class TestAuto extends TestAutoPath {
-    
-    public static double SHOOT_1_X = 7.67, SHOOT_1_Y = -3.46, SHOOT_1_H = 0.40486;
-    public static double INTAKE_1_X = 27.71, INTAKE_1_Y = 12.5, INTAKE_1_H = Math.toRadians(90);
-    public static double SHOOT_2_X = 7.67, SHOOT_2_Y = -3.46, SHOOT_2_H = 0.40486;
-    public static double INTAKE_2_X = 50.94, INTAKE_2_Y = 12.5, INTAKE_2_H = Math.toRadians(90);
-    public static double SHOOT_3_X = 7.67, SHOOT_3_Y = -3.46, SHOOT_3_H = 0.40486;
-    public static double INTAKE_3_X = 74.58, INTAKE_3_Y = 12.5, INTAKE_3_H = Math.toRadians(90);
-    public static double SHOOT_4_X = 7.67, SHOOT_4_Y = -3.46, SHOOT_4_H = 0.40486;
+
+    public static double
+            SHOOT_1_X, SHOOT_1_Y, SHOOT_1_H,
+            INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H,
+            SHOOT_2_X, SHOOT_2_Y, SHOOT_2_H,
+            INTAKE_2_X, INTAKE_2_Y, INTAKE_2_H,
+            SHOOT_3_X, SHOOT_3_Y, SHOOT_3_H,
+            INTAKE_3_X, INTAKE_3_Y, INTAKE_3_H,
+            SHOOT_4_X, SHOOT_4_Y, SHOOT_4_H;
+    public static Pose testPose = new Pose(0, 0, Math.toRadians(0));
+
+    static {
+        SHOOT_1_X = 7.67; SHOOT_1_Y = -3.46; SHOOT_1_H = 0.40486;
+        INTAKE_1_X = 27.71; INTAKE_1_Y = 12.5; INTAKE_1_H = Math.toRadians(90);
+        SHOOT_2_X = 7.67; SHOOT_2_Y = -3.46; SHOOT_2_H = 0.40486;
+        INTAKE_2_X = 50.94; INTAKE_2_Y = 12.5; INTAKE_2_H = Math.toRadians(90);
+        SHOOT_3_X = 7.67; SHOOT_3_Y = -3.46; SHOOT_3_H = 0.40486;
+        INTAKE_3_X = 74.58; INTAKE_3_Y = 12.5; INTAKE_3_H = Math.toRadians(90);
+        SHOOT_4_X = 7.67; SHOOT_4_Y = -3.46; SHOOT_4_H = 0.40486;
+    }
 
     @Override
     protected RobotBase createRobot(HardwareMap hardwareMap) {
@@ -33,6 +45,11 @@ public class TestAuto extends TestAutoPath {
 
     @Override
     protected boolean isRed() {
+        return false;
+    }
+
+    @Override
+    protected boolean isFar() {
         return false;
     }
 

@@ -5,14 +5,12 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 public class FlywheelTask extends TimedTask {
 
     private RobotBase robot;
-
     private boolean started = false;
+    private double velocity;
 
-    private double flywheelSpeed;
-
-    public FlywheelTask(RobotBase robot, int finishTimeMillis, double flywheelSpeed){
+    public FlywheelTask(RobotBase robot, double velocityRpm, int finishTimeMillis){
         this.robot = robot;
-        this.flywheelSpeed = flywheelSpeed;
+        this.velocity = velocityRpm;
         setFinishTimeMillis(finishTimeMillis);
     }
 
@@ -20,11 +18,14 @@ public class FlywheelTask extends TimedTask {
     protected boolean performInternal(){
         if(!started){
             started = true;
-            robot.setFlywheelPower(flywheelSpeed);
+            robot.setFlywheelTargetVelocity(velocity);
+            return false;
         }
-        return false;
+        return robot.flywheelPID.isDone();
     }
 
     @Override
-    public void cancel(){robot.stopFlywheel();}
+    public void cancel(){
+        // do nothing to maintain velocity
+    }
 }

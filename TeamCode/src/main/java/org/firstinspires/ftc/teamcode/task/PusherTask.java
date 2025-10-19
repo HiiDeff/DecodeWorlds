@@ -5,19 +5,19 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 public class PusherTask extends TimedTask {
     private boolean started = false;
     private final RobotBase robot;
-    private final double position;
+    private final boolean reversed;
 
-    public PusherTask(RobotBase robot, int finishTimeMillis, double position){
+    public PusherTask(RobotBase robot, boolean reversed, int finishTimeMillis){
         this.robot = robot;
-        this.position = position;
-
+        this.reversed = reversed;
         setFinishTimeMillis(finishTimeMillis);
     }
 
     @Override
     public boolean performInternal(){
         if (!started){
-            robot.setPusherPosition(position);
+            if(!reversed) robot.runPusher();
+            else robot.runPusherReversed();
             started = true;
         }
         return false;
@@ -25,6 +25,6 @@ public class PusherTask extends TimedTask {
 
     @Override
     public void cancel(){
-
+        robot.stopPusher();
     }
 }

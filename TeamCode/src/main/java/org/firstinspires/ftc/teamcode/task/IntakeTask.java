@@ -6,10 +6,9 @@ public class IntakeTask extends TimedTask{
 
     private final RobotBase robot;
     private final double power;
-
     private boolean started = false;
 
-    public IntakeTask(RobotBase robot, int finishTimeMillis, double power){
+    public IntakeTask(RobotBase robot, double power, int finishTimeMillis){
         this.robot = robot;
         this.power = power;
         setFinishTimeMillis(finishTimeMillis);

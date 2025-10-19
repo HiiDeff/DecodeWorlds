@@ -8,6 +8,7 @@ public abstract class VelocityPIDModel {
     private double kP;
     private double kI;
     private double kD;
+    private double feedForward;
 
     protected double lastTarget = Integer.MAX_VALUE;
 
@@ -17,6 +18,7 @@ public abstract class VelocityPIDModel {
         this.kP = pidCoefficients.kP;
         this.kI = pidCoefficients.kI;
         this.kD = pidCoefficients.kD;
+        this.feedForward = pidCoefficients.feedForward;
     }
 
     public void updatePID(PIDCoefficients pidCoefficients) {
@@ -65,6 +67,8 @@ public abstract class VelocityPIDModel {
             }
         }
         lastError = error;
+
+        power = power + feedForward;
         return power;
     }
 

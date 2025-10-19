@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
 import org.firstinspires.ftc.teamcode.drive_pp.TestRobot1;
+import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 
 @Config
 public class RobotFactory {
@@ -15,11 +16,7 @@ public class RobotFactory {
     }
     public static Robot ACTIVE_ROBOT = Robot.ROBOT_1;
 
-    public static Robot getActiveRobot() {
-        return ACTIVE_ROBOT;
-    }
-
-    public static Follower createRobot(HardwareMap hardwareMap) {
+    public static MecanumDrive createRobot(HardwareMap hardwareMap) {
         switch (ACTIVE_ROBOT) {
             case ROBOT_1:
                 return new Robot1(hardwareMap);

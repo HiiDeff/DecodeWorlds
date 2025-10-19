@@ -74,9 +74,9 @@ public class V1RobotTeleOp extends LinearOpMode {
     private void runIntake(){
         // Operator controlled
         if (gp2.rightTrigger() > 0.1){
-            robot.runIntakeIn();
+            robot.runIntake();
         } else if (gp2.leftTrigger() > 0.1) {
-            robot.runIntakeOut();
+            robot.runIntakeReversed();
         } else {
             robot.stopIntake();
         }
@@ -84,11 +84,11 @@ public class V1RobotTeleOp extends LinearOpMode {
 
     private SeriesTask createShooterTask(){
         return new SeriesTask(
-                new FlywheelTask(robot, FLYWHEEL_WARM_UP_TIME + FLYWHEEL_SHOOT_TIME, FLYWHEEL_VELOCITY),
+                new FlywheelTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_WARM_UP_TIME + FLYWHEEL_SHOOT_TIME),
                 new SleepTask(FLYWHEEL_WARM_UP_TIME),
-                new KickerTask(robot, KickerTask.KickerPosition.UP),
+                new KickerTask(robot, KickerTask.Position.UP),
                 new SleepTask(FLYWHEEL_SHOOT_TIME),
-                new KickerTask(robot, KickerTask.KickerPosition.DOWN)
+                new KickerTask(robot, KickerTask.Position.DOWN)
         );
     }
 
@@ -106,8 +106,8 @@ public class V1RobotTeleOp extends LinearOpMode {
                             new SeriesTask(
                                     new ConditionalParallelTask(
                                             () -> !robot.hasArtifact(),
-                                            new IntakeTask(robot,3000, robot.INTAKE_POWER),
-                                            new PusherTask(robot, 3000, PUSHER_POWER)
+                                            new IntakeTask(robot,robot.INTAKE_POWER, 3000),
+                                            new PusherTask(robot, false, 3000)
 
                                     ),
                                     new ConditionalTask(() -> robot.hasArtifact()),

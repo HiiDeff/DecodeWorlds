@@ -3,17 +3,14 @@ package org.firstinspires.ftc.teamcode.task;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.util.Utils;
 
-public class KickerTask extends TimedTask{
+public class KickerTask extends TimedTask {
     private final RobotBase robot;
-    private final KickerPosition position;
-
+    private final Position position;
     private static final int RPM = 90;
     private static final int MAX_ROTATION_DEGREE = 300;
-
-
     private boolean started = false;
 
-    public KickerTask(RobotBase robot, KickerPosition position){
+    public KickerTask(RobotBase robot, Position position){
         this.robot = robot;
         this.position = position;
     }
@@ -31,7 +28,7 @@ public class KickerTask extends TimedTask{
         return false;
     }
 
-    public enum KickerPosition{
+    public enum Position {
         UP,
         DOWN
     }
