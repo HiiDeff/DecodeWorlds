@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
@@ -22,18 +23,26 @@ import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
+import org.firstinspires.ftc.teamcode.task.Preset;
 
 @TeleOp(name = "V1 TeleOp")
 @Config
 public class V1RobotTeleOp extends LinearOpMode {
+    // Constants
 
-    public static int FLYWHEEL_SHOOT_TIME, FLYWHEEL_WARM_UP_TIME;
+    public static int FLYWHEEL_SHOOT_TIME, FLYWHEEL_WARM_UP_TIME, FLYWHEEL_WIND_DOWN_TIME;
 
-    public static double FLYWHEEL_VELOCITY, PUSHER_POWER;
+    public static double FLYWHEEL_VELOCITY, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_REVERSE_VELOCITY;
 
+    public static double PUSHER_POWER;
+
+
+    private boolean unjamming = false;
 
     public MultipleTelemetry multipleTelemetry;
     public ElapsedTime elapsedTime = new ElapsedTime();
+
+    // Robot Control
 
     private Robot1 robot;
 
@@ -41,7 +50,8 @@ public class V1RobotTeleOp extends LinearOpMode {
 
     private SensorUpdateThread sensorUpdateThread;
 
-    SeriesTask shootTask;
+    private SeriesTask shootTask;
+    private ParallelTask initTask;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,14 +66,16 @@ public class V1RobotTeleOp extends LinearOpMode {
         waitForStart();
 
         robot.startTeleopDrive();
+        initTask = createInitTask();
 
         sensorUpdateThread = new SensorUpdateThread(robot);
         sensorUpdateThread.start();
 
         while (opModeIsActive()){
             drive();
-
-
+            runIntake();
+            runShooter();
+            runUnjam();
 
             elapsedTime.reset();
 
@@ -82,14 +94,27 @@ public class V1RobotTeleOp extends LinearOpMode {
         }
     }
 
-    private SeriesTask createShooterTask(){
-        return new SeriesTask(
-                new FlywheelTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_WARM_UP_TIME + FLYWHEEL_SHOOT_TIME),
-                new SleepTask(FLYWHEEL_WARM_UP_TIME),
-                new KickerTask(robot, KickerTask.Position.UP),
-                new SleepTask(FLYWHEEL_SHOOT_TIME),
-                new KickerTask(robot, KickerTask.Position.DOWN)
+    private ParallelTask createInitTask(){
+        return new ParallelTask(
+                new FlywheelTask(robot, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_WIND_DOWN_TIME)
         );
+    }
+
+    private void runUnjam(){
+        if (gp2.rightTrigger() > 0.3){
+            unjamming = true;
+
+            robot.runIntakeReversed();
+            robot.runPusherReversed();
+            robot.setFlywheelTargetVelocity(FLYWHEEL_REVERSE_VELOCITY);
+
+        }else if (unjamming){
+            unjamming = false;
+
+            robot.stopIntake();
+            robot.stopPusher();
+            robot.setFlywheelTargetVelocity(FLYWHEEL_IDLE_VELOCITY);
+        }
     }
 
     private void runShooter(){
@@ -102,18 +127,19 @@ public class V1RobotTeleOp extends LinearOpMode {
             shootTask = new SeriesTask(
                     new DecisionTask(
                             () -> robot.hasArtifact(),
-                            createShooterTask(),
+                            Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME),
                             new SeriesTask(
                                     new ConditionalParallelTask(
                                             () -> !robot.hasArtifact(),
-                                            new IntakeTask(robot,robot.INTAKE_POWER, 3000),
+                                            new IntakeTask(robot,robot.INTAKE_POWER, false, 3000),
                                             new PusherTask(robot, false, 3000)
 
                                     ),
                                     new ConditionalTask(() -> robot.hasArtifact()),
-                                    createShooterTask()
+                                    Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME)
                             )
-                    )
+                    ),
+                    new FlywheelTask(robot, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_WIND_DOWN_TIME)
             );
         }
 
@@ -125,6 +151,7 @@ public class V1RobotTeleOp extends LinearOpMode {
 
     private void update(){
         if (shootTask != null && shootTask.perform()){shootTask = null;}
+        if (initTask != null && initTask.perform()){initTask = null;}
         gp1.update();
         gp2.update();
         updateTelemetry();
