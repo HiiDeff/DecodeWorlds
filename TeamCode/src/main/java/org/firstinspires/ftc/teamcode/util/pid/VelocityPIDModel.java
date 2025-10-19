@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public abstract class VelocityPIDModel {
-    public static int CYCLE_WAIT_CNT = 5;
+    public static int MIN_DELTA_T = 50; // to account for encoder noise
     private double minPower;
     private double maxPower;
     private double kP;
@@ -41,7 +41,6 @@ public abstract class VelocityPIDModel {
     private boolean integralStarted = false;
 
     private double prevPower = 0.0;
-    private int cycleWaitTimer = 0;
 
     public double getPower() {
         double error = getError();
@@ -49,9 +48,8 @@ public abstract class VelocityPIDModel {
             lastError = error;
             timer = new ElapsedTime();
         }
-        cycleWaitTimer = (cycleWaitTimer+1)%CYCLE_WAIT_CNT;
-        if(cycleWaitTimer==0) {
-            double deltaT = timer.milliseconds();
+        double deltaT = timer.milliseconds();
+        if(deltaT>=MIN_DELTA_T) {
             timer.reset();
             dError_dT = (error - lastError) / deltaT;
             lastError = error;
