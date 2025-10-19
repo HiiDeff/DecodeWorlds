@@ -6,11 +6,13 @@ public class FlywheelTask extends TimedTask {
 
     private RobotBase robot;
     private boolean started = false;
+    private boolean reversed;
     private double velocity;
 
-    public FlywheelTask(RobotBase robot, double velocityRpm, int finishTimeMillis){
+    public FlywheelTask(RobotBase robot, double velocityRpm, boolean reversed, int finishTimeMillis){
         this.robot = robot;
         this.velocity = velocityRpm;
+        this.reversed = reversed;
         setFinishTimeMillis(finishTimeMillis);
     }
 
@@ -18,7 +20,7 @@ public class FlywheelTask extends TimedTask {
     protected boolean performInternal(){
         if(!started){
             started = true;
-            robot.setFlywheelTargetVelocity(velocity);
+            robot.setFlywheelTargetVelocity((reversed ? -1 : 1) * velocity);
             return false;
         }
         return robot.flywheelPID.isDone();

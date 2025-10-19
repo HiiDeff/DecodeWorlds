@@ -7,10 +7,12 @@ public class IntakeTask extends TimedTask{
     private final RobotBase robot;
     private final double power;
     private boolean started = false;
+    private boolean reversed;
 
-    public IntakeTask(RobotBase robot, double power, int finishTimeMillis){
+    public IntakeTask(RobotBase robot, double power, boolean reversed, int finishTimeMillis){
         this.robot = robot;
         this.power = power;
+        this.reversed = reversed;
         setFinishTimeMillis(finishTimeMillis);
     }
 
@@ -18,7 +20,7 @@ public class IntakeTask extends TimedTask{
     protected boolean performInternal(){
         if (!started){
             started = true;
-            robot.runIntakeWithPower(power);
+            robot.runIntakeWithPower((reversed ? -1 : 1) * power);
         }
         return false;
     }
