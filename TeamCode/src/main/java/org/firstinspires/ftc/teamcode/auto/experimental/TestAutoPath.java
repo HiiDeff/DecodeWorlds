@@ -32,7 +32,43 @@ public abstract class TestAutoPath extends AutoBase {
                         }
                 )
         );
-        task.add(new SleepTask(1000));
+        task.add(new SleepTask(5000));
+        task.add(
+                new RuntimeDrivingTask(
+                        robot,
+                        builder -> {
+                            Pose pose = getShoot2Pose();
+                            return builder
+                                    .addPath(
+                                            new BezierCurve(
+                                                    robot.getPose(),
+                                                    pose
+                                            )
+                                    )
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        }
+                )
+        );
+        task.add(new SleepTask(5000));
+        task.add(
+                new RuntimeDrivingTask(
+                        robot,
+                        builder -> {
+                            Pose pose = getShoot3Pose();
+                            return builder
+                                    .addPath(
+                                            new BezierCurve(
+                                                    robot.getPose(),
+                                                    pose
+                                            )
+                                    )
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        }
+                )
+        );
+        task.add(new SleepTask(5000));
         return task;
     }
 

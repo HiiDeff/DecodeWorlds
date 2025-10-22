@@ -32,13 +32,14 @@ public class Robot1 extends RobotBase {
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
-            .mass(10.65)
-            .forwardZeroPowerAcceleration(-34.85468883462399)
-            .lateralZeroPowerAcceleration(-60.980555558410465)
+            .mass(11.7)
+            .forwardZeroPowerAcceleration(-34.336)
+            .lateralZeroPowerAcceleration(-69.191)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.25, 0.0, 0.020, 0.04))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.7, 0.0, 0.06, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.013,0.0,0.0002,0.6,0.048));
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.35, 0.0, 0.025, 0.02))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.2, 0.0, 0.04, 0.02))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.013,0.0,0.0002,0.6,0.045))
+            .centripetalScaling(0.0005);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()
             .rightFrontMotorName("rightFront")
@@ -50,16 +51,16 @@ public class Robot1 extends RobotBase {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
-            .xVelocity(77.70272226408711)
-            .yVelocity(57.90664264348548);
+            .xVelocity(79.75)
+            .yVelocity(64.84);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
-            .forwardPodY(-7.125)
-            .strafePodX(3)
+            .forwardPodY(-1.5)
+            .strafePodX(-6.25)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
     public static double T_VALUE_CONSTRAINT = 0.99;
