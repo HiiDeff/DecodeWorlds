@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
+import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
 public abstract class RobotBase extends MecanumDrive {
 
@@ -160,7 +161,7 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     ///////////////////* FLYWHEEL UTILS *///////////////////
-    public abstract PIDCoefficients getVelocityPIDCoefficients();
+    public abstract VelocityPIDCoefficients getVelocityPIDCoefficients();
 
     public void setFlywheelPower(double power){
         leftFlywheel.setPower(Utils.clamp(power, -1, 1));

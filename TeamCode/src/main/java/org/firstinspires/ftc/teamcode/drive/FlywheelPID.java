@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
+import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDModel;
 
 public class FlywheelPID extends VelocityPIDModel {
@@ -8,7 +9,7 @@ public class FlywheelPID extends VelocityPIDModel {
     private final RobotBase robot;
     private double targetVelocity;
 
-    public FlywheelPID(RobotBase robot, PIDCoefficients pidCoefficients) {
+    public FlywheelPID(RobotBase robot, VelocityPIDCoefficients pidCoefficients) {
         super(pidCoefficients);
         this.robot = robot;
     }
@@ -24,7 +25,17 @@ public class FlywheelPID extends VelocityPIDModel {
 
     @Override
     public double getError() {
-        return targetVelocity - robot.getFlywheelVelocityTicksPerSecond();
+        return targetVelocity - getVelocity();
+    }
+
+    @Override
+    public double getTarget() {
+        return targetVelocity;
+    }
+
+    @Override
+    public double getVelocity() {
+        return robot.getFlywheelVelocityTicksPerSecond();
     }
 
     @Override
