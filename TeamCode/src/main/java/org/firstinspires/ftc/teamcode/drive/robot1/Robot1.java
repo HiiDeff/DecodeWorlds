@@ -23,12 +23,15 @@ import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 public class Robot1 extends RobotBase {
 
     // Constants
-    public static double KICKER_UP = 0.65, KICKER_DOWN = 0.9;
+    public static double KICKER_UP = 0.32, KICKER_DOWN = 0.60;
 
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.006, 0.0, 0.0,0.00053);
 
-    public static double LEFT_PIVOT_CLOSE = 0.0, LEFT_PIVOT_MID = 0.0, LEFT_PIVOT_FAR = 0.0;
-    public static double RIGHT_PIVOT_CLOSE = 0.0, RIGHT_PIVOT_MID = 0.0, RIGHT_PIVOT_FAR = 0.0;
+    public static double PIVOT_CLOSE = 0.55, PIVOT_MID = 0.4, PIVOT_FAR = 0.4; //need to be running pusher to work
+
+    // in case we need individual positions for both servos
+    public static double LEFT_PIVOT_CLOSE = 0.0, LEFT_PIVOT_MID = 0.48, LEFT_PIVOT_FAR = 0.0;
+    public static double RIGHT_PIVOT_CLOSE = 0.0, RIGHT_PIVOT_MID = 0.48, RIGHT_PIVOT_FAR = 0.0;
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
@@ -52,7 +55,8 @@ public class Robot1 extends RobotBase {
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
             .xVelocity(79.75)
-            .yVelocity(64.84);
+            .yVelocity(64.84)
+            .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
             .forwardPodY(-1.5)
@@ -101,12 +105,12 @@ public class Robot1 extends RobotBase {
     public double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position) {
         switch (position){
             case FAR:
-                return pivot == PivotTask.WhichPivot.LEFT? LEFT_PIVOT_FAR:RIGHT_PIVOT_FAR;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_FAR:PIVOT_FAR;
             case MID:
-                return pivot == PivotTask.WhichPivot.LEFT? LEFT_PIVOT_MID:RIGHT_PIVOT_MID;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_MID:PIVOT_MID;
             default:
             case CLOSE:
-                return pivot == PivotTask.WhichPivot.LEFT? LEFT_PIVOT_CLOSE:RIGHT_PIVOT_CLOSE;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE:PIVOT_CLOSE;
         }
     }
 }

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.task.Task;
 
 public abstract class TestAutoPath extends AutoBase {
 
+    public static int INTAKE_FORWARD_DIST = 25;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -32,43 +33,43 @@ public abstract class TestAutoPath extends AutoBase {
                         }
                 )
         );
-        task.add(new SleepTask(5000));
-        task.add(
-                new RuntimeDrivingTask(
-                        robot,
-                        builder -> {
-                            Pose pose = getShoot2Pose();
-                            return builder
-                                    .addPath(
-                                            new BezierCurve(
-                                                    robot.getPose(),
-                                                    pose
-                                            )
-                                    )
-                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                    .build();
-                        }
-                )
-        );
-        task.add(new SleepTask(5000));
-        task.add(
-                new RuntimeDrivingTask(
-                        robot,
-                        builder -> {
-                            Pose pose = getShoot3Pose();
-                            return builder
-                                    .addPath(
-                                            new BezierCurve(
-                                                    robot.getPose(),
-                                                    pose
-                                            )
-                                    )
-                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                    .build();
-                        }
-                )
-        );
-        task.add(new SleepTask(5000));
+        task.add(new SleepTask(3000));
+//        task.add(
+//                new RuntimeDrivingTask(
+//                        robot,
+//                        builder -> {
+//                            Pose pose = getShoot2Pose();
+//                            return builder
+//                                    .addPath(
+//                                            new BezierCurve(
+//                                                    robot.getPose(),
+//                                                    pose
+//                                            )
+//                                    )
+//                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                    .build();
+//                        }
+//                )
+//        );
+//        task.add(new SleepTask(5000));
+//        task.add(
+//                new RuntimeDrivingTask(
+//                        robot,
+//                        builder -> {
+//                            Pose pose = getShoot3Pose();
+//                            return builder
+//                                    .addPath(
+//                                            new BezierCurve(
+//                                                    robot.getPose(),
+//                                                    pose
+//                                            )
+//                                    )
+//                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                    .build();
+//                        }
+//                )
+//        );
+//        task.add(new SleepTask(5000));
         return task;
     }
 
@@ -96,7 +97,7 @@ public abstract class TestAutoPath extends AutoBase {
                                     .addPath(
                                             new BezierCurve(
                                                     pose,
-                                                    new Pose(pose.getX(), pose.getY()+17)
+                                                    new Pose(pose.getX(), pose.getY()+INTAKE_FORWARD_DIST*getSign())
                                             )
                                     )
                                     .setConstantHeadingInterpolation(pose.getHeading())
@@ -130,7 +131,25 @@ public abstract class TestAutoPath extends AutoBase {
     @Override
     protected Task createFinishTask() {
         state = AutoState.FINISH;
-        return new SeriesTask();
+        SeriesTask task = new SeriesTask();
+        task.add(
+                new RuntimeDrivingTask(
+                        robot,
+                        builder -> {
+                            Pose pose = getIntake2Pose();
+                            return builder
+                                    .addPath(
+                                            new BezierCurve(
+                                                    robot.getPose(),
+                                                    pose
+                                            )
+                                    )
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        }
+                )
+        );
+        return task;
     }
 
     protected abstract Pose getShoot1Pose();

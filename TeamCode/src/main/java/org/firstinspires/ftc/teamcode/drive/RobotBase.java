@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,13 +18,15 @@ import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
-import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
+import org.firstinspires.ftc.teamcode.util.limelight.AprilTagType;
+import org.firstinspires.ftc.teamcode.util.limelight.LimelightAprilTagDetector;
+import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
 public abstract class RobotBase extends MecanumDrive {
 
     // Constants
-    public static double INTAKE_POWER = 0.5, OUTTAKE_POWER = -0.5;
+    public static double INTAKE_POWER = 0.8, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
 
     // Common
@@ -46,6 +49,14 @@ public abstract class RobotBase extends MecanumDrive {
     // Sensors
     public final RevColorSensorV3 leftColorSensor;
     public final RevColorSensorV3 rightColorSensor;
+
+    // Camera
+    public final Limelight3A limelight;
+    public final LimelightAprilTagDetector limelightAprilTagDetector;
+    public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
+            0, 54,41,
+            -2.5,0,0);
+    public static int APRIL_TAG_PIPELINE = 1;
 
     // States
     ArtifactState artifactState;
@@ -77,7 +88,9 @@ public abstract class RobotBase extends MecanumDrive {
         // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
-
+        // Limelight:
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
         // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
         artifactState = new ArtifactState(this);
@@ -94,6 +107,7 @@ public abstract class RobotBase extends MecanumDrive {
         updateSensors();
         updateProfilers();
         updatePIDs();
+        updateLimelight();
     }
 
     private void updatePoseEstimate() {
@@ -189,6 +203,10 @@ public abstract class RobotBase extends MecanumDrive {
     ///////////////////* PIVOT UTILS *///////////////////
     public abstract double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position);
 
+    public void setPivotPosition(double position) {
+        leftPivot.setPosition(position);
+        rightPivot.setPosition(position);
+    }
     public void setPivotPosition(PivotTask.Position position){
         leftPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.LEFT, position));
         rightPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.RIGHT, position));
@@ -199,5 +217,33 @@ public abstract class RobotBase extends MecanumDrive {
     public boolean hasArtifact(){
         return artifactState.getArtifactState();
     }
+
+    ///////////////////* LIMELIGHT UTILS *///////////////////
+    public void startLimelight() {
+        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
+        limelight.start();
+    }
+    private void updateLimelight() {
+        limelightAprilTagDetector.updateLimelight();
+    }
+    public void stopLimelight() {
+        limelight.stop();
+    }
+    public void setLimelightAllianceColor(boolean isRedAlliance) {
+        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
+    }
+    public void updateRobotPoseLimelight() {
+        Pose robotPose = limelightAprilTagDetector.getRobotPose();
+        if(robotPose != null) {
+            this.setPose(robotPose);
+        }
+    }
+    public double getDistToGoalInches() {
+        return this.getPose().distanceFrom(new Pose())-LLConfig.xOffset;
+    }
+    public AprilTagType getMotif() {
+        return limelightAprilTagDetector.getMotif();
+    }
+
 
 }

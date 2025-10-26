@@ -20,8 +20,7 @@ public class LimelightConfig {
     public LimelightConfig(int resolutionX, int resolutionY,
                            double angleWithHorizontalDegrees,
                            double horizontalFOV, double verticalFOV,
-                           double xOffsetInch, double yOffsetInch, double zOffsetInch,
-                           double errorScalerX, double errorScalerY) {
+                           double xOffsetInch, double yOffsetInch, double zOffsetInch) {
         this.resolutionX = resolutionX;
         this.resolutionY = resolutionY;
         this.horizontalFOV = horizontalFOV;
@@ -30,6 +29,13 @@ public class LimelightConfig {
         this.xOffset = xOffsetInch;
         this.yOffset = yOffsetInch;
         this.zOffset = zOffsetInch;
+    }
+    public LimelightConfig(int resolutionX, int resolutionY,
+                           double angleWithHorizontalDegrees,
+                           double horizontalFOV, double verticalFOV,
+                           double xOffsetInch, double yOffsetInch, double zOffsetInch,
+                           double errorScalerX, double errorScalerY) {
+        this(resolutionX, resolutionY, angleWithHorizontalDegrees, horizontalFOV, verticalFOV, xOffsetInch, yOffsetInch, zOffsetInch);
         this.errorScalerX = errorScalerX;
         this.errorScalerY = errorScalerY;
     }

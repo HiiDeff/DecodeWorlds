@@ -11,6 +11,7 @@ import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Config
@@ -23,7 +24,7 @@ public abstract class MecanumDrive extends Follower {
 
     // Pedro
     private static Mecanum mecanum;
-    private List<DcMotorEx> motors;
+    private List<DcMotorEx> motors; //leftFront, leftRear, rightFront, rightRear;
 
     public MecanumDrive(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
         super(followerConstants, localizer, createMecanum(hardwareMap, driveConstants), pathConstraints);
@@ -57,7 +58,7 @@ public abstract class MecanumDrive extends Follower {
         // Set Powers
         motors.get(0).setPower(leftFrontPower / max);
         motors.get(1).setPower(leftBackPower / max);
-        motors.get(2).setPower(rightBackPower / max);
-        motors.get(3).setPower(rightFrontPower / max);
+        motors.get(2).setPower(rightFrontPower/ max);
+        motors.get(3).setPower(rightBackPower / max);
     }
 }
