@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.AimingPID;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
@@ -25,6 +26,8 @@ import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 import org.firstinspires.ftc.teamcode.task.Preset;
+import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
+import org.firstinspires.ftc.teamcode.util.pid.PIDModel;
 
 @TeleOp(name = "V1 TeleOp")
 @Config
@@ -36,7 +39,6 @@ public class V1RobotTeleOp extends LinearOpMode {
     public static double FLYWHEEL_VELOCITY, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_REVERSE_VELOCITY;
 
     public static double PUSHER_POWER;
-
 
     private boolean unjamming = false;
 
@@ -54,6 +56,11 @@ public class V1RobotTeleOp extends LinearOpMode {
     private SeriesTask shootTask;
     private ParallelTask initTask;
 
+    private AimingPID aimingPID;
+    private static PIDCoefficients aimingCoefficients = new PIDCoefficients(-1.0, 1.0, 0, 0, 0);
+
+    private boolean aiming = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = (Robot1) RobotFactory.createRobot(hardwareMap);
@@ -61,6 +68,8 @@ public class V1RobotTeleOp extends LinearOpMode {
 
         gp1 = new GamePad(gamepad1);
         gp2 = new GamePad(gamepad2);
+
+        aimingPID = new AimingPID(robot, aimingCoefficients);
 
         robot.init(new Pose());
 
@@ -164,7 +173,10 @@ public class V1RobotTeleOp extends LinearOpMode {
     }
 
     private void drive() {
+
         double x = 0, y = 0, a = 0;
+
+
 //        if (gp1.dpadLeft() || gp1.dpadRight()) {
 //            a = 0.5 * (gp1.dpadLeft() ? 1 : -1);
 //        } else if (gp1.dpadUp() || gp1.dpadDown()) {
@@ -172,7 +184,18 @@ public class V1RobotTeleOp extends LinearOpMode {
 //        } else {
         x = -gp1.leftStickY();
         y = -gp1.leftStickX();
-        a = -gp1.rightStickX() * 0.7;
+
+        if (gp1.onceA()){
+            aiming = !aiming;
+
+        }
+        if (aiming){
+            a = aimingPID.getPower();
+        }
+        else{
+            a = -gp1.rightStickX() * 0.7;
+        }
+
 //        }
         double pow = Math.sqrt(x * x + y * y);
 //        double limPow = driveLim.calculate(pow);
@@ -182,7 +205,6 @@ public class V1RobotTeleOp extends LinearOpMode {
 //        }
 //        a = turnLim.calculate(a);
 //        telemetry.addData("driving", x + " " + y + " " + a);
-
         robot.setTeleOpDrive(x, y, a, true);
     }
 }
