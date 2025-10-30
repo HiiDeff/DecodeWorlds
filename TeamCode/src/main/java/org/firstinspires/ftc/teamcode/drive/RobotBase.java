@@ -121,7 +121,7 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     public void updateSensors() { //public for multithreading
-//        artifactState.update();
+        artifactState.update();
     }
 
     private void updateProfilers() {}

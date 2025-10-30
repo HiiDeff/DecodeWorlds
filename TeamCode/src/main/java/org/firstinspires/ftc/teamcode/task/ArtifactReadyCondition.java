@@ -12,7 +12,6 @@ public class ArtifactReadyCondition implements Condition {
     }
 
     public boolean shouldContinue(){
-        return true;
-        //return robot.hasArtifact();
+        return robot.hasArtifact();
     }
 }
