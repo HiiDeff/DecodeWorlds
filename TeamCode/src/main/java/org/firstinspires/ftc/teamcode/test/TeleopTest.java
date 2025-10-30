@@ -6,8 +6,11 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,6 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
@@ -24,6 +28,8 @@ import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
+import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
+import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 @TeleOp(name = "Test TeleOp", group = "Test")
@@ -80,7 +86,9 @@ public class TeleopTest extends LinearOpMode {
      */
 
     public static int FLYWHEEL_RPM = 2500;
-    public static boolean kickerUp, flywheelActive, aiming;
+    public static double PIVOT_POS = 0.57, SERVO_SKIP_CORRECTION = 0.01;
+    public static boolean kickerUp, flywheelActive, aiming, autoaim = true;
+    private Task task;
 
     public MultipleTelemetry multipleTelemetry;
 
@@ -103,14 +111,17 @@ public class TeleopTest extends LinearOpMode {
         robot.setLimelightAllianceColor(false);
 
         while (opModeIsActive()) {
-            robot.updateEverything();
-            robot.updateRobotPoseLimelight();
+            update();
 
             multipleTelemetry.addData("dist to goal", robot.getDistToGoalInches());
-            multipleTelemetry.addData("robot pos", robot.getPose().getHeading());
+            multipleTelemetry.addData("robot pos", robot.getPose().getX()+" "+robot.getPose().getY()+" "+robot.getPose().getHeading());
 
-            robot.setPivotPosition(calcPivotPosition(robot.getDistToGoalInches()));
-            FLYWHEEL_RPM = calcFlywheelRpm(robot.getDistToGoalInches());
+            if(autoaim) {
+                robot.setPivotPosition(calcPivotPosition(robot.getDistToGoalInches()));
+                FLYWHEEL_RPM = calcFlywheelRpm(robot.getDistToGoalInches());
+            } else {
+                robot.setPivotPosition(PIVOT_POS);
+            }
 
             if(gp1.onceX()) flywheelActive = !flywheelActive;
             if(flywheelActive) {
@@ -147,21 +158,22 @@ public class TeleopTest extends LinearOpMode {
         }
     }
 
+    private void update() {
+        robot.updateEverything();
+        if(task != null && task.perform()) task = null;
+    }
+
     private void drive() {
         if(gp1.onceY()) {
             aiming = !aiming;
             if(!aiming) {
                 robot.startTeleopDrive();
             } else {
-                robot.followPath(
-                        robot.pathBuilder()
-                                .addPath(new BezierLine(robot.getPose(), robot.getPose()))
-                                .setLinearHeadingInterpolation(robot.getHeading(), 0)
-                                .build()
-                );
+                robot.holdPoint(new BezierPoint(robot.getPose()), robot.getAngleToGoal(), false);
             }
         }
-        if(!aiming) {
+        if(aiming) {
+        } else {
             double x = 0, y = 0, a = 0;
             if (gp1.dpadLeft() || gp1.dpadRight()) {
                 a = 0.5 * (gp1.dpadLeft() ? 1 : -1);
@@ -182,16 +194,20 @@ public class TeleopTest extends LinearOpMode {
 //        telemetry.addData("driving", x + " " + y + " " + a);
 
 //        robot.setDrivePowers(x, y, a);
+            if(Math.abs(a)<0.05) robot.updateRobotPoseUsingLimelight();
             robot.setTeleOpDrive(x, y, a, true);
         }
     }
 
     private double calcPivotPosition(double x) {
+        double pos = 0.0;
         if(x<45) {
-           return (-0.0000295544)*Math.pow(x,2)-0.00102978*x+0.577059;
+            pos = (-0.0000295544)*Math.pow(x,2)-0.00102978*x+0.577059;
         } else {
-            return (-1.00701*Math.pow(10, -8))*Math.pow(x,4)+0.00000350981*Math.pow(x, 3)-0.000428815*Math.pow(x, 2)+0.0213042*x-0.0381544;
+            pos = (-1.00701*Math.pow(10, -8))*Math.pow(x,4)+0.00000350981*Math.pow(x, 3)-0.000428815*Math.pow(x, 2)+0.0213042*x-0.0381544;
         }
+        pos -= SERVO_SKIP_CORRECTION; //the servo skipped >:C
+        return pos;
     }
     private int calcFlywheelRpm(double distToGoalInches) {
         return (int)(1000.0/143*(distToGoalInches-7)+2500);

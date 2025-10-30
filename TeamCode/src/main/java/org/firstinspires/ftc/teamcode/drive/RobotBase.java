@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.util.Log;
+
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.geometry.Pose;
@@ -55,7 +57,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final LimelightAprilTagDetector limelightAprilTagDetector;
     public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
             0, 54,41,
-            -2.5,0,0);
+            -3.5,0,0);
     public static int APRIL_TAG_PIPELINE = 1;
 
     // States
@@ -223,27 +225,30 @@ public abstract class RobotBase extends MecanumDrive {
         limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
         limelight.start();
     }
+    public void setLimelightAllianceColor(boolean isRedAlliance) {
+        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
+    }
     private void updateLimelight() {
         limelightAprilTagDetector.updateLimelight();
     }
     public void stopLimelight() {
         limelight.stop();
     }
-    public void setLimelightAllianceColor(boolean isRedAlliance) {
-        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
-    }
-    public void updateRobotPoseLimelight() {
-        Pose robotPose = limelightAprilTagDetector.getRobotPose();
-        if(robotPose != null) {
-            this.setPose(robotPose);
+    public void updateRobotPoseUsingLimelight() {
+        Pose newPose = limelightAprilTagDetector.getRobotPose();
+        if(newPose != null) {
+            this.setPose(newPose);
         }
     }
     public double getDistToGoalInches() {
-        return this.getPose().distanceFrom(new Pose())-LLConfig.xOffset;
+        double dist = this.getPose().distanceFrom(new Pose()) + LLConfig.xOffset;
+        Log.i("edbug dist to goal", ""+dist);
+        return dist;
+    }
+    public double getAngleToGoal() {
+        return Math.atan2(-this.getPose().getY(), -this.getPose().getX());
     }
     public AprilTagType getMotif() {
         return limelightAprilTagDetector.getMotif();
     }
-
-
 }
