@@ -38,7 +38,7 @@ public class TestAuto extends TestAutoPath {
         INTAKE_3_X = 74.58; INTAKE_3_Y = 12.5; INTAKE_3_H = Math.toRadians(90);
         SHOOT_4_X = 7.67; SHOOT_4_Y = -3.46; SHOOT_4_H = 0.40486;
          */
-        // close auto:
+        // close auto: shoot pos is 58 inches from goal
         SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -Math.PI*3/4;
         INTAKE_1_X = 50.655; INTAKE_1_Y = -12.815; INTAKE_1_H = -Math.PI/2;
         SHOOT_2_X = 47.743; SHOOT_2_Y = -1.066; SHOOT_2_H = -Math.PI*3/4;
