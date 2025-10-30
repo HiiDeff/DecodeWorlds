@@ -14,12 +14,14 @@ public class Preset {
 
         for (int i = 1; i <= balls; i++) {
             task.add(
-                    new SeriesTask(
+                    new ParallelTask(
                             new UnboundedPusherTask(robot, true),
-                            new KickerTask(robot, KickerTask.Position.UP),
-                            new SleepTask(FLYWHEEL_SHOOT_TIME),
-                            //new DelayUntilConditionTask(new ArtifactUnreadyCondition(robot)),
-                            new KickerTask(robot, KickerTask.Position.DOWN)
+                            new SeriesTask(
+                                    new KickerTask(robot, KickerTask.Position.UP),
+                                    new SleepTask(FLYWHEEL_SHOOT_TIME),
+                                    //new DelayUntilConditionTask(new ArtifactUnreadyCondition(robot)),
+                                    new KickerTask(robot, KickerTask.Position.DOWN)
+                            )
                     )
 
             );
@@ -31,7 +33,7 @@ public class Preset {
                         new ParallelTask(
                                 new UnboundedPusherTask(robot, false),
                                 new UnboundedIntakeTask(robot, 0.4, false),
-                                new TimedConditionalTask(new ArtifactReadyCondition(robot), 3000)
+                                new TimedConditionalTask(new ArtifactReadyCondition(robot), 2000)
                         )
                 ));
             }

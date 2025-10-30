@@ -44,7 +44,7 @@ public abstract class TestAutoPath extends AutoBase {
                         }
                 )
         );
-        task.add(Preset.createShootTask(robot, FLYWHEEL_VELOCITY_MID, 1000, 3));
+        task.add(Preset.createShootTask(robot, FLYWHEEL_VELOCITY_MID, 75, 3));
 
         //task.add(new SleepTask(3000));
 //        task.add(
@@ -155,7 +155,7 @@ public abstract class TestAutoPath extends AutoBase {
                 new FlywheelTask(robot, FLYWHEEL_VELOCITY_MID, 1000)
                 )
         );
-        task.add(Preset.createShootTask(robot, FLYWHEEL_VELOCITY_MID, 1000, 3));
+        task.add(Preset.createShootTask(robot, FLYWHEEL_VELOCITY_MID, 75, 3));
         return task;
     }
 
