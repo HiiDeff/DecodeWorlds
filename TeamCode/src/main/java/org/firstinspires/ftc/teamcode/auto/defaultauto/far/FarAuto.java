@@ -81,7 +81,8 @@ public abstract class FarAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new UnboundedIntakeTask(robot, 1.0, false)
+                        new UnboundedIntakeTask(robot, 1.0, false),
+                        new UnboundedPusherTask(robot, false)
                 )
         );
         task.add(

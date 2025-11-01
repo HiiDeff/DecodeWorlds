@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 public abstract class CloseAutoPath extends CloseAuto {
     public static double
             SHOOT_1_X, SHOOT_1_Y, SHOOT_1_H,
-            INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H, FORWARD_DIST_CYCLE_1,
+            INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H,  FORWARD_DIST_CYCLE_1,
             SHOOT_2_X, SHOOT_2_Y, SHOOT_2_H,
             INTAKE_2_X, INTAKE_2_Y, INTAKE_2_H, FORWARD_DIST_CYCLE_2,
             SHOOT_3_X, SHOOT_3_Y, SHOOT_3_H,

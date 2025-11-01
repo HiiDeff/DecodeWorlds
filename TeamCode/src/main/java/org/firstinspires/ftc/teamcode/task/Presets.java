@@ -30,7 +30,7 @@ public class Presets {
                                 new UnboundedIntakeTask(robot, 0.8, false),
                                 new FlywheelTask(robot, targetRPM, 3000),
                                 new SeriesTask( //only works in series task
-                                        new TimedConditionalTask(new ArtifactReadyCondition(robot), 2000)
+                                        new TimedConditionalTask(new ArtifactReadyCondition(robot), 3000)
                                 )
                         )
                 );
