@@ -20,13 +20,13 @@ public abstract class FarAutoPath extends FarAuto {
     static {
         SHOOT_1_X = 7.67; SHOOT_1_Y = -3.46; SHOOT_1_H = 0.40486;
         INTAKE_1_X = 27.71; INTAKE_1_Y = 12.5; INTAKE_1_H = Math.toRadians(90);
-        FORWARD_DIST_CYCLE_1 = 29;
+        FORWARD_DIST_CYCLE_1 = 30;
         SHOOT_2_X = 7.67; SHOOT_2_Y = -3.46; SHOOT_2_H = 0.40486;
         INTAKE_2_X = 50.94; INTAKE_2_Y = 12.5; INTAKE_2_H = Math.toRadians(90);
-        FORWARD_DIST_CYCLE_2 = 27;
+        FORWARD_DIST_CYCLE_2 = 28;
         SHOOT_3_X = 7.67; SHOOT_3_Y = -3.46; SHOOT_3_H = 0.40486;
         INTAKE_3_X = 74.58; INTAKE_3_Y = 12.5; INTAKE_3_H = Math.toRadians(90);
-        FORWARD_DIST_CYCLE_3 = 25;
+        FORWARD_DIST_CYCLE_3 = 27;
         SHOOT_4_X = 7.67; SHOOT_4_Y = -3.46; SHOOT_4_H = 0.40486;
         PARK_X = 18; PARK_Y = -3.5; PARK_H = 0.40486;
     }

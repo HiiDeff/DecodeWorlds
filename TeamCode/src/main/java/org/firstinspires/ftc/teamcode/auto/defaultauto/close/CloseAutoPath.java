@@ -28,7 +28,7 @@ public abstract class CloseAutoPath extends CloseAuto {
         FORWARD_DIST_CYCLE_2 = 28;
         SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
         INTAKE_3_X = 99.246; INTAKE_3_Y = -12.815; INTAKE_3_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_3 = 29;
+        FORWARD_DIST_CYCLE_3 = 30;
         SHOOT_4_X = 45.743; SHOOT_4_Y = -3.066; SHOOT_4_H = -2.35;
         PARK_X = 59; PARK_Y = -9; PARK_H = -Math.PI*7/8;
     }
