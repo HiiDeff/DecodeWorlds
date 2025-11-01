@@ -24,6 +24,7 @@ import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
+import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
@@ -91,6 +92,7 @@ public class TeleopTest extends LinearOpMode {
     private Task task;
 
     public MultipleTelemetry multipleTelemetry;
+    private SensorUpdateThread sensorUpdateThread;
 
     public GamePad gp1, gp2;
     private RobotBase robot;
@@ -109,6 +111,8 @@ public class TeleopTest extends LinearOpMode {
         robot.startTeleopDrive();
         robot.startLimelight();
         robot.setLimelightAllianceColor(false);
+        sensorUpdateThread = new SensorUpdateThread(robot);
+        sensorUpdateThread.start();
 
         while (opModeIsActive()) {
             update();
@@ -156,6 +160,8 @@ public class TeleopTest extends LinearOpMode {
             multipleTelemetry.addData("target rpm", FLYWHEEL_RPM);
             multipleTelemetry.update();
         }
+        sensorUpdateThread.interrupt();
+        robot.stopLimelight();
     }
 
     private void update() {

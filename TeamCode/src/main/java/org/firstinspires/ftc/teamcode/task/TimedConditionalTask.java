@@ -10,13 +10,10 @@ import org.firstinspires.ftc.teamcode.common.Condition;
  */
 public class TimedConditionalTask extends TimedTask {
     private final Condition condition;
-
-
     public TimedConditionalTask(Condition condition, int finishTimeMillis) {
         this.condition = condition;
         setFinishTimeMillis(finishTimeMillis);
     }
-
     @Override
     public boolean performInternal() {
         // For other tasks, TRUE means task is done, FALSE means task not done. For

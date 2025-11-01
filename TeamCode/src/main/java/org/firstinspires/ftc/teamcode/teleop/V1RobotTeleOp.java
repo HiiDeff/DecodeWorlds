@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
-import org.firstinspires.ftc.teamcode.task.Preset;
+import org.firstinspires.ftc.teamcode.task.Presets;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 
 @TeleOp(name = "V1 TeleOp")
@@ -31,7 +31,7 @@ public class V1RobotTeleOp extends LinearOpMode {
 
     public static int FLYWHEEL_SHOOT_TIME, FLYWHEEL_WARM_UP_TIME, FLYWHEEL_WIND_DOWN_TIME;
 
-    public static double FLYWHEEL_VELOCITY, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_REVERSE_VELOCITY;
+    public static int FLYWHEEL_VELOCITY, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_REVERSE_VELOCITY;
 
     public static double PUSHER_POWER;
 
@@ -129,7 +129,7 @@ public class V1RobotTeleOp extends LinearOpMode {
             shootTask = new SeriesTask(
                     new DecisionTask(
                             new ArtifactReadyCondition(robot),
-                            Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME),
+                            Presets.createShootTask(robot, FLYWHEEL_VELOCITY),
                             new SeriesTask(
                                     new ConditionalParallelTask(
                                             new ArtifactUnreadyCondition(robot),
@@ -138,7 +138,7 @@ public class V1RobotTeleOp extends LinearOpMode {
 
                                     ),
                                     new ConditionalTask(new ArtifactReadyCondition(robot)),
-                                    Preset.createShootTask(robot, FLYWHEEL_VELOCITY, FLYWHEEL_SHOOT_TIME)
+                                    Presets.createShootTask(robot, FLYWHEEL_VELOCITY)
                             )
                     ),
                     new FlywheelTask(robot, FLYWHEEL_IDLE_VELOCITY, FLYWHEEL_WIND_DOWN_TIME)

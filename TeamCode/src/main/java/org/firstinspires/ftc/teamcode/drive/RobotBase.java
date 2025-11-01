@@ -99,17 +99,23 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     ///////////////////* INIT *///////////////////
-    public void teleOpInit() {}
+    public void teleOpInit() {
+        setKickerPosition(KickerTask.Position.DOWN);
+        setPivotPosition(PivotTask.Position.MID);
+    }
 
-    public void autoInit() {}
+    public void autoInit() {
+        setKickerPosition(KickerTask.Position.DOWN);
+        setPivotPosition(PivotTask.Position.MID);
+    }
     ///////////////////* UPDATES *///////////////////
     public void updateEverything() {
         updatePoseEstimate();
         updateEncoders();
-        updateSensors();
         updateProfilers();
         updatePIDs();
         updateLimelight();
+//        updateSensors(); //handled by thread
     }
 
     private void updatePoseEstimate() {

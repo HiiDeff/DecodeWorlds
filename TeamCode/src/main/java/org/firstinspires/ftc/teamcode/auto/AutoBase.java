@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.common.AutoStates;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
+import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.task.Task;
 
 @Config
@@ -21,13 +22,14 @@ public abstract class AutoBase extends LinearOpMode {
 
     public static int INIT_DELAY_TIME = 0;
     public static int AA_TIME_FOR_A_CYCLE = 2000;
-    public static int AA_TIME_FOR_PARK = 1000;
+    public static int AA_TIME_FOR_PARK = 0; //prioritize shooting
 
     protected final ElapsedTime timer = new ElapsedTime();
     protected RobotBase robot;
 
     protected AutoState state = AutoState.START;
     protected AutoStates autoStates = new AutoStates();
+    protected SensorUpdateThread sensorUpdateThread;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,6 +40,9 @@ public abstract class AutoBase extends LinearOpMode {
         Task task = createStartTask();
 
         waitForStart();
+
+        sensorUpdateThread = new SensorUpdateThread(robot);
+        sensorUpdateThread.start();
 
         timer.reset();
         ElapsedTime cycleTimer = new ElapsedTime();
@@ -60,9 +65,9 @@ public abstract class AutoBase extends LinearOpMode {
             telemetry.update();
 
             Log.i("edbug loop times", cycleTimer.milliseconds()+"");
-            Log.i("edbug heading error",robot.getHeadingError()+"");
             cycleTimer.reset();
         }
+        sensorUpdateThread.interrupt();
     }
 
     private boolean timeToFinish() {
@@ -75,6 +80,7 @@ public abstract class AutoBase extends LinearOpMode {
     }
 
     private void resetRobot() {
+        robot.autoInit();
         robot.setStartingPose(getStartingPose());
     }
 
@@ -85,7 +91,7 @@ public abstract class AutoBase extends LinearOpMode {
     protected abstract Task createFinishTask();
     protected abstract Pose getStartingPose();
     protected int getSign() {
-        return isRed() ? 1 : -1;
+        return isRed() ? -1 : 1;
     }
     protected abstract boolean isRed();
     protected abstract boolean isFar();

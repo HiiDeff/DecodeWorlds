@@ -78,7 +78,7 @@ public abstract class VelocityPIDModel {
     }
 
     public boolean isDone() {
-        return Math.abs(lastError) < getStopError() && Math.abs(dError) < getStopErrorDerivative();
+        return Math.abs(lastError) < getStopError();
     }
 
     public abstract void cancel();
