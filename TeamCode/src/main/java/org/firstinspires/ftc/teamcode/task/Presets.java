@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.task;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.auto.defaultauto.far.FarAuto;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 
 @Config
@@ -12,6 +13,7 @@ public class Presets {
     public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt){
         SeriesTask task = new SeriesTask();
         while(--ballCnt>=0) {
+            FarAuto.ballnum += 1;
             task.add(
                     new ParallelTask(
                             new SeriesTask(

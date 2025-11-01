@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.auto.defaultauto.far;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
+import org.firstinspires.ftc.teamcode.task.AlignTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
@@ -19,6 +22,8 @@ import org.firstinspires.ftc.teamcode.task.UnboundedPusherTask;
 @Config
 public abstract class FarAuto extends AutoBase {
     public static int FLYWHEEL_VELOCITY = 3500;
+    public static int cyclenum = 0;
+    public static int ballnum = 0;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -51,6 +56,9 @@ public abstract class FarAuto extends AutoBase {
         state = AutoState.CYCLE;
         int cycleNumber = autoStates.getCycleNumber();
         SeriesTask task = new SeriesTask();
+        cyclenum = cycleNumber;
+        ballnum = 0;
+        Log.i("edbug cycle", "On cycle (color)" + cycleNumber + "");
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
