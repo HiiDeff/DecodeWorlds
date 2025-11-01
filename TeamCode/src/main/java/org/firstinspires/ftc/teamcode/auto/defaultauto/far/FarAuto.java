@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
+import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedPusherTask;
 
 @Config
 public abstract class FarAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 3500;
+    public static int FLYWHEEL_VELOCITY = 3550, PUSHER_SPIN_TIME = 250;
     public static int cyclenum = 0;
     public static int ballnum = 0;
     @Override
@@ -90,7 +91,7 @@ public abstract class FarAuto extends AutoBase {
                                 }
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false),
-                        new UnboundedPusherTask(robot, false)
+                        new PusherTask(robot, false, PUSHER_SPIN_TIME)
                 )
         );
         task.add(
@@ -111,6 +112,7 @@ public abstract class FarAuto extends AutoBase {
                         new UnboundedPusherTask(robot, true)
                 )
         );
+        task.add(new SleepTask(300));
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));
         return task;
     }

@@ -20,16 +20,16 @@ public abstract class FarAutoPath extends FarAuto {
             PARK_X, PARK_Y, PARK_H;
 
     static {
-        SHOOT_1_X = 10.25; SHOOT_1_Y = -5.28; SHOOT_1_H = 0.40486;
-        INTAKE_1_X = 27.87; INTAKE_1_Y = 12; INTAKE_1_H = Math.toRadians(90);
+        SHOOT_1_X = 7.67; SHOOT_1_Y = -3.46; SHOOT_1_H = 0.42486;
+        INTAKE_1_X = 27.71; INTAKE_1_Y = 12.5; INTAKE_1_H = Math.toRadians(90);
         FORWARD_DIST_CYCLE_1 = 34;
-        SHOOT_2_X = 10.25; SHOOT_2_Y = -5.28; SHOOT_2_H = 0.40486;
-        INTAKE_2_X = 51.98; INTAKE_2_Y = 12; INTAKE_2_H = Math.toRadians(90);
-        FORWARD_DIST_CYCLE_2 = 34;
-        SHOOT_3_X = 10.25; SHOOT_3_Y = -5.28;    SHOOT_3_H = 0.40486;
-        INTAKE_3_X = 73.60; INTAKE_3_Y = 12; INTAKE_3_H = Math.toRadians(90);
-        FORWARD_DIST_CYCLE_3 = 34;
-        SHOOT_4_X = 10.25; SHOOT_4_Y = -5.28; SHOOT_4_H = 0.40486;
+        SHOOT_2_X = 7.67; SHOOT_2_Y = -3.46; SHOOT_2_H = 0.42486;
+        INTAKE_2_X = 50.94; INTAKE_2_Y = 12.5; INTAKE_2_H = Math.toRadians(90);
+        FORWARD_DIST_CYCLE_2 = 33;
+        SHOOT_3_X = 7.67; SHOOT_3_Y = -3.46; SHOOT_3_H = 0.42486;
+        INTAKE_3_X = 74.58; INTAKE_3_Y = 12.5; INTAKE_3_H = Math.toRadians(90);
+        FORWARD_DIST_CYCLE_3 = 28;
+        SHOOT_4_X = 7.67; SHOOT_4_Y = -3.46; SHOOT_4_H = 0.42486;
         PARK_X = 18; PARK_Y = -3.5; PARK_H = 0.40486;
     }
 
