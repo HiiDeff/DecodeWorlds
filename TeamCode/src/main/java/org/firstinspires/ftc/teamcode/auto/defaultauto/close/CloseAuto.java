@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.experimental;//package org.firstinspires.ftc.teamcode.auto.experimental;
+package org.firstinspires.ftc.teamcode.auto.defaultauto.close;//package org.firstinspires.ftc.teamcode.auto.experimental;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 import org.firstinspires.ftc.teamcode.task.UnboundedPusherTask;
 
 @Config
-public abstract class TestAutoPath extends AutoBase {
+public abstract class CloseAuto extends AutoBase {
     public static int FLYWHEEL_VELOCITY = 2550;
     @Override
     protected Task createStartTask() {
@@ -86,20 +86,20 @@ public abstract class TestAutoPath extends AutoBase {
         );
         task.add(
                 new ParallelTask(
-                    new RuntimeDrivingTask(
-                            robot,
-                            builder -> {
-                                Pose pose = getShoot2Pose();
-                                if(cycleNumber==2) pose = getShoot3Pose();
-                                else if(cycleNumber==3) pose = getShoot4Pose();
-                                return builder
-                                        .addPath(new BezierCurve(robot.getPose(), pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }
-                    ),
-                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                    new UnboundedPusherTask(robot, true)
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = getShoot2Pose();
+                                    if(cycleNumber==2) pose = getShoot3Pose();
+                                    else if(cycleNumber==3) pose = getShoot4Pose();
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        ),
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
+                        new UnboundedPusherTask(robot, true)
                 )
         );
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));

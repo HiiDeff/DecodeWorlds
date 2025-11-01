@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.experimental;//package org.firstinspires.ftc.teamcode.auto.experimental;
+package org.firstinspires.ftc.teamcode.auto.defaultauto.far;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 import org.firstinspires.ftc.teamcode.task.UnboundedPusherTask;
 
 @Config
-public abstract class TestAutoPath extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2550;
+public abstract class FarAuto extends AutoBase {
+    public static int FLYWHEEL_VELOCITY = 3500;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -36,8 +36,8 @@ public abstract class TestAutoPath extends AutoBase {
                                 }
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID),
+                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.FAR),
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.FAR),
                         new UnboundedPusherTask(robot, true)
                 )
         );
@@ -76,7 +76,7 @@ public abstract class TestAutoPath extends AutoBase {
                                     else if(cycleNumber==3) pose = getIntake3Pose();
                                     double intakeDist = getIntakeForwardDist(cycleNumber);
                                     return builder
-                                            .addPath(new BezierCurve(pose, new Pose(pose.getX(), pose.getY()-intakeDist*getSign())))
+                                            .addPath(new BezierCurve(pose, new Pose(pose.getX(), pose.getY()+intakeDist*getSign())))
                                             .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
                                 }
@@ -86,20 +86,20 @@ public abstract class TestAutoPath extends AutoBase {
         );
         task.add(
                 new ParallelTask(
-                    new RuntimeDrivingTask(
-                            robot,
-                            builder -> {
-                                Pose pose = getShoot2Pose();
-                                if(cycleNumber==2) pose = getShoot3Pose();
-                                else if(cycleNumber==3) pose = getShoot4Pose();
-                                return builder
-                                        .addPath(new BezierCurve(robot.getPose(), pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }
-                    ),
-                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                    new UnboundedPusherTask(robot, true)
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = getShoot2Pose();
+                                    if(cycleNumber==2) pose = getShoot3Pose();
+                                    else if(cycleNumber==3) pose = getShoot4Pose();
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        ),
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
+                        new UnboundedPusherTask(robot, true)
                 )
         );
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));

@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 
 @TeleOp(name = "V1 TeleOp")
 @Config
-public class V1RobotTeleOp extends LinearOpMode {
+public class V1RobotTeleOpExperimental extends LinearOpMode {
     // Constants
 
     public static int FLYWHEEL_SHOOT_TIME, FLYWHEEL_WARM_UP_TIME, FLYWHEEL_WIND_DOWN_TIME;

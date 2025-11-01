@@ -24,14 +24,9 @@ public class Robot1 extends RobotBase {
 
     // Constants
     public static double KICKER_UP = 0.32, KICKER_DOWN = 0.60;
-
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.006, 0.0, 0.0,0.00053);
+    public static double PIVOT_CLOSE = 0.59, PIVOT_MID = 0.35, PIVOT_FAR = 0.31;
 
-    public static double PIVOT_CLOSE = 0.55, PIVOT_MID = 0.35, PIVOT_FAR = 0.4; //need to be running pusher to work
-
-    // in case we need individual positions for both servos
-    public static double LEFT_PIVOT_CLOSE = 0.0, LEFT_PIVOT_MID = 0.48, LEFT_PIVOT_FAR = 0.0;
-    public static double RIGHT_PIVOT_CLOSE = 0.0, RIGHT_PIVOT_MID = 0.48, RIGHT_PIVOT_FAR = 0.0;
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
