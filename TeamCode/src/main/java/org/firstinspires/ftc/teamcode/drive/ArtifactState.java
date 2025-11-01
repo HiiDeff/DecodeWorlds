@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.util.objectdetector.ImageProcessor;
 
 @Config
 public class ArtifactState {
-    public static double MIN_DETECTION_DIST = 1.8;
+    public static double MIN_DETECTION_DIST = 1.6;
     private final RobotBase robot;
     private volatile boolean detected = false; //multiple thread access
 

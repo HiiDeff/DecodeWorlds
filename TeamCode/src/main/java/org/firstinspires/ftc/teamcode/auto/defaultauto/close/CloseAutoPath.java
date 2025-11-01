@@ -22,10 +22,10 @@ public abstract class CloseAutoPath extends CloseAuto {
     static {
         SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
         INTAKE_1_X = 50.655; INTAKE_1_Y = -12.815; INTAKE_1_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_1 = 25;
+        FORWARD_DIST_CYCLE_1 = 27;
         SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
         INTAKE_2_X = 74.950; INTAKE_2_Y = -12.815; INTAKE_2_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_2 = 27;
+        FORWARD_DIST_CYCLE_2 = 28;
         SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
         INTAKE_3_X = 99.246; INTAKE_3_Y = -12.815; INTAKE_3_H = -Math.PI/2;
         FORWARD_DIST_CYCLE_3 = 29;

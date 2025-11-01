@@ -45,6 +45,8 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
         Log.i("edbug", fiducialResults.size()+" ");
         for(LLResultTypes.FiducialResult aTag: fiducialResults) {
             AprilTagType type = AprilTagType.getAprilTagType(aTag.getFiducialId());
+            Log.i("edbug atag", isRedAlliance+"");
+            Log.i("edbug atag", (type==AprilTagType.BLUE_GOAL)+"");
             if(type.isMotif()) {
                 motif = type;
             } else if(isRedAlliance ^ (type == AprilTagType.BLUE_GOAL)) {
