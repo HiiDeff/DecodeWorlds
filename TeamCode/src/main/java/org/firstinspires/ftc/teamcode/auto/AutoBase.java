@@ -18,7 +18,7 @@ public abstract class AutoBase extends LinearOpMode {
 
     public static int AA_TOTAL_TIME_MILLIS = 30000;
 
-    public static int AA_NUM_OF_CYCLES = 3;
+    public static int AA_NUM_OF_CYCLES = 3; // 2 for far
 
     public static int INIT_DELAY_TIME = 0;
     public static int AA_TIME_FOR_A_CYCLE = 2000;

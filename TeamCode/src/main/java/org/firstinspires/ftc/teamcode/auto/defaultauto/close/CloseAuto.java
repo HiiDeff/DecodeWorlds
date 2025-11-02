@@ -93,7 +93,7 @@ public abstract class CloseAuto extends AutoBase {
                                     if(cycleNumber==2) pose = getShoot3Pose();
                                     else if(cycleNumber==3) pose = getShoot4Pose();
                                     return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .addPath(new BezierCurve(robot.getPose(), getControlPointPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 }
@@ -136,6 +136,7 @@ public abstract class CloseAuto extends AutoBase {
     protected abstract Pose getIntake3Pose();
     protected abstract Pose getShoot4Pose();
     protected abstract Pose getParkPose();
+    protected abstract Pose getControlPointPose();
     protected abstract double getIntakeForwardDist(int cycleNumber);
 
 }

@@ -17,20 +17,22 @@ public abstract class CloseAutoPath extends CloseAuto {
             SHOOT_3_X, SHOOT_3_Y, SHOOT_3_H,
             INTAKE_3_X, INTAKE_3_Y, INTAKE_3_H, FORWARD_DIST_CYCLE_3,
             SHOOT_4_X, SHOOT_4_Y, SHOOT_4_H,
-            PARK_X, PARK_Y, PARK_H;
+            PARK_X, PARK_Y, PARK_H,
+            CONTROL_X, CONTROL_Y;
 
     static {
         SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
         INTAKE_1_X = 50.655; INTAKE_1_Y = -12.815; INTAKE_1_H = -Math.PI/2;
         FORWARD_DIST_CYCLE_1 = 27;
         SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
-        INTAKE_2_X = 74.950; INTAKE_2_Y = -12.815; INTAKE_2_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_2 = 28;
+        INTAKE_2_X = 73.950; INTAKE_2_Y = -9.815; INTAKE_2_H = -Math.PI/2;
+        FORWARD_DIST_CYCLE_2 = 30;
         SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
         INTAKE_3_X = 99.246; INTAKE_3_Y = -12.815; INTAKE_3_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_3 = 30;
+        FORWARD_DIST_CYCLE_3 = 34;
         SHOOT_4_X = 45.743; SHOOT_4_Y = -3.066; SHOOT_4_H = -2.35;
         PARK_X = 59; PARK_Y = -9; PARK_H = -Math.PI*7/8;
+        CONTROL_X = 55; CONTROL_Y = 0;
     }
 
     @Override
@@ -88,6 +90,10 @@ public abstract class CloseAutoPath extends CloseAuto {
         return new Pose(PARK_X, PARK_Y*getSign(), PARK_H*getSign());
     }
 
+    @Override
+    protected Pose getControlPointPose() {
+        return new Pose(CONTROL_X, CONTROL_Y);
+    }
     @Override
     protected double getIntakeForwardDist(int cycleNumber) {
         if(cycleNumber==1) {

@@ -105,6 +105,7 @@ public abstract class FarAuto extends AutoBase {
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .setTValueConstraint(1)
                                             .build();
                                 }
                         ),
