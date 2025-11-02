@@ -81,7 +81,7 @@ public abstract class CloseAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new UnboundedIntakeTask(robot, 1.0, false)
+                        new UnboundedIntakeTask(robot, 0.7, false)
                 )
         );
         task.add(
@@ -99,7 +99,8 @@ public abstract class CloseAuto extends AutoBase {
                                 }
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                        new UnboundedPusherTask(robot, true)
+                        new UnboundedPusherTask(robot, true),
+                        new UnboundedIntakeTask(robot, 0.5,false)
                 )
         );
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));

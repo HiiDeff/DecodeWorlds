@@ -22,7 +22,7 @@ public abstract class AutoBase extends LinearOpMode {
 
     public static int INIT_DELAY_TIME = 0;
     public static int AA_TIME_FOR_A_CYCLE = 2000;
-    public static int AA_TIME_FOR_PARK = 0; //prioritize shooting
+    public static int AA_TIME_FOR_PARK = 1000; //prioritize shooting
 
     protected final ElapsedTime timer = new ElapsedTime();
     protected RobotBase robot;

@@ -36,7 +36,7 @@ import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 public abstract class Robot1TeleOpForNeel extends LinearOpMode {
     public static int FLYWHEEL_RPM = 2500, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2500;
-    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.56, SERVO_SKIP_CORRECTION = 0.0;
+    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.56, INTAKE_POWER = 0.5, PUSHER_INTAKE_POWER = 0.2, PUSHER_OUTTAKE_POWER = 0.1, SERVO_SKIP_CORRECTION = 0.0;
     public static boolean kickerUp, aiming, autoaim = true; // when autoaim is false use manual override
     private Task task;
     public MultipleTelemetry multipleTelemetry;
@@ -106,19 +106,38 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
     }
 
     private void updateIntake() {
+        //safer? no jamming?
+//        if(gp2.rightTrigger()>0.3) {
+//            robot.runIntake();
+//            if(gp2.rightBumper()) {
+//                robot.runPusher(0.5);
+//            } else {
+//                robot.stopPusher();
+//            }
+//        } else if(gp2.rightBumper()) {
+//            robot.stopIntake();
+//            robot.runPusher();
+//        } else {
+//            robot.stopIntake();
+//            robot.runPusherReversed();
+//        }
         if(gp2.rightTrigger()>0.3) {
-            robot.runIntake();
+            robot.runIntakeWithPower(INTAKE_POWER);
             if(robot.hasArtifact()) {
-                robot.stopPusher();
+                robot.runPusherReversed();
             } else {
-                robot.runPusher();
+                robot.runPusher(PUSHER_INTAKE_POWER);
             }
         } else if(gp2.rightBumper()) {
             robot.stopIntake();
             robot.stopPusher();
-        } else {
-            robot.stopIntake();
+        } else if(gp2.leftTrigger()>0.3) {
             robot.runPusherReversed();
+            robot.runIntakeReversed();
+        }
+        else {
+            robot.stopIntake();
+            robot.runPusher(-PUSHER_OUTTAKE_POWER);
         }
     }
 
@@ -202,7 +221,7 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
     private int calcFlywheelRpm(double distToGoalInches) {
         if(distToGoalInches<60) return 2500;
         else if(distToGoalInches<80) return 2750;
-        else if(distToGoalInches>130) return 3600;
+        else if(distToGoalInches>130) return 3700;
         return (int)(1000.0/143*(distToGoalInches-7)+2500);
     }
 

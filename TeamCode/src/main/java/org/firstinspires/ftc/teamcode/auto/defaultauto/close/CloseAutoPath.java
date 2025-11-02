@@ -23,7 +23,7 @@ public abstract class CloseAutoPath extends CloseAuto {
     static {
         SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
         INTAKE_1_X = 50.655; INTAKE_1_Y = -12.815; INTAKE_1_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_1 = 27;
+        FORWARD_DIST_CYCLE_1 = 29;
         SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
         INTAKE_2_X = 73.950; INTAKE_2_Y = -9.815; INTAKE_2_H = -Math.PI/2;
         FORWARD_DIST_CYCLE_2 = 30;
@@ -42,7 +42,7 @@ public abstract class CloseAutoPath extends CloseAuto {
 
     @Override
     protected Pose getStartingPose() {
-        return new Pose(0,0,Math.toRadians(0));
+        return new Pose(5.225,-29.996*getSign(),-2.249997*getSign());
     }
 
     @Override

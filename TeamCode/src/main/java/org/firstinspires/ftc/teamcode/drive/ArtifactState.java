@@ -62,7 +62,7 @@ public class ArtifactState {
     public void update(){
         double dist1 = robot.leftColorSensor.getDistance(DistanceUnit.INCH);
         double dist2 = robot.rightColorSensor.getDistance(DistanceUnit.INCH);
-        //Log.i("edbug color sensor detected", "Cycle " + FarAuto.cyclenum + " Ball distance " + FarAuto.ballnum + " " + dist1 + " " + dist2);
+        Log.i("edbug color sensor detected", "Cycle " + FarAuto.cyclenum + " Ball distance " + FarAuto.ballnum + " " + dist1 + " " + dist2);
 
         d1 = (dist1 <= MIN_DETECTION_DIST);
         d2 = (dist2 <= MIN_DETECTION_DIST);

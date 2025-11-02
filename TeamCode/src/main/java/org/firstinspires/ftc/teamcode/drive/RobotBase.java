@@ -166,6 +166,9 @@ public abstract class RobotBase extends MecanumDrive {
     public void runPusher() {
         pusher.setPower(PUSHER_POWER);
     }
+    public void runPusher(double power) {
+        pusher.setPower(power);
+    }
 
     public void runPusherReversed() {
         pusher.setPower(-PUSHER_POWER);

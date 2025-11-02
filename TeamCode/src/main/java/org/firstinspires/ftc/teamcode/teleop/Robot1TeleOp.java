@@ -108,7 +108,11 @@ public abstract class Robot1TeleOp extends LinearOpMode {
     private void updateIntake() {
         if(gp1.rightTrigger()>0.3) {
             robot.runIntake();
-            robot.runPusher();
+            if(robot.hasArtifact()) {
+                robot.stopPusher();
+            } else {
+                robot.runPusher(0.5);
+            }
         } else if(gp1.rightBumper()) {
             robot.stopIntake();
             robot.stopPusher();
