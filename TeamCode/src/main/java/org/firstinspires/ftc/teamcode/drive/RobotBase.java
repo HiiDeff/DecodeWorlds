@@ -45,16 +45,18 @@ public abstract class RobotBase extends MecanumDrive {
     // Servos
     public final Servo leftPivot;
     public final Servo rightPivot;
+
+    public final Servo blocker;
+
     public final Servo kicker;
-    public final CRServo pusher;
 
     // Sensors
     public final RevColorSensorV3 leftColorSensor;
     public final RevColorSensorV3 rightColorSensor;
 
     // Camera
-    public final Limelight3A limelight;
-    public final LimelightAprilTagDetector limelightAprilTagDetector;
+    public Limelight3A limelight;
+    public LimelightAprilTagDetector limelightAprilTagDetector;
     public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
             0, 54,41,
             -3.5,0,0);
@@ -83,16 +85,16 @@ public abstract class RobotBase extends MecanumDrive {
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeOn = false;
         // Servos:
-        kicker = hardwareMap.get(Servo.class, "kicker");
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
-        pusher = hardwareMap.get(CRServo.class, "pusher");
+        blocker = hardwareMap.get(Servo.class, "blocker");
+        kicker = hardwareMap.get(Servo.class, "kicker");
         // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
         // Limelight:
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
+        //limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        //limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
         // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
         artifactState = new ArtifactState(this);
@@ -114,7 +116,7 @@ public abstract class RobotBase extends MecanumDrive {
         updateEncoders();
         updateProfilers();
         updatePIDs();
-        updateLimelight();
+        //updateLimelight();
 //        updateSensors(); //handled by thread
     }
 
@@ -162,21 +164,9 @@ public abstract class RobotBase extends MecanumDrive {
         else stopIntake();
     }
 
-    ///////////////////* PUSHER UTILS *///////////////////
-    public void runPusher() {
-        pusher.setPower(PUSHER_POWER);
-    }
-    public void runPusher(double power) {
-        pusher.setPower(power);
-    }
+    ///////////////////* BLOCKER UTILS *///////////////////
 
-    public void runPusherReversed() {
-        pusher.setPower(-PUSHER_POWER);
-    }
 
-    public void stopPusher() {
-        pusher.setPower(0);
-    }
 
     ///////////////////* KICKER UTILS *///////////////////
     public abstract double getKickerPosition(KickerTask.Position position);
@@ -232,23 +222,24 @@ public abstract class RobotBase extends MecanumDrive {
 
     ///////////////////* LIMELIGHT UTILS *///////////////////
     public void startLimelight() {
-        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
-        limelight.start();
+//        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
+//        limelight.start();
     }
     public void setLimelightAllianceColor(boolean isRedAlliance) {
-        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
+//        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
     private void updateLimelight() {
+
         limelightAprilTagDetector.updateLimelight();
     }
     public void stopLimelight() {
-        limelight.stop();
+//        limelight.stop();
     }
     public void updateRobotPoseUsingLimelight() {
-        Pose newPose = limelightAprilTagDetector.getRobotPose();
-        if(newPose != null) {
-            this.setPose(newPose);
-        }
+//        Pose newPose = limelightAprilTagDetector.getRobotPose();
+//        if(newPose != null) {
+//            this.setPose(newPose);
+//        }
     }
     public double getDistToGoalInches() {
         double dist = this.getPose().distanceFrom(new Pose()) + LLConfig.xOffset;

@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
-import org.firstinspires.ftc.teamcode.task.UnboundedPusherTask;
 
 @Config
 public abstract class CloseAuto extends AutoBase {
