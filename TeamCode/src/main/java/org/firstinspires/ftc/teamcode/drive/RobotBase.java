@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
@@ -88,7 +89,7 @@ public abstract class RobotBase extends MecanumDrive {
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
         blocker = hardwareMap.get(Servo.class, "blocker");
-        kicker = hardwareMap.get(Servo.class, "kicker");
+        kicker = hardwareMap.get(Servo.class, "rollerKicker");
         // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
@@ -165,6 +166,11 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     ///////////////////* BLOCKER UTILS *///////////////////
+    public abstract double getBlockerPosition(BlockerTask.Position position);
+
+    public void setBlockerPosition(BlockerTask.Position position){
+        blocker.setPosition(getBlockerPosition(position));
+    }
 
 
 

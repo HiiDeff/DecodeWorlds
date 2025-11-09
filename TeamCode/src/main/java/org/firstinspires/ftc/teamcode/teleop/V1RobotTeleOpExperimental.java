@@ -19,7 +19,6 @@ import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.IntakeTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
-import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 import org.firstinspires.ftc.teamcode.task.Presets;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
@@ -107,14 +106,12 @@ public class V1RobotTeleOpExperimental extends LinearOpMode {
             unjamming = true;
 
             robot.runIntakeReversed();
-            robot.runPusherReversed();
             robot.setFlywheelTargetVelocity(FLYWHEEL_REVERSE_VELOCITY);
 
         }else if (unjamming){
             unjamming = false;
 
             robot.stopIntake();
-            robot.stopPusher();
             robot.setFlywheelTargetVelocity(FLYWHEEL_IDLE_VELOCITY);
         }
     }
@@ -133,8 +130,7 @@ public class V1RobotTeleOpExperimental extends LinearOpMode {
                             new SeriesTask(
                                     new ConditionalParallelTask(
                                             new ArtifactUnreadyCondition(robot),
-                                            new IntakeTask(robot,robot.INTAKE_POWER, false, 3000),
-                                            new PusherTask(robot, false, 3000)
+                                            new IntakeTask(robot,robot.INTAKE_POWER, false, 3000)
 
                                     ),
                                     new ConditionalTask(new ArtifactReadyCondition(robot)),

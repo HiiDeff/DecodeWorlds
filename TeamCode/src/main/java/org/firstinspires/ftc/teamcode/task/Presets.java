@@ -20,15 +20,13 @@ public class Presets {
                                     new SleepTask(100),
                                     new KickerTask(robot, KickerTask.Position.UP),
                                     new SleepTask(KICKER_SLEEP)
-                            ),
-                            new UnboundedPusherTask(robot, true)
+                            )
                     )
             );
             if(ballCnt>0) {
                 task.add(
                         new ParallelTask(
                                 new KickerTask(robot, KickerTask.Position.DOWN),
-                                new UnboundedPusherTask(robot, false),
                                 new UnboundedIntakeTask(robot, 0.8, false),
                                 new FlywheelTask(robot, targetRPM, 3000),
                                 new SeriesTask( //only works in series task
@@ -50,7 +48,6 @@ public class Presets {
     public static Task createUnjammingTask(RobotBase robot) {
         Task task = new ParallelTask(
                 new UnboundedIntakeTask(robot, 1.0, true),
-                new UnboundedPusherTask(robot, true),
                 new FlywheelTask(robot, 2500, 3000),
                 new SeriesTask(
                         new ParallelTask(

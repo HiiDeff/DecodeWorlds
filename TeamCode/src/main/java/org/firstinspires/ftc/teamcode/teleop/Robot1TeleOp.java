@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
@@ -108,17 +109,20 @@ public abstract class Robot1TeleOp extends LinearOpMode {
     private void updateIntake() {
         if(gp1.rightTrigger()>0.3) {
             robot.runIntake();
-            if(robot.hasArtifact()) {
-                robot.stopPusher();
-            } else {
-                robot.runPusher(0.5);
-            }
+            robot.setBlockerPosition(BlockerTask.Position.BLOCKING);
+//            if(robot.hasArtifact()) {
+//                robot.stopPusher();
+//            } else {
+//                robot.runPusher(0.5);
+//            }
         } else if(gp1.rightBumper()) {
+            robot.setBlockerPosition(BlockerTask.Position.NONBLOCKING);
             robot.stopIntake();
-            robot.stopPusher();
+//            robot.stopPusher();
         } else {
+            robot.setBlockerPosition(BlockerTask.Position.NONBLOCKING);
             robot.stopIntake();
-            robot.runPusherReversed();
+//            robot.runPusherReversed();
         }
     }
 

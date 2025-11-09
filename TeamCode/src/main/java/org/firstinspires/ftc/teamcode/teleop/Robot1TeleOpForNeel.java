@@ -123,21 +123,21 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
 //        }
         if(gp2.rightTrigger()>0.3) {
             robot.runIntakeWithPower(INTAKE_POWER);
-            if(robot.hasArtifact()) {
-                robot.runPusherReversed();
-            } else {
-                robot.runPusher(PUSHER_INTAKE_POWER);
-            }
+//            if(robot.hasArtifact()) {
+//                robot.runPusherReversed();
+//            } else {
+//                robot.runPusher(PUSHER_INTAKE_POWER);
+//            }
         } else if(gp2.rightBumper()) {
             robot.stopIntake();
-            robot.stopPusher();
+//            robot.stopPusher();
         } else if(gp2.leftTrigger()>0.3) {
-            robot.runPusherReversed();
+//            robot.runPusherReversed();
             robot.runIntakeReversed();
         }
         else {
             robot.stopIntake();
-            robot.runPusher(-PUSHER_OUTTAKE_POWER);
+//            robot.runPusher(-PUSHER_OUTTAKE_POWER);
         }
     }
 

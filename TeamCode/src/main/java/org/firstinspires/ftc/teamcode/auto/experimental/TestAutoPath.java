@@ -36,8 +36,7 @@ public abstract class TestAutoPath extends AutoBase {
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
                         new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID),
-                        new UnboundedPusherTask(robot, true)
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID)
                 )
         );
         task.add(new SleepTask(500));
@@ -97,8 +96,7 @@ public abstract class TestAutoPath extends AutoBase {
                                         .build();
                             }
                     ),
-                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                    new UnboundedPusherTask(robot, true)
+                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000)
                 )
         );
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));

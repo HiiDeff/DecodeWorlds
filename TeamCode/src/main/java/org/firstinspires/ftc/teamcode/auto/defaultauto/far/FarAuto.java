@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
-import org.firstinspires.ftc.teamcode.task.PusherTask;
 import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
@@ -41,8 +40,7 @@ public abstract class FarAuto extends AutoBase {
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
                         new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.FAR),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.FAR),
-                        new UnboundedPusherTask(robot, true)
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.FAR)
                 )
         );
         task.add(new SleepTask(500));
@@ -88,8 +86,7 @@ public abstract class FarAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new UnboundedIntakeTask(robot, 1.0, false),
-                        new PusherTask(robot, false, PUSHER_SPIN_TIME)
+                        new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
         task.add(
@@ -107,8 +104,7 @@ public abstract class FarAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                        new UnboundedPusherTask(robot, true)
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000)
                 )
         );
         task.add(new SleepTask(300));

@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
@@ -26,6 +27,7 @@ public class Robot1 extends RobotBase {
     public static double KICKER_UP = 0.32, KICKER_DOWN = 0.60;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.006, 0.0, 0.0,0.00053);
     public static double PIVOT_CLOSE = 0.59, PIVOT_MID = 0.40, PIVOT_FAR = 0.31;
+    public static double BLOCKER_BLOCKING = 0.65, BLOCKER_NONBLOCKING = 0.9;
 
 
     // Pedro Constants
@@ -91,6 +93,18 @@ public class Robot1 extends RobotBase {
         }
     }
 
+
+    @Override
+    public double getBlockerPosition(BlockerTask.Position position){
+        switch (position){
+            case BLOCKING:
+                return BLOCKER_BLOCKING;
+            default:
+            case NONBLOCKING:
+                return BLOCKER_NONBLOCKING;
+        }
+    }
+
     @Override
     public VelocityPIDCoefficients getVelocityPIDCoefficients() {
         return FLYWHEEL_VELOCITY_PID_COEFFICIENTS;
@@ -98,14 +112,15 @@ public class Robot1 extends RobotBase {
 
     @Override
     public double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position) {
+        // LEFT and RIGHT servos values always add up to 1
         switch (position){
             case FAR:
-                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_FAR:PIVOT_FAR;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_FAR: 1 - PIVOT_FAR;
             case MID:
-                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_MID:PIVOT_MID;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_MID: 1 - PIVOT_MID;
             default:
             case CLOSE:
-                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE:PIVOT_CLOSE;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE: 1 - PIVOT_CLOSE;
         }
     }
 }

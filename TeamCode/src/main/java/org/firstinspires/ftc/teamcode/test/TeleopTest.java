@@ -165,11 +165,11 @@ public class TeleopTest extends LinearOpMode {
                 robot.runIntakeReversed();
             } else robot.stopIntake();
 
-            if(gp1.rightBumper()) {
-                robot.runPusher();
-            } else if(gp1.leftBumper()) {
-                robot.runPusherReversed();
-            } else robot.stopPusher();
+//            if(gp1.rightBumper()) {
+//                robot.runPusher();
+//            } else if(gp1.leftBumper()) {
+//                robot.runPusherReversed();
+//            } else robot.stopPusher();
 
             if(gp1.onceA()) {
                 kickerUp = !kickerUp;
