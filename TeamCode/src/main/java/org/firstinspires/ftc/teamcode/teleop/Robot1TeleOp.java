@@ -38,9 +38,11 @@ import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 public abstract class Robot1TeleOp extends LinearOpMode {
-    public static int FLYWHEEL_RPM = 2500, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2500;
-    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.56, SERVO_SKIP_CORRECTION = 0.0;
-    public static boolean kickerUp, aiming, autoaim = true; // when autoaim is false use manual override
+    // Far: 4750 rpm, 1.0 pivot
+    public static int FLYWHEEL_RPM = 3945, MANUAL_OVERRIDE_FLYWHEEL_RPM = 4050;
+    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.8925, SERVO_SKIP_CORRECTION = 0.0;
+    public static boolean kickerUp, aiming,
+            intaking = true, blocking = true, autoaim = true; // when autoaim is false use manual override
     private Task task;
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
@@ -63,6 +65,8 @@ public abstract class Robot1TeleOp extends LinearOpMode {
         robot.startLimelight();
         robot.setLimelightAllianceColor(isRed());
         sensorUpdateThread.start();
+
+        robot.runIntake();
 
         while (opModeIsActive()) {
             update();
@@ -100,6 +104,7 @@ public abstract class Robot1TeleOp extends LinearOpMode {
             Log.i("adebug", "Flywheel done: " + robot.flywheelPID.isDone());
             if(gp1.onceA() && robot.flywheelPID.isDone()) {
                 Log.i("adebug", "Shoot Task Created");
+                blocking = false;
                 task = Presets.createShootTask(robot, FLYWHEEL_RPM);
             }
         } if(!autoaim) {
@@ -111,18 +116,19 @@ public abstract class Robot1TeleOp extends LinearOpMode {
     }
 
     private void updateIntake() {
-        if(gp1.rightTrigger()>0.3) {
-            robot.runIntake();
-            robot.setBlockerPosition(BlockerTask.Position.BLOCKING);
-        } else if(gp1.rightBumper()) {
-            robot.setBlockerPosition(BlockerTask.Position.NONBLOCKING);
-            robot.stopIntake();
-        } else {
-            robot.setBlockerPosition(BlockerTask.Position.NONBLOCKING);
-            if (task == null){ // if the shooter is running the intake, then don't stop it!
+
+        if (gp1.rightBumper()){
+            if (intaking){
                 robot.stopIntake();
+            } else if (!intaking){
+                robot.runIntake();
             }
-//            robot.runPusherReversed();
+            intaking = !intaking;
+        }
+
+        if (gp1.onceB()){
+            robot.setBlockerPosition(blocking ? BlockerTask.Position.NONBLOCKING : BlockerTask.Position.BLOCKING);
+            blocking = !blocking;
         }
     }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.geometry.Pose;
@@ -26,10 +27,11 @@ import org.firstinspires.ftc.teamcode.util.limelight.LimelightAprilTagDetector;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
+@Config
 public abstract class RobotBase extends MecanumDrive {
 
     // Constants
-    public static double INTAKE_POWER = 0.8, OUTTAKE_POWER = -0.8;
+    public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
 
     // Common
@@ -104,6 +106,7 @@ public abstract class RobotBase extends MecanumDrive {
     ///////////////////* INIT *///////////////////
     public void teleOpInit() {
         setPivotPosition(PivotTask.Position.MID);
+        setBlockerPosition(BlockerTask.Position.BLOCKING);
     }
 
     public void autoInit() {

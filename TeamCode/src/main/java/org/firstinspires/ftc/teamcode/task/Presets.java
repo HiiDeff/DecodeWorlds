@@ -16,7 +16,7 @@ public class Presets {
         return new SeriesTask(
                 new FlywheelTask(robot, targetRPM, 3000),
                 new ParallelTask(
-                        new UnboundedIntakeTask(robot, 0.8, false),
+                        new BlockerTask(robot, BlockerTask.Position.NONBLOCKING),
                         new UnboundedKickerTask(robot, KickerTask.Direction.STANDARD),
                         new SleepTask(SHOOT_TIME)
                 )
