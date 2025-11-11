@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -95,13 +97,15 @@ public abstract class Robot1TeleOp extends LinearOpMode {
 
     private void updateShooting() {
         if(!autoaim||aiming && task == null) {
+            Log.i("adebug", "Flywheel done: " + robot.flywheelPID.isDone());
             if(gp1.onceA() && robot.flywheelPID.isDone()) {
+                Log.i("adebug", "Shoot Task Created");
                 task = Presets.createShootTask(robot, FLYWHEEL_RPM);
             }
         } if(!autoaim) {
             if(gp1.onceA()) {
                 kickerUp = !kickerUp;
-                robot.setKickerPosition(kickerUp? KickerTask.Position.UP:KickerTask.Position.DOWN);
+//                robot.setKickerPosition(kickerUp? KickerTask.Position.UP:KickerTask.Position.DOWN);
             }
         }
     }
@@ -110,18 +114,14 @@ public abstract class Robot1TeleOp extends LinearOpMode {
         if(gp1.rightTrigger()>0.3) {
             robot.runIntake();
             robot.setBlockerPosition(BlockerTask.Position.BLOCKING);
-//            if(robot.hasArtifact()) {
-//                robot.stopPusher();
-//            } else {
-//                robot.runPusher(0.5);
-//            }
         } else if(gp1.rightBumper()) {
             robot.setBlockerPosition(BlockerTask.Position.NONBLOCKING);
             robot.stopIntake();
-//            robot.stopPusher();
         } else {
             robot.setBlockerPosition(BlockerTask.Position.NONBLOCKING);
-            robot.stopIntake();
+            if (task == null){ // if the shooter is running the intake, then don't stop it!
+                robot.stopIntake();
+            }
 //            robot.runPusherReversed();
         }
     }
@@ -166,7 +166,7 @@ public abstract class Robot1TeleOp extends LinearOpMode {
                     task.cancel();
                     task = null;
                 }
-                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
+//                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
                 robot.setFlywheelTargetVelocity(0);
                 robot.startTeleopDrive();
             }
@@ -183,7 +183,7 @@ public abstract class Robot1TeleOp extends LinearOpMode {
                     task.cancel();
                     task = null;
                 }
-                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
+//                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
                 robot.setFlywheelTargetVelocity(0);
                 robot.startTeleopDrive();
             }

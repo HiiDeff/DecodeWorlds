@@ -49,7 +49,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public final Servo blocker;
 
-    public final Servo kicker;
+    public final CRServo kicker;
 
     // Sensors
     public final RevColorSensorV3 leftColorSensor;
@@ -89,7 +89,7 @@ public abstract class RobotBase extends MecanumDrive {
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
         blocker = hardwareMap.get(Servo.class, "blocker");
-        kicker = hardwareMap.get(Servo.class, "rollerKicker");
+        kicker = hardwareMap.get(CRServo.class, "rollerKicker");
         // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
@@ -103,12 +103,10 @@ public abstract class RobotBase extends MecanumDrive {
 
     ///////////////////* INIT *///////////////////
     public void teleOpInit() {
-        setKickerPosition(KickerTask.Position.DOWN);
         setPivotPosition(PivotTask.Position.MID);
     }
 
     public void autoInit() {
-        setKickerPosition(KickerTask.Position.DOWN);
         setPivotPosition(PivotTask.Position.MID);
     }
     ///////////////////* UPDATES *///////////////////
@@ -175,10 +173,10 @@ public abstract class RobotBase extends MecanumDrive {
 
 
     ///////////////////* KICKER UTILS *///////////////////
-    public abstract double getKickerPosition(KickerTask.Position position);
+    public abstract double getKickerPower(KickerTask.Direction direction);
 
-    public void setKickerPosition(KickerTask.Position position){
-        kicker.setPosition(getKickerPosition(position));
+    public void setKickerPower(KickerTask.Direction direction){
+        kicker.setPower(getKickerPower(direction));
     }
 
     ///////////////////* FLYWHEEL UTILS *///////////////////
@@ -213,7 +211,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public void setPivotPosition(double position) {
         leftPivot.setPosition(position);
-        rightPivot.setPosition(position);
+        rightPivot.setPosition( position);
     }
     public void setPivotPosition(PivotTask.Position position){
         leftPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.LEFT, position));

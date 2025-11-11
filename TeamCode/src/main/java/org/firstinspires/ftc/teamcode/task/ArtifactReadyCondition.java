@@ -16,7 +16,7 @@ public class ArtifactReadyCondition implements Condition {
 
     public boolean shouldContinue(){
         if(robot.hasArtifact()){
-            Log.i("edbug", "artifact detected with COLORS" + ArtifactState.c1 + " " + ArtifactState.c2 + " and DISTANCES" + ArtifactState.d1 + " " + ArtifactState.d2);
+            Log.i("edbug", "artifact detected");
         }
         return robot.hasArtifact();
     }

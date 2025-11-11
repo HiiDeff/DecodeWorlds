@@ -3,34 +3,15 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Supplier;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
-import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
-import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
-import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
-import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
@@ -100,7 +81,7 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
         } if(!autoaim) {
             if(gp1.onceA()) {
                 kickerUp = !kickerUp;
-                robot.setKickerPosition(kickerUp? KickerTask.Position.UP:KickerTask.Position.DOWN);
+                robot.setKickerPower(kickerUp? KickerTask.Direction.STANDARD :KickerTask.Direction.REVERSED);
             }
         }
     }
@@ -181,7 +162,7 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
                     task.cancel();
                     task = null;
                 }
-                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
+//                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
                 robot.setFlywheelTargetVelocity(0);
                 robot.startTeleopDrive();
             }
@@ -198,7 +179,7 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
                     task.cancel();
                     task = null;
                 }
-                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
+//                robot.setKickerPosition(KickerTask.Position.DOWN); kickerUp = false;
                 robot.setFlywheelTargetVelocity(0);
                 robot.startTeleopDrive();
             }
