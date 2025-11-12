@@ -33,8 +33,8 @@ public class BlockerTask extends TimedTask{
     }
 
     public enum Position{
-        BLOCKING,
-        NONBLOCKING
+        CLOSE,
+        OPEN
     }
 
 

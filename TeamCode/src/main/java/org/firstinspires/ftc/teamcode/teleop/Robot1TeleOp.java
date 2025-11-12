@@ -5,44 +5,25 @@ import android.util.Log;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Supplier;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
-import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
-import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
-import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
-import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 public abstract class Robot1TeleOp extends LinearOpMode {
-    // Far: 4750 rpm, 1.0 pivot
+    // Far: 4000 rpm, 1.0 pivot
     public static int FLYWHEEL_RPM = 3945, MANUAL_OVERRIDE_FLYWHEEL_RPM = 4050;
     public static double MANUAL_OVERRIDE_PIVOT_POS = 0.8925, SERVO_SKIP_CORRECTION = 0.0;
     public static boolean kickerUp, aiming,
-            intaking = true, blocking = true, autoaim = true; // when autoaim is false use manual override
+            intaking = true, blocking = true, autoaim = true, shooting = false; // when autoaim is false use manual override
     private Task task;
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
@@ -102,10 +83,17 @@ public abstract class Robot1TeleOp extends LinearOpMode {
     private void updateShooting() {
         if(!autoaim||aiming && task == null) {
             Log.i("adebug", "Flywheel done: " + robot.flywheelPID.isDone());
-            if(gp1.onceA() && robot.flywheelPID.isDone()) {
-                Log.i("adebug", "Shoot Task Created");
-                blocking = false;
-                task = Presets.createShootTask(robot, FLYWHEEL_RPM);
+            if(gp1.onceA()) {
+                if(shooting || robot.flywheelPID.isDone()) {
+                    shooting = !shooting;
+                    if (shooting){
+                        robot.setBlockerPosition(BlockerTask.Position.OPEN);
+                        robot.setKickerPower(KickerTask.Direction.UP);
+                    }else{
+                        robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+                        robot.kicker.setPower(0);
+                    }
+                }
             }
         } if(!autoaim) {
             if(gp1.onceA()) {
@@ -117,7 +105,12 @@ public abstract class Robot1TeleOp extends LinearOpMode {
 
     private void updateIntake() {
 
-        if (gp1.rightBumper()){
+        if (!aiming){
+            robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+        }
+
+        // Override
+        if (gp2.rightBumper()){
             if (intaking){
                 robot.stopIntake();
             } else if (!intaking){
@@ -125,9 +118,8 @@ public abstract class Robot1TeleOp extends LinearOpMode {
             }
             intaking = !intaking;
         }
-
-        if (gp1.onceB()){
-            robot.setBlockerPosition(blocking ? BlockerTask.Position.NONBLOCKING : BlockerTask.Position.BLOCKING);
+        if (gp2.onceB()){
+            robot.setBlockerPosition(blocking ? BlockerTask.Position.OPEN : BlockerTask.Position.CLOSE);
             blocking = !blocking;
         }
     }
@@ -139,6 +131,8 @@ public abstract class Robot1TeleOp extends LinearOpMode {
                 if(!aiming) {
                     robot.startTeleopDrive();
                     robot.setFlywheelTargetVelocity(0);
+                    robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+                    robot.kicker.setPower(0);
                 } else {
                     robot.holdPoint(new BezierPoint(robot.getPose()), robot.getAngleToGoal(), false);
                     robot.setFlywheelTargetVelocity(FLYWHEEL_RPM);
@@ -168,6 +162,8 @@ public abstract class Robot1TeleOp extends LinearOpMode {
         if(pow>0.5) {
             if(aiming) {
                 aiming = false;
+                robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+                robot.kicker.setPower(0);
                 if(task != null) {
                     task.cancel();
                     task = null;
@@ -182,9 +178,11 @@ public abstract class Robot1TeleOp extends LinearOpMode {
         if(!aiming) robot.setTeleOpDrive(x, y, a, true);
     }
     private void updateUnjamming() {
-        if(gp1.back() && gp1.onceLeftBumper()) {
+        if(gp2.back() && gp2.onceLeftBumper()) {
             if(aiming) {
                 aiming = false;
+                robot.setBlockerPosition(BlockerTask.Position.OPEN);
+                robot.setKickerPower(KickerTask.Direction.DOWN);
                 if(task != null) {
                     task.cancel();
                     task = null;

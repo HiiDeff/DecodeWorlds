@@ -25,8 +25,8 @@ public class KickerTask extends TimedTask {
     }
 
     public enum Direction {
-        STANDARD,
-        REVERSED
+        UP,
+        DOWN
     }
 
     @Override

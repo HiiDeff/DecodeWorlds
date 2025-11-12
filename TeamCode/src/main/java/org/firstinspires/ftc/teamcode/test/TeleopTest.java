@@ -164,7 +164,7 @@ public class TeleopTest extends LinearOpMode {
 
             }
 
-            robot.setKickerPower(kickerUp? KickerTask.Direction.STANDARD :KickerTask.Direction.REVERSED);
+            robot.setKickerPower(kickerUp? KickerTask.Direction.UP :KickerTask.Direction.DOWN);
 
             drive();
 

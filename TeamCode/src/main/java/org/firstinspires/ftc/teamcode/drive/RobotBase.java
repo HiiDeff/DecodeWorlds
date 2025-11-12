@@ -96,8 +96,8 @@ public abstract class RobotBase extends MecanumDrive {
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
         // Limelight:
-        //limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        //limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
         // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
         artifactState = new ArtifactState(this);
@@ -106,7 +106,7 @@ public abstract class RobotBase extends MecanumDrive {
     ///////////////////* INIT *///////////////////
     public void teleOpInit() {
         setPivotPosition(PivotTask.Position.MID);
-        setBlockerPosition(BlockerTask.Position.BLOCKING);
+        setBlockerPosition(BlockerTask.Position.CLOSE);
     }
 
     public void autoInit() {
@@ -118,8 +118,8 @@ public abstract class RobotBase extends MecanumDrive {
         updateEncoders();
         updateProfilers();
         updatePIDs();
-        //updateLimelight();
-//        updateSensors(); //handled by thread
+        updateLimelight();
+        updateSensors(); //handled by thread
     }
 
     private void updatePoseEstimate() {
@@ -214,7 +214,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public void setPivotPosition(double position) {
         leftPivot.setPosition(position);
-        rightPivot.setPosition( position);
+        rightPivot.setPosition(position);
     }
     public void setPivotPosition(PivotTask.Position position){
         leftPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.LEFT, position));
@@ -229,24 +229,24 @@ public abstract class RobotBase extends MecanumDrive {
 
     ///////////////////* LIMELIGHT UTILS *///////////////////
     public void startLimelight() {
-//        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
-//        limelight.start();
+        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
+        limelight.start();
     }
     public void setLimelightAllianceColor(boolean isRedAlliance) {
-//        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
+        limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
     private void updateLimelight() {
 
         limelightAprilTagDetector.updateLimelight();
     }
     public void stopLimelight() {
-//        limelight.stop();
+        limelight.stop();
     }
     public void updateRobotPoseUsingLimelight() {
-//        Pose newPose = limelightAprilTagDetector.getRobotPose();
-//        if(newPose != null) {
-//            this.setPose(newPose);
-//        }
+        Pose newPose = limelightAprilTagDetector.getRobotPose();
+        if(newPose != null) {
+            this.setPose(newPose);
+        }
     }
     public double getDistToGoalInches() {
         double dist = this.getPose().distanceFrom(new Pose()) + LLConfig.xOffset;

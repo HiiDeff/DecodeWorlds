@@ -84,10 +84,10 @@ public class Robot1 extends RobotBase {
     @Override
     public double getKickerPower(KickerTask.Direction position) {
         switch (position){
-            case STANDARD:
+            case UP:
                 return KICKER_UP;
             default:
-            case REVERSED:
+            case DOWN:
                 return KICKER_DOWN;
         }
     }
@@ -96,10 +96,10 @@ public class Robot1 extends RobotBase {
     @Override
     public double getBlockerPosition(BlockerTask.Position position){
         switch (position){
-            case BLOCKING:
+            case CLOSE:
                 return BLOCKER_BLOCKING;
             default:
-            case NONBLOCKING:
+            case OPEN:
                 return BLOCKER_NONBLOCKING;
         }
     }

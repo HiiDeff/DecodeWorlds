@@ -42,7 +42,7 @@ public class FlywheelPID extends VelocityPIDModel {
     protected double getStopError() {
         // minimum error to stop adjusting, in ticks per second
         // ticks per second for 70 RPM
-        return 70.0*28/60;
+        return 150.0*28/60;
     }
 
     @Override

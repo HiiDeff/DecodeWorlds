@@ -81,7 +81,7 @@ public abstract class Robot1TeleOpForNeel extends LinearOpMode {
         } if(!autoaim) {
             if(gp1.onceA()) {
                 kickerUp = !kickerUp;
-                robot.setKickerPower(kickerUp? KickerTask.Direction.STANDARD :KickerTask.Direction.REVERSED);
+                robot.setKickerPower(kickerUp? KickerTask.Direction.UP :KickerTask.Direction.DOWN);
             }
         }
     }

@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.task;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import org.firstinspires.ftc.teamcode.auto.defaultauto.far.FarAuto;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 
 @Config
 public class Presets {
     public static int KICKER_SLEEP = 300;
-    public static int SHOOT_TIME = 3000;
+    public static int SHOOT_TIME = 1000;
 
     //assume velocity and pivot position are already set
     public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt){
@@ -16,8 +15,8 @@ public class Presets {
         return new SeriesTask(
                 new FlywheelTask(robot, targetRPM, 3000),
                 new ParallelTask(
-                        new BlockerTask(robot, BlockerTask.Position.NONBLOCKING),
-                        new UnboundedKickerTask(robot, KickerTask.Direction.STANDARD),
+                        new BlockerTask(robot, BlockerTask.Position.OPEN),
+                        new UnboundedKickerTask(robot, KickerTask.Direction.UP),
                         new SleepTask(SHOOT_TIME)
                 )
         );
@@ -59,13 +58,13 @@ public class Presets {
                         new ParallelTask(
                                 new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.FAR),
                                 new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.FAR),
-                                new UnboundedKickerTask(robot, KickerTask.Direction.STANDARD)
+                                new UnboundedKickerTask(robot, KickerTask.Direction.UP)
                         ),
                         new SleepTask(500),
                         new ParallelTask(
                                 new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.CLOSE),
                                 new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.CLOSE),
-                                new UnboundedKickerTask(robot, KickerTask.Direction.REVERSED)
+                                new UnboundedKickerTask(robot, KickerTask.Direction.DOWN)
                         ),
                         new SleepTask(500),
                         new ParallelTask(
