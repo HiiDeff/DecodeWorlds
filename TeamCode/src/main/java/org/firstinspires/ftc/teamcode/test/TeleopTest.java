@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
@@ -20,52 +21,14 @@ public class TeleopTest extends LinearOpMode {
 
     /*
     setup:
-    corner of tape measure = on the corner tile under the goal, 7 inches from each edge
+    corner of tape measure = on the corner tile under the goal, 10 inches behind the atag
     other end of tape measure = on the edge of the far wall, exactly 2 tiles away from the opposite alliance edge
-    goal edge @ 7 inches
-    VALS:
-    2500 RPM: (0 -> 38 inch) z(x) = (3.29783*10^{-7})x^{4}+0.0000260577x^{3}-0.00063992x^{2}+0.00162601x+0.582999
-    - 7 inch = 0.57
-    - 10 inch = 0.56
-    - 15 inch = 0.53
-    - 20 inch = 0.51
-    - 25 inch = 0.50
-    - 30 inch = 0.50
-    - 35 inch = 0.47
-    - 40 inch = 0.45
-    3000 RPM: (38 -> X inch)
-    -
-    3300 RPM: (X -> 151 inch)
-    -
+    goal edge @ ~9.5 inches (sqrt(10^2-3^2))
 
-    trying solution 2: scale RPM linearly based on dist, from 7=2500RPM to 150=3500RPM (0.30)
-    then interpolate angles
-    7 inch = 2500 RPM, 150 inch = 3500 RPM
-    rpm = 1000/143(dist-7)+2500
-    dist (inch) ||  RPM   ||  angle (shooter)
-   <------------------------------>
-        130     ||  3360  ||     0.320
-        120     ||  3290  ||     0.320
-        110     ||  3220  ||     0.310
-        100     ||  3150  ||     0.310
-         90     ||  3080  ||     0.310
-         80     ||  3010  ||     0.300
-         70     ||  2941  ||     0.310
-         60     ||  2871  ||     0.330
-         50     ||  2801  ||     0.330
-         45     ||  2766  ||     0.330
-         40     ||  2731  ||     0.490
-         30     ||  2661  ||     0.515
-         20     ||  2591  ||     0.550
-         10     ||  2521  ||     0.560
-          7     ||  2500  ||     0.570
-
-
-    ------ 2 ------
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
         140     || *3600*   ||     0.31
-        130     ||  *3600*  ||     0.31
+        130     ||  4190  ||     0.37 (Alt: 4150, 0.40)
         120     ||  3290  ||     0.31
         110     ||  3220  ||     0.31
         100     ||  3150  ||     0.31
@@ -76,21 +39,14 @@ public class TeleopTest extends LinearOpMode {
          70     ||  2750  ||     0.41
          60     ||  2700  ||     0.44
                <----------->
-         60     ||  2500  ||     0.40
-         50     ||  2500  ||     0.45
-         45     ||  2500  ||     0.48
-         40     ||  2500  ||     0.49
-         30     ||  2500  ||     0.53
-         20     ||  2500  ||     0.56
-         10     ||  2500  ||     0.57
-          7     ||  2500  ||     0.59
+         60     ||  2700  ||     0.40
+         50     ||  2700  ||     0.45
+         45     ||  2700  ||     0.48
+         40     ||  2900  ||     0.10
+         30     ||  2800  ||     0.085
+         20     ||  2700  ||     0.07
+         10     ||  N/A  ||     N/A
 
-    for distances less than 45: y = -0.0000295544x^{2}-0.00102978x+0.577059
-    for distances at least 45: y = -1.00701*10^{-8}x^{4}+0.00000350981x^{3}-0.000428815x^{2}+0.0213042x-0.0381544
-
-    ideas:
-    gear down the second gear on the intake
-    TODO spin pusher backwards before shooting
      */
 
     public static int FLYWHEEL_RPM = 2500;
@@ -163,8 +119,13 @@ public class TeleopTest extends LinearOpMode {
             if (gp1.onceB()){
 
             }
-
-            robot.setKickerPower(kickerUp? KickerTask.Direction.UP :KickerTask.Direction.DOWN);
+            if(kickerUp) {
+                robot.setKickerPower(KickerTask.Direction.UP);
+                robot.setBlockerPosition(BlockerTask.Position.OPEN);
+            } else {
+                robot.stopKicker();
+                robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+            }
 
             drive();
 

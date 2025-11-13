@@ -181,6 +181,9 @@ public abstract class RobotBase extends MecanumDrive {
     public void setKickerPower(KickerTask.Direction direction){
         kicker.setPower(getKickerPower(direction));
     }
+    public void stopKicker(){
+        kicker.setPower(0);
+    }
 
     ///////////////////* FLYWHEEL UTILS *///////////////////
     public abstract VelocityPIDCoefficients getVelocityPIDCoefficients();

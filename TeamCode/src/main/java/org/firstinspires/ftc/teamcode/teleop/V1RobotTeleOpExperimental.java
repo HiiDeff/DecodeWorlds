@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
-import org.firstinspires.ftc.teamcode.drive.robot1.Robot1;
+import org.firstinspires.ftc.teamcode.drive.robot2.Robot1;
 import org.firstinspires.ftc.teamcode.task.ArtifactReadyCondition;
 import org.firstinspires.ftc.teamcode.task.ArtifactUnreadyCondition;
 import org.firstinspires.ftc.teamcode.task.ConditionalParallelTask;

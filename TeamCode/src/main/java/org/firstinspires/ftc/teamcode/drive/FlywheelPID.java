@@ -25,7 +25,8 @@ public class FlywheelPID extends VelocityPIDModel {
 
     @Override
     public double getError() {
-        return targetVelocity - getVelocity();
+        double error = targetVelocity - getVelocity();
+        return error*Math.abs(error);
     }
 
     @Override
