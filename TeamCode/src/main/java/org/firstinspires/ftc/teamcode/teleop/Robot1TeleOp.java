@@ -22,6 +22,7 @@ public abstract class Robot1TeleOp extends LinearOpMode {
     // Far: 4000 rpm, 1.0 pivot
     public static int FLYWHEEL_RPM = 3945, MANUAL_OVERRIDE_FLYWHEEL_RPM = 4050;
     public static double MANUAL_OVERRIDE_PIVOT_POS = 0.8925, SERVO_SKIP_CORRECTION = 0.0;
+    public static double FLYWHEEL_ON_INTAKE_POWER = 0.7;
     public static boolean kickerUp, aiming,
             intaking = true, blocking = true, autoaim = true, shooting = false; // when autoaim is false use manual override
     private Task task;
@@ -114,6 +115,9 @@ public abstract class Robot1TeleOp extends LinearOpMode {
             if (intaking){
                 robot.stopIntake();
             } else if (!intaking){
+                if(robot.getFlywheelState()){
+                    robot.runIntakeWithPower(FLYWHEEL_ON_INTAKE_POWER);
+                }
                 robot.runIntake();
             }
             intaking = !intaking;

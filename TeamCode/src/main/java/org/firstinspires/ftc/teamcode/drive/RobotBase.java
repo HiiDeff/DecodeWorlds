@@ -199,6 +199,10 @@ public abstract class RobotBase extends MecanumDrive {
         flywheelOn = true;
     }
 
+    public boolean getFlywheelState(){
+        return flywheelOn;
+    }
+
     public double getFlywheelVelocityRpm(){
         return flywheelVelocityTicksPerSecond/28*60;
     }
