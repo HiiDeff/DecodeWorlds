@@ -28,23 +28,23 @@ public class TeleopTest extends LinearOpMode {
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
         140     ||  4150  ||     0.42
-        130     ||  3900  ||     0.4 DONE
-        120     ||  3800  ||     0.35 DONE
-        110     ||  3650  ||     0.345 DONE
-        100     ||  3550  ||     0.33 DONE
-         90     ||  3400  ||     0.32 DONE
-         80     ||  3350  ||     0.31 DONE
+        130     ||  3900  ||     0.4
+        120     ||  3800  ||     0.35
+        110     ||  3650  ||     0.345
+        100     ||  3550  ||     0.33
+         90     ||  3400  ||     0.32
+         80     ||  3350  ||     0.31
                <----------->
-         80     ||  3350  ||     0.27 DONE
-         70     ||  3200  ||     0.25 DONE
-         60     ||  3100  ||     0.23 DONE
+         80     ||  3350  ||     0.27
+         70     ||  3200  ||     0.25
+         60     ||  3100  ||     0.23
                <----------->
-         60     ||  3100  ||     0.13 DONE
-         50     ||  2900  ||     0.115 DONE
-         45     ||  2700  ||     0.48 CONTROL POINT
-         40     ||  2800  ||     0.10 DONE
-         30     ||  2700  ||     0.085 DONE
-         20     ||  2600  ||     0.07 DONE
+         60     ||  3100  ||     0.13
+         50     ||  2900  ||     0.115
+         45     ||  2700  ||     0.48 CONTROL POINT/ NOT DONE
+         40     ||  2800  ||     0.10
+         30     ||  2700  ||     0.085
+         20     ||  2600  ||     0.07
          10     ||  N/A  ||     N/A
      */
 
@@ -181,16 +181,43 @@ public class TeleopTest extends LinearOpMode {
     }
 
     private double calcPivotPosition(double x) {
-        double pos = 0.0;
-        if(x<45) {
-            pos = (-0.0000295544)*Math.pow(x,2)-0.00102978*x+0.577059;
-        } else {
-            pos = (-1.00701*Math.pow(10, -8))*Math.pow(x,4)+0.00000350981*Math.pow(x, 3)-0.000428815*Math.pow(x, 2)+0.0213042*x-0.0381544;
+        double coef[] = {
+                -0.883007,
+                0.1253661,
+                -0.00632362,
+                0.0001586931,
+                -0.000002128523,
+                1.561264 * Math.pow(10.0, -8.0),
+                -5.90707 * Math.pow(10.0, -11.0),
+                9.014571 * Math.pow(10.0, -14.0)
+
+        };
+
+        double pos = 0;
+        for(double i =0; i<=7; i++){
+            pos+=Math.pow(x, i) *coef[(int)i];
         }
-        pos -= SERVO_SKIP_CORRECTION; //the servo skipped >:C
+
         return pos;
     }
     private int calcFlywheelRpm(double distToGoalInches) {
-        return (int)(1000.0/143*(distToGoalInches-7)+2500);
+        double coef[] = {
+                4164.83516,
+                -330.89418,
+                26.92545,
+                -1.134829,
+                0.02809456,
+                -0.0004254504,
+                0.000003974666,
+                -2.22832 * Math.pow(10.0, -8.0),
+                6.85307 * Math.pow(10.0, -11.0),
+                -8.8577 * Math.pow(10.0, -14.0)};
+
+        double rpm = 0;
+        for(double i = 0; i<=9.0; i++){
+            rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
+        }
+
+        return (int)rpm;
     }
 }

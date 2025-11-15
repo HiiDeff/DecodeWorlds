@@ -20,11 +20,10 @@ import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 public abstract class Robot1TeleOp extends LinearOpMode {
     // Far: 4000 rpm, 1.0 pivot
-    public static int FLYWHEEL_RPM = 3945, MANUAL_OVERRIDE_FLYWHEEL_RPM = 4050;
-    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.8925, SERVO_SKIP_CORRECTION = 0.0;
+    public static int FLYWHEEL_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
+    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.07;
     public static double FLYWHEEL_ON_INTAKE_POWER = 0.7;
-    public static boolean kickerUp, aiming,
-            intaking = true, blocking = true, autoaim = true, shooting = false; // when autoaim is false use manual override
+    public static boolean kickerUp, aiming, intaking = true, blocking = true, autoaim = true, shooting = false; // when autoaim is false use manual override
     private Task task;
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
@@ -117,8 +116,9 @@ public abstract class Robot1TeleOp extends LinearOpMode {
             } else if (!intaking){
                 if(robot.getFlywheelState()){
                     robot.runIntakeWithPower(FLYWHEEL_ON_INTAKE_POWER);
+                } else {
+                    robot.runIntake();
                 }
-                robot.runIntake();
             }
             intaking = !intaking;
         }
@@ -200,22 +200,45 @@ public abstract class Robot1TeleOp extends LinearOpMode {
     }
 
     //regression
-    private double calcPivotPosition(double distToGoalInches) {
-        double x = distToGoalInches;
-        if(distToGoalInches<60) {
-            //regression
-            return -0.00003731*Math.pow(x,2)-0.000944536*x+0.591796;
-        } else if(distToGoalInches<80) {
-            return -0.08/20*(x-60) + 0.44;
-        } else {
-            return 0.31;
+    private double calcPivotPosition(double x) {
+        double coef[] = {
+                -0.883007,
+                0.1253661,
+                -0.00632362,
+                0.0001586931,
+                -0.000002128523,
+                1.561264 * Math.pow(10.0, -8.0),
+                -5.90707 * Math.pow(10.0, -11.0),
+                9.014571 * Math.pow(10.0, -14.0)
+
+        };
+
+        double pos = 0;
+        for(double i =0; i<=7; i++){
+            pos+=Math.pow(x, i) *coef[(int)i];
         }
+
+        return pos;
     }
     private int calcFlywheelRpm(double distToGoalInches) {
-        if(distToGoalInches<60) return 2500;
-        else if(distToGoalInches<80) return 2750;
-        else if(distToGoalInches>130) return 3600;
-        return (int)(1000.0/143*(distToGoalInches-7)+2500);
+        double coef[] = {
+                4164.83516,
+                -330.89418,
+                26.92545,
+                -1.134829,
+                0.02809456,
+                -0.0004254504,
+                0.000003974666,
+                -2.22832 * Math.pow(10.0, -8.0),
+                6.85307 * Math.pow(10.0, -11.0),
+                -8.8577 * Math.pow(10.0, -14.0)};
+
+        double rpm = 0;
+        for(double i = 0; i<=9.0; i++){
+            rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
+        }
+
+        return (int)rpm;
     }
 
     protected abstract boolean isRed();
