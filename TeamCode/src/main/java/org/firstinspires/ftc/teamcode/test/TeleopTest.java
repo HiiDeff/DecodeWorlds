@@ -27,8 +27,8 @@ public class TeleopTest extends LinearOpMode {
 
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
-        140     || *3600*   ||     0.31
-        130     ||  4190  ||     0.37 (Alt: 4150, 0.40)
+        140     ||  4325  ||     0.31
+        130     ||  4190  ||     0.37 DONE
         120     ||  3290  ||     0.31
         110     ||  3220  ||     0.31
         100     ||  3150  ||     0.31
@@ -42,18 +42,17 @@ public class TeleopTest extends LinearOpMode {
          60     ||  2700  ||     0.40
          50     ||  2700  ||     0.45
          45     ||  2700  ||     0.48
-         40     ||  2900  ||     0.10
-         30     ||  2800  ||     0.085
-         20     ||  2700  ||     0.07
+         40     ||  2900  ||     0.10 DONE
+         30     ||  2800  ||     0.085 DONE
+         20     ||  2700  ||     0.07 DONE
          10     ||  N/A  ||     N/A
-
      */
 
     public static int FLYWHEEL_RPM = 2500;
 
     // Pivot DOWN: 0.57
     // Pivot FULL EXTENSION: 1
-    public static double PIVOT_POS = 0.57, SERVO_SKIP_CORRECTION = 0.01;
+    public static double PIVOT_POS = 0.57, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.7;
     public static boolean kickerUp, flywheelActive, aiming, autoaim = true;
     private Task task;
 
@@ -101,7 +100,7 @@ public class TeleopTest extends LinearOpMode {
             }
 
             if(gp1.rightTrigger()>0.3) {
-                robot.runIntake();
+                robot.runIntakeWithPower(INTAKE_POWER);
             } else if(gp1.leftTrigger()>0.3) {
                 robot.runIntakeReversed();
             } else robot.stopIntake();
