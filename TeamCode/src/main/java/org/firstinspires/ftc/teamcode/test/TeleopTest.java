@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -15,9 +17,15 @@ import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
+import org.firstinspires.ftc.teamcode.util.Utils;
+
 @Config
 @TeleOp(name = "Test TeleOp", group = "Test")
 public class TeleopTest extends LinearOpMode {
+
+    private double RPMs[] = {2600, 2600, 2600, 2700, 2800, 2900, 3100, 3200, 3350, 3400, 3550, 3650, 3800, 3900, 4150, 4150};
+    private double lowerBoundDist[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150};
+    private double pivotAngles[] = {0.07, 0.07, 0.07, 0.085, 0.10, 0.115, 0.13, 0.25, 0.27, 0.32, 0.33, 0.345, 0.35, 0.4, 0.42, 0.42};
 
     /*
     setup:
@@ -180,17 +188,19 @@ public class TeleopTest extends LinearOpMode {
         }
     }
 
-    private double calcPivotPosition(double x) {
-        double pos = 0.0;
-        if(x<45) {
-            pos = (-0.0000295544)*Math.pow(x,2)-0.00102978*x+0.577059;
-        } else {
-            pos = (-1.00701*Math.pow(10, -8))*Math.pow(x,4)+0.00000350981*Math.pow(x, 3)-0.000428815*Math.pow(x, 2)+0.0213042*x-0.0381544;
-        }
-        pos -= SERVO_SKIP_CORRECTION; //the servo skipped >:C
-        return pos;
+    private double calcPivotPosition(double distToGoalInches) {
+        distToGoalInches = Utils.clamp(distToGoalInches, 0, 149);
+        int idx = (int)Math.floor(distToGoalInches/10.0);
+        double mod = distToGoalInches - idx*10;
+        Log.i("edbug calcs", idx+" "+mod);
+        double pivotAngle = pivotAngles[idx] + (pivotAngles[idx+1]-pivotAngles[idx])/(lowerBoundDist[idx+1]-lowerBoundDist[idx])*mod;
+        return pivotAngle;
     }
     private int calcFlywheelRpm(double distToGoalInches) {
-        return (int)(1000.0/143*(distToGoalInches-7)+2500);
+        distToGoalInches = Utils.clamp(distToGoalInches, 0, 149);
+        int idx = (int)Math.floor(distToGoalInches/10.0);
+        double mod = distToGoalInches - idx*10;
+        double rpm = RPMs[idx] + (RPMs[idx+1]-RPMs[idx])/(lowerBoundDist[idx+1]-lowerBoundDist[idx])*mod;
+        return (int)rpm;
     }
 }

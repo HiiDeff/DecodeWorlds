@@ -17,14 +17,19 @@ import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
+import org.firstinspires.ftc.teamcode.util.Utils;
+
 @Config
 public abstract class Robot1TeleOp extends LinearOpMode {
     // Far: 4000 rpm, 1.0 pivot
-    public static int FLYWHEEL_RPM = 3945, MANUAL_OVERRIDE_FLYWHEEL_RPM = 4050;
-    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.8925, SERVO_SKIP_CORRECTION = 0.0;
+    public static int FLYWHEEL_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
+    public static double MANUAL_OVERRIDE_PIVOT_POS = 0.07;
     public static double FLYWHEEL_ON_INTAKE_POWER = 0.7;
-    public static boolean kickerUp, aiming,
-            intaking = true, blocking = true, autoaim = true, shooting = false; // when autoaim is false use manual override
+    public static boolean kickerUp, aiming, intaking = true, blocking = true, autoaim = true, shooting = false; // when autoaim is false use manual override
+    private double RPMs[] = {2600, 2600, 2600, 2700, 2800, 2900, 3100, 3200, 3350, 3400, 3550, 3650, 3800, 3900, 4150, 4150};
+    private double lowerBoundDist[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150};
+    private double pivotAngles[] = {0.07, 0.07, 0.07, 0.085, 0.10, 0.115, 0.13, 0.25, 0.27, 0.32, 0.33, 0.345, 0.35, 0.4, 0.42, 0.42};
+
     private Task task;
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
@@ -117,8 +122,9 @@ public abstract class Robot1TeleOp extends LinearOpMode {
             } else if (!intaking){
                 if(robot.getFlywheelState()){
                     robot.runIntakeWithPower(FLYWHEEL_ON_INTAKE_POWER);
+                } else {
+                    robot.runIntake();
                 }
-                robot.runIntake();
             }
             intaking = !intaking;
         }
@@ -199,23 +205,20 @@ public abstract class Robot1TeleOp extends LinearOpMode {
         }
     }
 
-    //regression
     private double calcPivotPosition(double distToGoalInches) {
-        double x = distToGoalInches;
-        if(distToGoalInches<60) {
-            //regression
-            return -0.00003731*Math.pow(x,2)-0.000944536*x+0.591796;
-        } else if(distToGoalInches<80) {
-            return -0.08/20*(x-60) + 0.44;
-        } else {
-            return 0.31;
-        }
+        distToGoalInches = Utils.clamp(distToGoalInches, 0, 149);
+        int idx = (int)Math.floor(distToGoalInches/10.0);
+        double mod = distToGoalInches - idx*10;
+        Log.i("edbug calcs", idx+" "+mod);
+        double pivotAngle = pivotAngles[idx] + (pivotAngles[idx+1]-pivotAngles[idx])/(lowerBoundDist[idx+1]-lowerBoundDist[idx])*mod;
+        return pivotAngle;
     }
     private int calcFlywheelRpm(double distToGoalInches) {
-        if(distToGoalInches<60) return 2500;
-        else if(distToGoalInches<80) return 2750;
-        else if(distToGoalInches>130) return 3600;
-        return (int)(1000.0/143*(distToGoalInches-7)+2500);
+        distToGoalInches = Utils.clamp(distToGoalInches, 0, 149);
+        int idx = (int)Math.floor(distToGoalInches/10.0);
+        double mod = distToGoalInches - idx*10;
+        double rpm = RPMs[idx] + (RPMs[idx+1]-RPMs[idx])/(lowerBoundDist[idx+1]-lowerBoundDist[idx])*mod;
+        return (int)rpm;
     }
 
     protected abstract boolean isRed();
