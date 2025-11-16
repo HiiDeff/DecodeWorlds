@@ -29,9 +29,8 @@ public class TeleopTest extends LinearOpMode {
 
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
-        140     ||  4150  ||     0.42
-        130     ||  3900  ||     0.4
-        120     ||  3900  ||     0.48
+        130     ||  4050  ||     0.48
+        120     ||  3900  ||     0.48 DONE
         110     ||  3700  ||     0.36 DONE
         100     ||  3600  ||     0.34 DONE
          90     ||  3450  ||     0.32 DONE
