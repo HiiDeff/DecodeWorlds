@@ -32,8 +32,8 @@ public class Robot1 extends RobotBase {
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
             .mass(11.7)
-            .forwardZeroPowerAcceleration(-34.336)
-            .lateralZeroPowerAcceleration(-69.191)
+            .forwardZeroPowerAcceleration(-34.5367405423)
+            .lateralZeroPowerAcceleration(-65.3199225832)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
             .translationalPIDFCoefficients(new PIDFCoefficients(0.35, 0.0, 0.025, 0.02))
             .headingPIDFCoefficients(new PIDFCoefficients(1.2, 0.0, 0.04, 0.02))
@@ -50,8 +50,8 @@ public class Robot1 extends RobotBase {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
-            .xVelocity(79.75)
-            .yVelocity(64.84)
+            .xVelocity(83.4698026161)
+            .yVelocity(67.4000716723)
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
