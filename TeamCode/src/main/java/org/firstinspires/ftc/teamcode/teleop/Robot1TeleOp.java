@@ -85,7 +85,6 @@ public abstract class Robot1TeleOp extends LinearOpMode {
             Log.i("adebug", "Flywheel done: " + robot.flywheelPID.isDone());
             if(gp1.onceA()) {
                 if(shooting || robot.flywheelPID.isDone()) {
-                    shooting = !shooting;
                     if (shooting){
                         robot.setBlockerPosition(BlockerTask.Position.OPEN);
                         robot.setKickerPower(KickerTask.Direction.UP);
@@ -93,6 +92,7 @@ public abstract class Robot1TeleOp extends LinearOpMode {
                         robot.setBlockerPosition(BlockerTask.Position.CLOSE);
                         robot.kicker.setPower(0);
                     }
+                    shooting = !shooting;
                 }
             }
         } if(!autoaim) {

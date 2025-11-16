@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
+import org.firstinspires.ftc.teamcode.util.Utils;
+
 @Config
 @TeleOp(name = "Test TeleOp", group = "Test")
 public class TeleopTest extends LinearOpMode {
@@ -29,22 +31,21 @@ public class TeleopTest extends LinearOpMode {
    <------------------------------>
         140     ||  4150  ||     0.42
         130     ||  3900  ||     0.4
-        120     ||  3800  ||     0.35
-        110     ||  3650  ||     0.345
-        100     ||  3550  ||     0.33
-         90     ||  3400  ||     0.32
-         80     ||  3350  ||     0.31
+        120     ||  3900  ||     0.48
+        110     ||  3700  ||     0.36 DONE
+        100     ||  3600  ||     0.34 DONE
+         90     ||  3450  ||     0.32 DONE
+         80     ||  3250  ||     0.32 DONE
                <----------->
-         80     ||  3350  ||     0.27
-         70     ||  3200  ||     0.25
-         60     ||  3100  ||     0.23
+         80     ||  3250  ||     0.32 DONE
+         70     ||  3150  ||     0.31 DONE
+         60     ||  3000  ||     0.3  DONE
                <----------->
-         60     ||  3100  ||     0.13
-         50     ||  2900  ||     0.115
-         45     ||  2700  ||     0.48 CONTROL POINT/ NOT DONE
-         40     ||  2800  ||     0.10
-         30     ||  2700  ||     0.085
-         20     ||  2600  ||     0.07
+         60     ||  3000  ||     0.3  DONE
+         50     ||  2900  ||     0.29 DONE
+         40     ||  2800  ||     0.27 DONE
+         30     ||  2700  ||     0.21 DONE
+         20     ||  2600  ||     0.14 DONE
          10     ||  N/A  ||     N/A
      */
 
@@ -53,6 +54,7 @@ public class TeleopTest extends LinearOpMode {
     // Pivot DOWN: 0.57
     // Pivot FULL EXTENSION: 1
     public static double PIVOT_POS = 0.57, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.7;
+    public static boolean isRed = true;
     public static boolean kickerUp, flywheelActive, aiming, autoaim = true;
     private Task task;
 
@@ -75,7 +77,7 @@ public class TeleopTest extends LinearOpMode {
 
         robot.startTeleopDrive();
         robot.startLimelight();
-        robot.setLimelightAllianceColor(false);
+        robot.setLimelightAllianceColor(isRed);
         sensorUpdateThread = new SensorUpdateThread(robot);
         sensorUpdateThread.start();
 
@@ -182,19 +184,22 @@ public class TeleopTest extends LinearOpMode {
 
     private double calcPivotPosition(double x) {
         double coef[] = {
-                -0.883007,
-                0.1253661,
-                -0.00632362,
-                0.0001586931,
-                -0.000002128523,
-                1.561264 * Math.pow(10.0, -8.0),
-                -5.90707 * Math.pow(10.0, -11.0),
-                9.014571 * Math.pow(10.0, -14.0)
+                -5.425385,
+                0.9716465,
+                -0.07182935,
+                0.00294599,
+                -0.00007341627,
+                0.00000115468,
+                -1.150426 * Math.pow(10.0, -8.0),
+                7.03051 * Math.pow(10.0, -11.0),
+                -2.400906 * Math.pow(10.0, -13.0),
+                3.503716 * Math.pow(10.0, -16.0)
 
         };
+        x = Utils.clamp(x, 20, 120);
 
         double pos = 0;
-        for(double i =0; i<=7; i++){
+        for(double i =0; i<=9.0; i++){
             pos+=Math.pow(x, i) *coef[(int)i];
         }
 
@@ -202,18 +207,19 @@ public class TeleopTest extends LinearOpMode {
     }
     private int calcFlywheelRpm(double distToGoalInches) {
         double coef[] = {
-                4164.83516,
-                -330.89418,
-                26.92545,
-                -1.134829,
-                0.02809456,
-                -0.0004254504,
-                0.000003974666,
-                -2.22832 * Math.pow(10.0, -8.0),
-                6.85307 * Math.pow(10.0, -11.0),
-                -8.8577 * Math.pow(10.0, -14.0)};
+                -6775.27473,
+                1568.71241,
+                -110.08847,
+                4.2639629,
+                -0.10028502,
+                0.0014919149,
+                -0.000014100386,
+                8.2002501 * Math.pow(10.0, -8.0),
+                -2.674096 * Math.pow(10.0, -10.0),
+                3.7399219 * Math.pow(10.0, -13.0)};
 
         double rpm = 0;
+        distToGoalInches = Utils.clamp(distToGoalInches, 20, 140);
         for(double i = 0; i<=9.0; i++){
             rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
         }

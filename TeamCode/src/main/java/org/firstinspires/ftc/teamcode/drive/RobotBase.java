@@ -196,7 +196,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public void setFlywheelTargetVelocity(double velocityRpm){
         flywheelPID.setTargetVelocity(velocityRpm*28/60);
-        flywheelOn = true;
+        flywheelOn = (velocityRpm != 0);
     }
 
     public boolean getFlywheelState(){
@@ -211,9 +211,8 @@ public abstract class RobotBase extends MecanumDrive {
         return flywheelVelocityTicksPerSecond;
     }
 
-    public void stopFlywheel(){
-        setFlywheelTargetVelocity(0.0);
-        flywheelOn = false;
+    public boolean flywheelAtTarget(){
+        return flywheelPID.isDone();
     }
 
     ///////////////////* PIVOT UTILS *///////////////////
