@@ -184,16 +184,16 @@ public class TeleopTest extends LinearOpMode {
 
     private double calcPivotPosition(double x) {
         double coef[] = {
-                -5.425385,
-                0.9716465,
-                -0.07182935,
-                0.00294599,
-                -0.00007341627,
-                0.00000115468,
-                -1.150426 * Math.pow(10.0, -8.0),
-                7.03051 * Math.pow(10.0, -11.0),
-                -2.400906 * Math.pow(10.0, -13.0),
-                3.503716 * Math.pow(10.0, -16.0)
+                8.55474359,
+                -1.46832254,
+                0.106241899,
+                -0.00422199996,
+                0.000102803617,
+                -0.00000160149163,
+                1.60354007 * Math.pow(10.0, -8.0),
+                -9.98609081 * Math.pow(10.0, -11.0),
+                3.51949442 * Math.pow(10.0, -13.0),
+                -5.36055472 * Math.pow(10.0, -16.0)
 
         };
         x = Utils.clamp(x, 20, 120);
@@ -207,20 +207,19 @@ public class TeleopTest extends LinearOpMode {
     }
     private int calcFlywheelRpm(double distToGoalInches) {
         double coef[] = {
-                -6775.27473,
-                1568.71241,
-                -110.08847,
-                4.2639629,
-                -0.10028502,
-                0.0014919149,
-                -0.000014100386,
-                8.2002501 * Math.pow(10.0, -8.0),
-                -2.674096 * Math.pow(10.0, -10.0),
-                3.7399219 * Math.pow(10.0, -13.0)};
+                -2753.23427,
+                834.76971,
+                -53.89067,
+                1.88809,
+                -0.0389984,
+                0.00048851,
+                -0.00000363913,
+                1.48046 * Math.pow(10.0, -8.0),
+                -2.52911 * Math.pow(10.0, -11.0)};
 
         double rpm = 0;
         distToGoalInches = Utils.clamp(distToGoalInches, 20, 140);
-        for(double i = 0; i<=9.0; i++){
+        for(double i = 0; i<=8.0; i++){
             rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
         }
 
