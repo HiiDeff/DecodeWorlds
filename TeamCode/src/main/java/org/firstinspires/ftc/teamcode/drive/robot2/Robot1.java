@@ -25,7 +25,7 @@ public class Robot1 extends RobotBase {
     // Constants
     public static double KICKER_UP = -1, KICKER_DOWN = 0.60;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.00008, 0.0, 0.0,0.0005);
-    public static double PIVOT_CLOSE = 0.59, PIVOT_MID = 0.40, PIVOT_FAR = 0.31; //all the way down is 0.07, all the way up is 0.5
+    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.31, PIVOT_FAR = 0.48; //all the way down is 0.07, all the way up is 0.5
     public static double BLOCKER_BLOCKING = 0.65, BLOCKER_NONBLOCKING = 0.9;
 
 
@@ -35,10 +35,10 @@ public class Robot1 extends RobotBase {
             .forwardZeroPowerAcceleration(-34.5367405423)
             .lateralZeroPowerAcceleration(-65.3199225832)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.35, 0.0, 0.025, 0.02))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.2, 0.0, 0.04, 0.02))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.013,0.0,0.0002,0.6,0.045))
-            .centripetalScaling(0.0005);
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.35, 0.0, 0.02, 0.02))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.2, 0.0, 0.04, 0.03))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.012,0.0,0.001,0.6,0.04))
+            .centripetalScaling(0.0006);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()
             .rightFrontMotorName("rightFront")

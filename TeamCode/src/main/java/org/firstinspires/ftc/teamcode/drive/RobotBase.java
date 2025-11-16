@@ -62,7 +62,7 @@ public abstract class RobotBase extends MecanumDrive {
     public LimelightAprilTagDetector limelightAprilTagDetector;
     public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
             0, 54,41,
-            0,0,0);
+            1.5,0,0);
     public static int APRIL_TAG_PIPELINE = 1;
 
     // States
@@ -111,6 +111,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public void autoInit() {
         setPivotPosition(PivotTask.Position.MID);
+        setBlockerPosition(BlockerTask.Position.CLOSE);
     }
     ///////////////////* UPDATES *///////////////////
     public void updateEverything() {

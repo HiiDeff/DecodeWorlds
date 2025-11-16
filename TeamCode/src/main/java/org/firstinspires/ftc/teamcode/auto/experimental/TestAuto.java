@@ -40,13 +40,18 @@ public class TestAuto extends TestAutoPath {
         SHOOT_4_X = 7.67; SHOOT_4_Y = -3.46; SHOOT_4_H = 0.40486;
          */
         // close auto: shoot pos is 58 inches from goal
-        SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
+
+        SHOOT_1_X = 49.956; SHOOT_1_Y = 33.135; SHOOT_1_H = 0.788;
+        SHOOT_2_X = -0.216; SHOOT_2_Y = 66.404; SHOOT_2_H = Math.PI / 2;
+        SHOOT_3_X = 0.04708; SHOOT_3_Y = -0.4747; SHOOT_3_H = -Math.PI / 2;
+
+//        SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
         INTAKE_1_X = 50.655; INTAKE_1_Y = -12.815; INTAKE_1_H = -Math.PI/2;
         FORWARD_DIST_CYCLE_1 = 25;
-        SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
+//        SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
         INTAKE_2_X = 74.950; INTAKE_2_Y = -12.815; INTAKE_2_H = -Math.PI/2;
         FORWARD_DIST_CYCLE_2 = 27;
-        SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
+//        SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
         INTAKE_3_X = 99.246; INTAKE_3_Y = -12.815; INTAKE_3_H = -Math.PI/2;
         FORWARD_DIST_CYCLE_3 = 29;
         SHOOT_4_X = 45.743; SHOOT_4_Y = -3.066; SHOOT_4_H = -2.35;

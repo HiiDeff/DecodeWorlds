@@ -23,6 +23,45 @@ public abstract class TestAutoPath extends AutoBase {
         state = AutoState.START;
         SeriesTask task = new SeriesTask();
         task.add(
+            new RuntimeDrivingTask(
+                robot,
+                builder -> {
+                    Pose pose = getShoot1Pose();
+                    return builder
+                            .addPath(new BezierCurve(robot.getPose(),pose))
+                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                            .build();
+                }
+            )
+        );
+        task.add(new SleepTask(5000));
+        task.add(
+                new RuntimeDrivingTask(
+                        robot,
+                        builder -> {
+                            Pose pose = getShoot2Pose();
+                            return builder
+                                    .addPath(new BezierCurve(robot.getPose(),pose))
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        }
+                )
+        );
+        task.add(new SleepTask(5000));
+        task.add(
+                new RuntimeDrivingTask(
+                        robot,
+                        builder -> {
+                            Pose pose = getShoot3Pose();
+                            return builder
+                                    .addPath(new BezierCurve(robot.getPose(),pose))
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        }
+                )
+        );
+        task.add(new SleepTask(500000));
+        task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
                                 robot,

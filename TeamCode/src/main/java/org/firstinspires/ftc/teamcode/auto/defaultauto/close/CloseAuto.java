@@ -5,6 +5,7 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
@@ -17,7 +18,8 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class CloseAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2550;
+    public static int FLYWHEEL_VELOCITY = 3050;
+    public static double INTAKE_POWER = 1.0, LOW_INTAKE_POWER = 0.4;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -62,7 +64,9 @@ public abstract class CloseAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new FlywheelTask(robot, 0, 500)
+                        new BlockerTask(robot, BlockerTask.Position.CLOSE),
+                        new FlywheelTask(robot, 0, 500),
+                        new UnboundedIntakeTask(robot, LOW_INTAKE_POWER,false)
                 )
         );
         task.add(
@@ -79,7 +83,7 @@ public abstract class CloseAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new UnboundedIntakeTask(robot, 0.7, false)
+                        new UnboundedIntakeTask(robot, INTAKE_POWER, false)
                 )
         );
         task.add(
@@ -97,7 +101,7 @@ public abstract class CloseAuto extends AutoBase {
                                 }
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                        new UnboundedIntakeTask(robot, 0.5,false)
+                        new UnboundedIntakeTask(robot, LOW_INTAKE_POWER,false)
                 )
         );
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));
