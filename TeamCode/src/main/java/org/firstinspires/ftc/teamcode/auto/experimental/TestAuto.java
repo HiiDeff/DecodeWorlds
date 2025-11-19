@@ -15,12 +15,16 @@ public class TestAuto extends TestAutoPath {
 
     public static double
             SHOOT_1_X, SHOOT_1_Y, SHOOT_1_H,
-            INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H, FORWARD_DIST_CYCLE_1,
+            INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H,
+            INTAKE_FORWARD_1_X, INTAKE_FORWARD_1_Y, INTAKE_FORWARD_1_H,
             SHOOT_2_X, SHOOT_2_Y, SHOOT_2_H,
-            INTAKE_2_X, INTAKE_2_Y, INTAKE_2_H, FORWARD_DIST_CYCLE_2,
+            INTAKE_2_X, INTAKE_2_Y, INTAKE_2_H,
+            INTAKE_FORWARD_2_X, INTAKE_FORWARD_2_Y, INTAKE_FORWARD_2_H,
             SHOOT_3_X, SHOOT_3_Y, SHOOT_3_H,
-            INTAKE_3_X, INTAKE_3_Y, INTAKE_3_H, FORWARD_DIST_CYCLE_3,
+            INTAKE_3_X, INTAKE_3_Y, INTAKE_3_H,
+            INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y, INTAKE_FORWARD_3_H,
             SHOOT_4_X, SHOOT_4_Y, SHOOT_4_H,
+            GATE_X, GATE_Y, GATE_H,
             PARK_X, PARK_Y, PARK_H;
     public static Pose testPose = new Pose(0, 0, Math.toRadians(0));
 
@@ -41,21 +45,22 @@ public class TestAuto extends TestAutoPath {
          */
         // close auto: shoot pos is 58 inches from goal
 
-        SHOOT_1_X = 49.956; SHOOT_1_Y = 33.135; SHOOT_1_H = 0.788;
-        SHOOT_2_X = -0.216; SHOOT_2_Y = 66.404; SHOOT_2_H = Math.PI / 2;
-        SHOOT_3_X = 0.04708; SHOOT_3_Y = -0.4747; SHOOT_3_H = -Math.PI / 2;
+        SHOOT_1_X = -42.084; SHOOT_1_Y = 14.637; SHOOT_1_H = -0.149;
+        SHOOT_2_X = -42.084; SHOOT_2_Y = 14.637; SHOOT_2_H = -0.149;
+        SHOOT_3_X = -42.084; SHOOT_3_Y = 14.637; SHOOT_3_H = -0.149;
 
 //        SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
-        INTAKE_1_X = 50.655; INTAKE_1_Y = -12.815; INTAKE_1_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_1 = 25;
+        INTAKE_1_X = -56.027; INTAKE_1_Y = 44.911; INTAKE_1_H = 0.662;
+        INTAKE_FORWARD_1_X = -42.217; INTAKE_FORWARD_1_Y = 56.216; INTAKE_FORWARD_1_H = 0.662;
 //        SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
-        INTAKE_2_X = 74.950; INTAKE_2_Y = -12.815; INTAKE_2_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_2 = 27;
+        INTAKE_2_X = -41.743; INTAKE_2_Y = 26.299; INTAKE_2_H = 0.656;
+        INTAKE_FORWARD_2_X = -27.902; INTAKE_FORWARD_2_Y = 37.528; INTAKE_FORWARD_2_H = 0.656;
 //        SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
-        INTAKE_3_X = 99.246; INTAKE_3_Y = -12.815; INTAKE_3_H = -Math.PI/2;
-        FORWARD_DIST_CYCLE_3 = 29;
-        SHOOT_4_X = 45.743; SHOOT_4_Y = -3.066; SHOOT_4_H = -2.35;
-        PARK_X = 59; PARK_Y = -9; PARK_H = -Math.PI*7/8;
+        INTAKE_3_X = -69.944; INTAKE_3_Y = 64.110; INTAKE_3_H = 0.614;
+        INTAKE_FORWARD_3_X = -52.197; INTAKE_FORWARD_3_Y = 78.521; INTAKE_FORWARD_3_H = 0.686;
+        SHOOT_4_X = -42.084; SHOOT_4_Y = 14.637; SHOOT_4_H = -0.149;
+        GATE_X = -33.681; GATE_Y = 55.217; GATE_H = 2.275;
+        PARK_X = -52.456; PARK_Y = 30; PARK_H = -0.325;
     }
 
     @Override
@@ -119,13 +124,15 @@ public class TestAuto extends TestAutoPath {
     }
 
     @Override
-    protected double getIntakeForwardDist(int cycleNumber) {
-        if(cycleNumber==1) {
-            return FORWARD_DIST_CYCLE_1;
-        } else if(cycleNumber==2) {
-            return FORWARD_DIST_CYCLE_2;
-        } else {
-            return FORWARD_DIST_CYCLE_3;
-        }
-    }
+    protected Pose getIntake1ForwardPose() {return new Pose(INTAKE_FORWARD_1_X,  INTAKE_FORWARD_1_Y*getSign(), INTAKE_FORWARD_1_H*getSign());}
+
+    @Override
+    protected Pose getIntake2ForwardPose() {return new Pose(INTAKE_FORWARD_2_X, INTAKE_FORWARD_2_Y*getSign(), INTAKE_FORWARD_2_H*getSign());}
+
+    @Override
+    protected Pose getIntake3ForwardPose() {return new Pose(INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y*getSign(), INTAKE_FORWARD_3_H*getSign());}
+
+    @Override
+    protected Pose getGatePose() {return new Pose(GATE_X, GATE_Y*getSign(), GATE_H*getSign());}
 }
+

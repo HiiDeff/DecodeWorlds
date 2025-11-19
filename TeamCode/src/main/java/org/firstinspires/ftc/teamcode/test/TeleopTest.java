@@ -217,7 +217,7 @@ public class TeleopTest extends LinearOpMode {
                 -2.52911 * Math.pow(10.0, -11.0)};
 
         double rpm = 0;
-        distToGoalInches = Utils.clamp(distToGoalInches, 20, 140);
+        distToGoalInches = Utils.clamp(distToGoalInches, 20, 130);
         for(double i = 0; i<=8.0; i++){
             rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
         }

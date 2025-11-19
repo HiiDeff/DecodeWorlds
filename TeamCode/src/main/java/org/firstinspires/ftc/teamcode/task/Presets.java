@@ -7,13 +7,17 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 @Config
 public class Presets {
     public static int KICKER_SLEEP = 300;
-    public static int SHOOT_TIME = 3000;
+    public static int SHOOT_TIME = 2000;
 
     //assume velocity and pivot position are already set
     public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt){
 
         return new SeriesTask(
-                new FlywheelTask(robot, targetRPM, 3000),
+                new ParallelTask(
+                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID),
+                        new FlywheelTask(robot, targetRPM, 2000)
+                ),
                 new ParallelTask(
                         new UnboundedIntakeTask(robot, 0.7, false),
                         new BlockerTask(robot, BlockerTask.Position.OPEN),
