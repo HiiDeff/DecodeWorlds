@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
 @Config
-public class Robot1 extends RobotBase {
+public class Robot2 extends RobotBase {
 
     // Constants
     public static double KICKER_UP = -1, KICKER_DOWN = 0.60;
@@ -94,7 +94,7 @@ public class Robot1 extends RobotBase {
     public static double BRAKING_STRENGTH = 0.8;
     public static double BRAKING_START = 1;
 
-    public Robot1(HardwareMap hardwareMap) {
+    public Robot2(HardwareMap hardwareMap) {
         super(hardwareMap, FOLLOWER_CONSTANTS, DRIVE_CONSTANTS,
                 new PinpointLocalizer(hardwareMap, PINPOINT_CONSTANTS),
                 getPathConstraints()
