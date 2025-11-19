@@ -24,7 +24,7 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
     private Position goalPose = null;
     private Pose robotPose = null; // center is limelight
     private AprilTagType motif = null;
-    public static double GOAL_OFFSET_TO_ATAG_INCH = -7.0;
+    public static double GOAL_OFFSET_TO_ATAG_INCH = -10.0; // previously -7
     private static ElapsedTime elapsedTime;
 
     public LimelightAprilTagDetector(Limelight3A limelight, LimelightConfig LLConfig) {
@@ -38,7 +38,7 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
     @Override
     protected void update() {
         if(elapsedTime==null) elapsedTime = new ElapsedTime();
-        Log.i("edbug loop times", elapsedTime.milliseconds()+"");
+        Log.i("edbug ll loop times", elapsedTime.milliseconds()+"");
         elapsedTime.reset();
         fiducialResults = result.getFiducialResults();
         robotPose = null;

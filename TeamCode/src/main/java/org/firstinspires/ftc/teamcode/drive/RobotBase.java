@@ -119,8 +119,8 @@ public abstract class RobotBase extends MecanumDrive {
         updateEncoders();
         updateProfilers();
         updatePIDs();
-        updateLimelight();
-        updateSensors(); //handled by thread
+//        updateLimelight();
+//        updateSensors(); //handled by thread
     }
 
     private void updatePoseEstimate() {
@@ -138,7 +138,7 @@ public abstract class RobotBase extends MecanumDrive {
     private void updateProfilers() {}
 
     private void updatePIDs() {
-        if(flywheelOn) setFlywheelPower(flywheelPID.getPower());
+        setFlywheelPower(flywheelPID.getPower());
     }
 
     ///////////////////* INTAKE UTILS *///////////////////
@@ -190,7 +190,7 @@ public abstract class RobotBase extends MecanumDrive {
     public abstract VelocityPIDCoefficients getVelocityPIDCoefficients();
 
     public void setFlywheelPower(double power){
-        if(flywheelPID.getTarget()==0) power = 0; //cut power
+        if(!flywheelOn || flywheelPID.getTarget()==0) power = 0; //cut power
         leftFlywheel.setPower(Utils.clamp(power, -1, 1));
         rightFlywheel.setPower(Utils.clamp(power, -1, 1));
     }
@@ -215,6 +215,9 @@ public abstract class RobotBase extends MecanumDrive {
     public boolean flywheelAtTarget(){
         return flywheelPID.isDone();
     }
+
+    public abstract double calcPivotPosition();
+    public abstract int calcFlywheelRpm();
 
     ///////////////////* PIVOT UTILS *///////////////////
     public abstract double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position);
@@ -242,8 +245,7 @@ public abstract class RobotBase extends MecanumDrive {
     public void setLimelightAllianceColor(boolean isRedAlliance) {
         limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
-    private void updateLimelight() {
-
+    public void updateLimelight() { // public for teleop
         limelightAprilTagDetector.updateLimelight();
     }
     public void stopLimelight() {

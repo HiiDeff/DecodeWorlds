@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.KickerTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
+import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
 @Config
@@ -28,6 +29,31 @@ public class Robot1 extends RobotBase {
     public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.31, PIVOT_FAR = 0.48; //all the way down is 0.07, all the way up is 0.5
     public static double BLOCKER_BLOCKING = 0.65, BLOCKER_NONBLOCKING = 0.9;
 
+    // Flywheel Tuning Vals
+    public static double pivotCoef[] = {
+            -5.425385,
+            0.9716465,
+            -0.07182935,
+            0.00294599,
+            -0.00007341627,
+            0.00000115468,
+            -1.150426 * Math.pow(10.0, -8.0),
+            7.03051 * Math.pow(10.0, -11.0),
+            -2.400906 * Math.pow(10.0, -13.0),
+            3.503716 * Math.pow(10.0, -16.0)
+    };
+    public static double rpmCoef[] = {
+            -6775.27473,
+            1568.71241,
+            -110.08847,
+            4.2639629,
+            -0.10028502,
+            0.0014919149,
+            -0.000014100386,
+            8.2002501 * Math.pow(10.0, -8.0),
+            -2.674096 * Math.pow(10.0, -10.0),
+            3.7399219 * Math.pow(10.0, -13.0)
+    };
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
@@ -50,8 +76,8 @@ public class Robot1 extends RobotBase {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
-            .xVelocity(83.4698026161)
-            .yVelocity(67.4000716723)
+            .xVelocity(74)
+            .yVelocity(62)
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
@@ -120,5 +146,29 @@ public class Robot1 extends RobotBase {
             case CLOSE:
                 return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE: PIVOT_CLOSE;
         }
+    }
+
+    @Override
+    public double calcPivotPosition() {
+        double distToGoalInch = Utils.clamp(getDistToGoalInches(), 20, 120);
+        double pos = 0;
+        double pow = 1;
+        for (double v : pivotCoef) {
+            pos += pow * v;
+            pow *= distToGoalInch;
+        }
+        return pos;
+    }
+
+    @Override
+    public int calcFlywheelRpm() {
+        double distToGoalInch = Utils.clamp(getDistToGoalInches(), 20, 140);
+        double rpm = 0;
+        double pow = 1;
+        for(double v: rpmCoef) {
+            rpm += pow *  v;
+            pow *= distToGoalInch;
+        }
+        return (int) rpm;
     }
 }
