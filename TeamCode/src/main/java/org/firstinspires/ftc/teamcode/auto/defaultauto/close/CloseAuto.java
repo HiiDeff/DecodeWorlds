@@ -144,9 +144,11 @@ public abstract class CloseAuto extends AutoBase {
                                                 .build();
                                     }
                             ),
-                            new UnboundedIntakeTask(robot, 0.1, false)
+                            new UnboundedIntakeTask(robot, 0.4, false)
                     )
-            );}
+            );
+            task.add(new SleepTask(300));
+        }
         task.add(new SleepTask(70));
         task.add(
                 new ParallelTask(
@@ -158,7 +160,7 @@ public abstract class CloseAuto extends AutoBase {
                                     else if(cycleNumber==3) pose = getShoot4Pose();
                                     if(cycleNumber==1){
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-65, 25), pose.getPose()))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-80, -20*getSign()), pose.getPose()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }
@@ -169,7 +171,7 @@ public abstract class CloseAuto extends AutoBase {
                                 }
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                        new UnboundedIntakeTask(robot, 0.1, false)
+                        new UnboundedIntakeTask(robot, 0.4, false)
                 )
         );
         task.add(new SleepTask(100));

@@ -135,7 +135,7 @@ public abstract class FarAuto extends AutoBase {
         );
         if(cycleNumber==1){
         task.add(
-                new SeriesTask(
+                new ParallelTask(
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
@@ -145,10 +145,12 @@ public abstract class FarAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 }
-                        )
+                        ),
+                        new UnboundedIntakeTask(robot, 0.4, false)
                 )
-        );}
-        task.add(new SleepTask(200));
+        );
+        task.add(new SleepTask(300));}
+        task.add(new SleepTask(70));
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
@@ -159,7 +161,7 @@ public abstract class FarAuto extends AutoBase {
                                     else if(cycleNumber==3) pose = getShoot4Pose();
                                     if(cycleNumber==1){
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(32, -5), pose.getPose()))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(32, -5*getSign()), pose.getPose()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }
@@ -169,6 +171,7 @@ public abstract class FarAuto extends AutoBase {
                                             .build();
                                 }
                         ),
+                        new UnboundedIntakeTask(robot, 0.4, false),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2000)
                 )
         );
