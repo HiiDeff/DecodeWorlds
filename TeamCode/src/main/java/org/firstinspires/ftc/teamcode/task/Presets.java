@@ -10,12 +10,12 @@ public class Presets {
     public static int SHOOT_TIME = 2000;
 
     //assume velocity and pivot position are already set
-    public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt){
+    public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt, PivotTask.Position pivotPos){
 
         return new SeriesTask(
                 new ParallelTask(
-                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID),
+                        new PivotTask(robot, PivotTask.WhichPivot.LEFT,pivotPos),
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, pivotPos),
                         new FlywheelTask(robot, targetRPM, 2000)
                 ),
                 new ParallelTask(
@@ -51,8 +51,8 @@ public class Presets {
 //        return finalTask;
     }
 
-    public static SeriesTask createShootTask(RobotBase robot, int targetRPM){
-        return createShootTask(robot, targetRPM, 1);
+    public static SeriesTask createShootTask(RobotBase robot, int targetRPM, PivotTask.Position pivotPos){
+        return createShootTask(robot, targetRPM, 1, pivotPos);
     }
 
     public static Task createUnjammingTask(RobotBase robot) {

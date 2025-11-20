@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class TestAutoPath extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2950;
+    public static int FLYWHEEL_VELOCITY = 3950;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -85,7 +85,7 @@ public abstract class TestAutoPath extends AutoBase {
                 )
         );*/
         task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));
+        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
         task.add(new SeriesTask(
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new KickerTask(robot, KickerTask.Direction.DOWN, 100)
@@ -131,7 +131,7 @@ public abstract class TestAutoPath extends AutoBase {
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
-        if(cycleNumber==1){
+        /*if(cycleNumber==1){
         task.add(
                 new SeriesTask(
                         new RuntimeDrivingTask(
@@ -145,7 +145,7 @@ public abstract class TestAutoPath extends AutoBase {
                                 }
                         )
                 )
-        );}
+        );}*/
         task.add(new SleepTask(200));
         task.add(
                 new ParallelTask(
@@ -155,12 +155,6 @@ public abstract class TestAutoPath extends AutoBase {
                                 Pose pose = getShoot2Pose();
                                 if(cycleNumber==2) pose = getShoot3Pose();
                                 else if(cycleNumber==3) pose = getShoot4Pose();
-                                if(cycleNumber==1){
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(), new Pose(-65, 25), pose.getPose()))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                }
                                 return builder
                                         .addPath(new BezierCurve(robot.getPose(), pose))
                                         .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
@@ -171,7 +165,7 @@ public abstract class TestAutoPath extends AutoBase {
                 )
         );
         task.add(new SleepTask(200));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3));
+        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
         task.add(new SeriesTask(
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new KickerTask(robot, KickerTask.Direction.DOWN, 100)
@@ -212,6 +206,6 @@ public abstract class TestAutoPath extends AutoBase {
     protected abstract Pose getParkPose();
     protected abstract Pose getIntake1ForwardPose();
     protected abstract Pose getIntake2ForwardPose();
-    protected abstract Pose getIntake3ForwardPose();
 
+    protected abstract Pose getIntake3ForwardPose();
 }

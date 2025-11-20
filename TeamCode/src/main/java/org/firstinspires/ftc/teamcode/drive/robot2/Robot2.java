@@ -26,7 +26,11 @@ public class Robot2 extends RobotBase {
     // Constants
     public static double KICKER_UP = -1, KICKER_DOWN = 0.60;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.00008, 0.0, 0.0,0.0005);
-    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.3, PIVOT_FAR = 0.48; //all the way down is 0.07, all the way up is 0.5
+    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.29, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
+
+    //CLOSE is 20 inches
+    //MID is 53 inches
+    //FAR is 115 inches
     public static double BLOCKER_BLOCKING = 0.65, BLOCKER_NONBLOCKING = 0.9;
 
     // Flywheel Tuning Vals

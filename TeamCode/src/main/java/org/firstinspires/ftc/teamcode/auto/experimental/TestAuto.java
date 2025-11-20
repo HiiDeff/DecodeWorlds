@@ -45,22 +45,22 @@ public class TestAuto extends TestAutoPath {
          */
         // close auto: shoot pos is 58 inches from goal
 
-        SHOOT_1_X = -42.084; SHOOT_1_Y = 14.637; SHOOT_1_H = -0.149;
-        SHOOT_2_X = -42.084; SHOOT_2_Y = 14.637; SHOOT_2_H = -0.149;
-        SHOOT_3_X = -42.084; SHOOT_3_Y = 14.637; SHOOT_3_H = -0.149;
+        SHOOT_1_X = 8.493; SHOOT_1_Y = 0.686; SHOOT_1_H = 0.390;
+        SHOOT_2_X = 8.493; SHOOT_2_Y = 0.686; SHOOT_2_H = 0.390;
+        SHOOT_3_X = 8.493; SHOOT_3_Y = 0.686; SHOOT_3_H = 0.390;
 
 //        SHOOT_1_X = 47.743; SHOOT_1_Y = -1.066; SHOOT_1_H = -2.35;
-        INTAKE_1_X = -56.027; INTAKE_1_Y = 44.911; INTAKE_1_H = 0.662;
-        INTAKE_FORWARD_1_X = -42.217; INTAKE_FORWARD_1_Y = 56.216; INTAKE_FORWARD_1_H = 0.662;
+        INTAKE_1_X = 27.893; INTAKE_1_Y = 14.743; INTAKE_1_H = Math.PI/2;
+        INTAKE_FORWARD_1_X = 27.893; INTAKE_FORWARD_1_Y = 32.840; INTAKE_FORWARD_1_H = Math.PI/2;
 //        SHOOT_2_X = 45.743; SHOOT_2_Y = -3.066; SHOOT_2_H = -2.35;
-        INTAKE_2_X = -41.743; INTAKE_2_Y = 26.299; INTAKE_2_H = 0.656;
-        INTAKE_FORWARD_2_X = -27.902; INTAKE_FORWARD_2_Y = 37.528; INTAKE_FORWARD_2_H = 0.656;
+        INTAKE_2_X = 50.394; INTAKE_2_Y = 13.582; INTAKE_2_H = Math.PI/2;
+        INTAKE_FORWARD_2_X = 50.394; INTAKE_FORWARD_2_Y = 32.220; INTAKE_FORWARD_2_H = Math.PI/2;
 //        SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
-        INTAKE_3_X = -69.944; INTAKE_3_Y = 64.110; INTAKE_3_H = 0.614;
-        INTAKE_FORWARD_3_X = -52.197; INTAKE_FORWARD_3_Y = 78.521; INTAKE_FORWARD_3_H = 0.686;
-        SHOOT_4_X = -42.084; SHOOT_4_Y = 14.637; SHOOT_4_H = -0.149;
-        GATE_X = -33.681; GATE_Y = 55.217; GATE_H = 2.275;
-        PARK_X = -52.456; PARK_Y = 30; PARK_H = -0.325;
+        INTAKE_3_X = 74.885; INTAKE_3_Y = 13.874; INTAKE_3_H = Math.PI/2;
+        INTAKE_FORWARD_3_X = 74.885; INTAKE_FORWARD_3_Y = 31.516; INTAKE_FORWARD_3_H = Math.PI/2;
+        SHOOT_4_X = 8.493; SHOOT_4_Y = 0.686; SHOOT_4_H = 0.390;
+        GATE_X = 56.620; GATE_Y = 37.334; GATE_H = Math.PI;
+        PARK_X = 25.113; PARK_Y = 5.868; PARK_H = 0.390;
     }
 
     @Override
