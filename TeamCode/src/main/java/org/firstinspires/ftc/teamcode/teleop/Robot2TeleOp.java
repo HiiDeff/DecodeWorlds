@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.util.GamePad;
 public abstract class Robot2TeleOp extends LinearOpMode {
     public static int FLYWHEEL_TARGET_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
     public static double PIVOT_TARGET_POS = 0.07, MANUAL_OVERRIDE_PIVOT_POS = 0.07;
-    public static double FLYWHEEL_ON_INTAKE_POWER = 0.7;
+    public static double FLYWHEEL_ON_INTAKE_POWER = 0.7, INTAKE_IDLE_POWER = 0.3;
     public static TeleOpState state;
     public static double drivePow = 0.0;
     private Task task;
@@ -147,7 +147,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
             robot.runIntakeReversed();
         }
         else if(task==null) {
-            robot.stopIntake();
+            robot.runIntakeWithPower(INTAKE_IDLE_POWER);
         }
     }
 
