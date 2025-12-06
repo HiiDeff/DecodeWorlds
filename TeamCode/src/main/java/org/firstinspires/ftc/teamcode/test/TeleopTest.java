@@ -86,7 +86,10 @@ public class TeleopTest extends LinearOpMode {
             robot.updateLimelight();
 
             robot.updateRobotPoseUsingLimelight();
-            multipleTelemetry.addData("robot position using limelight", robot.getPose().getX()+" "+robot.getPose().getY());
+            Pose limelightPose = robot.getLimelightRobotPose();
+            multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
+            Pose offsetPose = robot.limelightTransOffset;
+            multipleTelemetry.addData("robot offset using limelight", offsetPose.getX()+" "+offsetPose.getY()+" "+offsetPose.getHeading());
 
             if(turretActive) {
                 robot.setTurretTargetPosition(TURRET_TARGET_RAD);

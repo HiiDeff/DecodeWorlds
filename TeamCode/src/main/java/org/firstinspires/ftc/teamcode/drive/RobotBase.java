@@ -34,7 +34,7 @@ public abstract class RobotBase extends MecanumDrive {
     // Constants
     public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
-    public static double TURRET_TICKS_PER_RAD = 384.5*2.0/Math.PI;
+    public static double TURRET_TICKS_PER_RAD = 384.5*2.0;
 
     // Common
     protected final HardwareMap hardwareMap;
@@ -71,6 +71,8 @@ public abstract class RobotBase extends MecanumDrive {
 
     // States
     public final ArtifactState artifactState;
+    public Pose limelightRobotPose; // estimated robot pose if limelight sees ATag, otherwise null
+    public Pose limelightTransOffset = new Pose(0, 0); //offset values based on last seen ATag values
 
     // Cached Encoder Values
     private double flywheelVelocityTicksPerSecond = 0.0;
@@ -267,7 +269,7 @@ public abstract class RobotBase extends MecanumDrive {
     public void setLimelightAllianceColor(boolean isRedAlliance) {
         limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
-    public void updateLimelight() { // public for teleop
+    public void updateLimelight() { // public for teleop usage
         limelightAprilTagDetector.updateLimelight();
     }
     public void stopLimelight() {
@@ -275,10 +277,20 @@ public abstract class RobotBase extends MecanumDrive {
     }
     public void updateRobotPoseUsingLimelight() {
         Pose limelightFieldPose = limelightAprilTagDetector.getLimelightFieldPose();
-        if(limelightFieldPose != null) {
-            Pose robotPose = turret.calcRobotPose(limelightFieldPose);
-            this.setPose(new Pose(robotPose.getX(), robotPose.getY(), this.getIMUHeading()));
+        if(limelightFieldPose != null) { // if ATag is detected
+            limelightRobotPose = turret.calcRobotPose(limelightFieldPose); //returns null if angular velocity exceeds threshold
+        } else {
+            limelightRobotPose = null;
         }
+        if(limelightRobotPose != null) {
+            limelightTransOffset = new Pose(
+                limelightRobotPose.getX()-getPose().getX(),
+                limelightRobotPose.getY()-getPose().getY()
+            );
+        }
+    }
+    public Pose getLimelightRobotPose() {
+        return (limelightRobotPose==null) ? getPose().copy().plus(limelightTransOffset) : limelightRobotPose;
     }
     public double getDistToGoalInches() {
         double dist = this.getPose().distanceFrom(new Pose()) + LLConfig.xOffset;

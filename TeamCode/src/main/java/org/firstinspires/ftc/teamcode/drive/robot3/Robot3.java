@@ -86,7 +86,7 @@ public class Robot3 extends RobotBase {
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
             .forwardPodY(-1.5)
-            .strafePodX(-6.25)
+            .strafePodX(-6.125)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
@@ -13,11 +14,14 @@ import org.firstinspires.ftc.teamcode.util.pid.PIDModel;
 @Config
 public class Turret extends PIDModel {
 
-    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 5.0;
-    public static double TURRET_DIST_TO_ROBOT_CENTER_INCH = 3.5;
+    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 5.25;
+    public static double TURRET_DIST_TO_ROBOT_CENTER_INCH = 3.75;
     private final RobotBase robot;
     private final double ticksPerRadian;
     private int targetAngle;
+    private double prevLimelightHeading = 0.0;
+    private ElapsedTime timer = null;
+    public static double THRESHOLD_RAD_PER_SEC = 0.3, THRESHOLD_ROBOT_VELOCITY = 10; //tuned
     public Turret(RobotBase robot, PIDCoefficients pidCoefficients, double ticksPerRadian) {
         super(pidCoefficients);
         this.robot = robot;
@@ -25,19 +29,48 @@ public class Turret extends PIDModel {
     }
 
     public Pose calcRobotPose(Pose limelightPose) {
-        double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian;
-        double robotHeading = robot.getIMUHeading();
+        double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian*Math.PI;
+        double robotHeading = robot.getHeading();
         double limelightHeading = Utils.normalize(robotHeading+turretAngleRad);
-        Log.i("edbug vals", turretAngleRad+" "+robotHeading+" "+limelightHeading);
+
+        if(timer == null || timer.seconds() >= 1) { //haven't used calcRobotPose in a while
+            timer = new ElapsedTime();
+            prevLimelightHeading = limelightHeading;
+            return null;
+        } else {
+            double dTheta_dT = (limelightHeading-prevLimelightHeading)/timer.seconds();
+            Log.i("edbug turret dTheta_dT", dTheta_dT+"");
+            prevLimelightHeading = limelightHeading;
+            timer.reset();
+            if(Math.abs(dTheta_dT)>THRESHOLD_RAD_PER_SEC) return null;
+        }
+        Log.i("edbug robot velocity", robot.getVelocity().getMagnitude()+"");
+        if(robot.getVelocity().getMagnitude()>THRESHOLD_ROBOT_VELOCITY) return null;
+
         Vector toTurretCenter = new Vector(-LIMELIGHT_DIST_TO_TURRET_CENTER_INCH, limelightHeading);
-        Log.i("ndbug turret center vector", toTurretCenter.getXComponent() + " " + toTurretCenter.getYComponent());
         Pose turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
-        Log.i("ndbug turrent center pose", turretCenter.getX() + " " + turretCenter.getY() + " " + turretCenter.getHeading());
         Vector toRobotCenter = new Vector(TURRET_DIST_TO_ROBOT_CENTER_INCH, robotHeading);
-        Log.i("ndbug robot center vector", toRobotCenter.getXComponent() + " " + toRobotCenter.getYComponent());
         Pose robotPose = turretCenter.plus(new Pose(toRobotCenter.getXComponent(), toRobotCenter.getYComponent(), robotHeading));
+
+        Log.i("edbug vals", turretAngleRad+" "+robotHeading+" "+limelightHeading);
+        Log.i("ndbug turret center vector", toTurretCenter.getXComponent() + " " + toTurretCenter.getYComponent());
+        Log.i("ndbug turrent center pose", turretCenter.getX() + " " + turretCenter.getY() + " " + turretCenter.getHeading());
+        Log.i("ndbug robot center vector", toRobotCenter.getXComponent() + " " + toRobotCenter.getYComponent());
         Log.i("ndbug robot center pose", robotPose.getX() + " " + robotPose.getY() + " " + robotPose.getHeading());
-        return robotPose;
+
+        return robotPose.setHeading(robotHeading);
+    }
+
+    public double calcTurretAngleToGoal() {
+        double robotAngleToGoal = robot.limelightAprilTagDetector.getAngleToGoal(robot.getPose());
+
+        return 0.0;
+    }
+    public double calcTurretAngleToGoalWithVelocity() {
+
+
+
+        return 0.0;
     }
 
 

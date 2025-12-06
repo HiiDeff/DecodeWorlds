@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Vector;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -50,6 +51,11 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
                 limelightPose = new Pose(metersToInches(llPos.x), metersToInches(llPos.y), llAngles.getYaw(AngleUnit.RADIANS));
             }
         }
+    }
+    public double getAngleToGoal(Pose pose) {
+        Pose goalPose = isRedAlliance ? RED_GOAL_POSE : BLUE_GOAL_POSE;
+        Vector toGoal = new Vector(goalPose.minus(pose));
+        return toGoal.getTheta();
     }
 
     public Pose getLimelightFieldPose() {
