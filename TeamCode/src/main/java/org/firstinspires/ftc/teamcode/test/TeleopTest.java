@@ -68,7 +68,7 @@ public class TeleopTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         multipleTelemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = (RobotBase) RobotFactory.createRobot(hardwareMap);
-        robot.init(new Pose());
+        robot.init(new Pose(0, 0, Math.PI/2));
 
         gp1 = new GamePad(gamepad1);
         gp2 = new GamePad(gamepad2);

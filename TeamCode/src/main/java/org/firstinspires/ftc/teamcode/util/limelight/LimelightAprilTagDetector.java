@@ -48,15 +48,6 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
                 Log.i("edbug limelight pos", llAngles.getYaw()+" "+llAngles.getPitch()+" "+llAngles.getRoll());
                 Log.i("edbug limelight pos", metersToInches(llPos.x)+" "+metersToInches(llPos.y)+" "+metersToInches(llPos.z));
                 limelightPose = new Pose(metersToInches(llPos.x), metersToInches(llPos.y), llAngles.getYaw(AngleUnit.RADIANS));
-
-//                double x = metersToInches(-goalPose.z);
-//                double y = metersToInches(goalPose.x);
-//                double a = Math.atan2(y,-x);
-//                double dist = Math.sqrt(x*x+y*y);
-//                Log.i("edbug limelight dist to goal", ""+Math.sqrt(x*x+y*y));
-//                if(dist>70) {
-//                    robotPose = new Pose(x, y, 0); //this was so annoying to debug
-//                }
             }
         }
     }

@@ -273,9 +273,10 @@ public abstract class RobotBase extends MecanumDrive {
         limelight.stop();
     }
     public void updateRobotPoseUsingLimelight() {
-        Pose newPose = limelightAprilTagDetector.getLimelightFieldPose();
-        if(newPose != null) {
-            this.setPose(newPose);
+        Pose limelightFieldPose = limelightAprilTagDetector.getLimelightFieldPose();
+        if(limelightFieldPose != null) {
+            Pose robotPose = turret.calcRobotPose(limelightFieldPose);
+            this.setPose(robotPose);
         }
     }
     public double getDistToGoalInches() {

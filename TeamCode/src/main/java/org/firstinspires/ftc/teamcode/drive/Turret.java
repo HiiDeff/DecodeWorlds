@@ -21,9 +21,10 @@ public class Turret extends PIDModel {
 
     public Pose calcRobotPose(Pose limelightPose) {
         double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian;
-        Vector toTurretCenter = limelightPose.getHeadingAsUnitVector().times(-LIMELIGHT_DIST_TO_TURRET_CENTER_INCH);
+        double robotHeading = robot.getHeading();
+        double limelightHeading = robotHeading+turretAngleRad;
+        Vector toTurretCenter = new Vector(limelightHeading, -LIMELIGHT_DIST_TO_TURRET_CENTER_INCH);
         Pose turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
-        double robotHeading = limelightPose.getHeading()-turretAngleRad;
         Vector toRobotCenter = new Vector(TURRET_DIST_TO_ROBOT_CENTER_INCH, robotHeading);
         Pose robotPose = turretCenter.plus(new Pose(toRobotCenter.getXComponent(), toRobotCenter.getYComponent(), robotHeading));
         return robotPose;
