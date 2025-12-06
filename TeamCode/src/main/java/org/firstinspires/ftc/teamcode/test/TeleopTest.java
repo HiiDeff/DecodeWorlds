@@ -54,7 +54,7 @@ public class TeleopTest extends LinearOpMode {
     // Pivot FULL EXTENSION: 1
     public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.7;
     public static double TURRET_TICKS_PER_RADIANS = 103.8*2.0, TURRET_TARGET_RAD = 0.0;
-    public static boolean isRed = true;
+    public static boolean isRed = false;
     public static boolean rampUp, flywheelActive, aiming, autoaim = false, turretActive = true;
     private Task task;
 
