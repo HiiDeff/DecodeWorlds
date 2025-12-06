@@ -19,13 +19,13 @@ import java.util.List;
 @Config
 public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
-    protected List<LLResultTypes.FiducialResult> fiducialResults;
+    public static Pose RED_GOAL_POSE = new Pose(132, 132);
+    public static Pose BLUE_GOAL_POSE = new Pose(12, 132);
+
     private boolean isRedAlliance = false;
-    private Position goalPose = null;
-    private Pose robotPose = null; // center is limelight
     private AprilTagType motif = null;
+    private Pose limelightPose = null;
     public static double GOAL_OFFSET_TO_ATAG_INCH = -10.0; // previously -7
-    private static ElapsedTime elapsedTime;
 
     public LimelightAprilTagDetector(Limelight3A limelight, LimelightConfig LLConfig) {
         super(limelight, LLConfig);
@@ -37,42 +37,30 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
     @Override
     protected void update() {
-        if(elapsedTime==null) elapsedTime = new ElapsedTime();
-        Log.i("edbug ll loop times", elapsedTime.milliseconds()+"");
-        elapsedTime.reset();
-        fiducialResults = result.getFiducialResults();
-        robotPose = null;
-        Log.i("edbug", fiducialResults.size()+" ");
-        for(LLResultTypes.FiducialResult aTag: fiducialResults) {
+        limelightPose = null;
+        for(LLResultTypes.FiducialResult aTag: result.getFiducialResults()) {
             AprilTagType type = AprilTagType.getAprilTagType(aTag.getFiducialId());
-            Log.i("edbug atag", isRedAlliance+"");
-            Log.i("edbug atag", (type==AprilTagType.BLUE_GOAL)+"");
             if(type.isMotif()) {
                 motif = type;
             } else if(isRedAlliance ^ (type == AprilTagType.BLUE_GOAL)) {
-                Pose3D targetPose = aTag.getTargetPoseCameraSpace();
-                Log.i("edbug raw goal pose", targetPose.getPosition().x+" "+targetPose.getPosition().y+" "+targetPose.getPosition().z);
-                goalPose = pointBehindTag(targetPose, inchesToMeters(GOAL_OFFSET_TO_ATAG_INCH));
-                Log.i("edbug transformed goal pose", goalPose.x+" "+goalPose.y+" "+goalPose.z);
+                Position llPos = aTag.getRobotPoseFieldSpace().getPosition();
+                Log.i("edbug limelight pos", llPos.x+" "+llPos.y+" "+llPos.z);
+                limelightPose = new Pose(llPos.z, llPos.x);
 
-                double x = metersToInches(-goalPose.z);
-                double y = metersToInches(goalPose.x);
-                double a = Math.atan2(y,-x);
-                double dist = Math.sqrt(x*x+y*y);
-                Log.i("edbug limelight dist to goal", ""+Math.sqrt(x*x+y*y));
-                if(dist>70) {
-                    robotPose = new Pose(x, y, 0); //this was so annoying to debug
-                }
+//                double x = metersToInches(-goalPose.z);
+//                double y = metersToInches(goalPose.x);
+//                double a = Math.atan2(y,-x);
+//                double dist = Math.sqrt(x*x+y*y);
+//                Log.i("edbug limelight dist to goal", ""+Math.sqrt(x*x+y*y));
+//                if(dist>70) {
+//                    robotPose = new Pose(x, y, 0); //this was so annoying to debug
+//                }
             }
         }
     }
 
-    public Position getGoalPose() {
-        return goalPose;
-    }
-
-    public Pose getRobotPose() {
-        return robotPose;
+    public Pose getLimelightFieldPose() {
+        return limelightPose;
     }
 
     public AprilTagType getMotif() {

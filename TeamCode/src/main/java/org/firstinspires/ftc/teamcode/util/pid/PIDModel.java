@@ -47,8 +47,9 @@ public abstract class PIDModel {
 //            if (!integralStarted){
 //                integralStarted = true;
 //            }
-            if (absolutePower < minPower && Math.abs(dError_dT) < getStopErrorDerivative() && Math.abs(error) > getStopError()) {
-                power = error > 0 ? minPower : -minPower;
+            if (absolutePower < minPower && Math.abs(error) < getStopError()) { // Math.abs(dError_dT) < getStopErrorDerivative() &&
+                //power = error > 0 ? minPower : -minPower;
+                power = 0;
             }
         }
         lastError = error;

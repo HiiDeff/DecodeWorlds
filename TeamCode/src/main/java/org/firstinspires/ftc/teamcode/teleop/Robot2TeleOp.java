@@ -13,8 +13,9 @@ import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.IntakeTask;
-import org.firstinspires.ftc.teamcode.task.KickerTask;
+import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
+import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 
@@ -95,7 +96,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
                 }
                 robot.updateRobotPoseUsingLimelight(); // only update robot pose here
                 robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-                robot.kicker.setPower(0);
+                robot.setRampPosition(RampTask.Position.DOWN);
                 robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
                 robot.startTeleopDrive();
             }
@@ -107,7 +108,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
                     task = null;
                 }
                 robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-                robot.kicker.setPower(0);
+                robot.setRampPosition(RampTask.Position.DOWN);
                 robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
                 robot.startTeleopDrive();
             }
@@ -127,7 +128,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
             task = new ParallelTask(
                     new BlockerTask(robot, BlockerTask.Position.OPEN),
                     new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, 150000),
-                    new KickerTask(robot, KickerTask.Direction.UP, 150000)
+                    new RampTask(robot, RampTask.Position.DOWN)
             );
         } else if(drivePow>0.25) {
             if(task != null) {
@@ -135,7 +136,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
                 task = null;
             }
             robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-            robot.kicker.setPower(0);
+            robot.setRampPosition(RampTask.Position.DOWN);
         }
     }
 
@@ -163,7 +164,8 @@ public abstract class Robot2TeleOp extends LinearOpMode {
             task = new ParallelTask(
                     new BlockerTask(robot, BlockerTask.Position.OPEN),
                     new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, 150000),
-                    new KickerTask(robot, KickerTask.Direction.UP, 150000)
+                    new RampTask(robot, RampTask.Position.UP),
+                    new SleepTask(15000)
             );
         }
     }

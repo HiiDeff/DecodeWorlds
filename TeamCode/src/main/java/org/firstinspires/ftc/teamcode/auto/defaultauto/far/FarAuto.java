@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto.defaultauto.far;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -10,7 +8,7 @@ import com.pedropathing.geometry.Pose;
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
-import org.firstinspires.ftc.teamcode.task.KickerTask;
+import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
@@ -90,7 +88,7 @@ public abstract class FarAuto extends AutoBase {
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
         task.add(new SeriesTask(
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new KickerTask(robot, KickerTask.Direction.DOWN, 100)
+                new RampTask(robot, RampTask.Position.DOWN)
         ));
         return task;
     }
@@ -179,7 +177,7 @@ public abstract class FarAuto extends AutoBase {
         task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
         task.add(new SeriesTask(
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new KickerTask(robot, KickerTask.Direction.DOWN, 100)
+                new RampTask(robot, RampTask.Position.DOWN)
         ));
         return task;
     }

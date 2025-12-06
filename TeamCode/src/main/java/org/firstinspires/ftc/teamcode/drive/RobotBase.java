@@ -11,7 +11,6 @@ import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,12 +18,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
-import org.firstinspires.ftc.teamcode.task.KickerTask;
+import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.limelight.AprilTagType;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightAprilTagDetector;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
+import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
 @Config
@@ -33,6 +33,7 @@ public abstract class RobotBase extends MecanumDrive {
     // Constants
     public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
+    public static double TURRET_TICKS_PER_RAD = 384.5*2.0;
 
     // Common
     protected final HardwareMap hardwareMap;
@@ -40,36 +41,39 @@ public abstract class RobotBase extends MecanumDrive {
     // Motors
     public final DcMotorEx leftFlywheel;
     public final DcMotorEx rightFlywheel;
-    private boolean flywheelOn;
     public final FlywheelPID flywheelPID;
+    private boolean flywheelOn;
+    public final DcMotorEx turretMotor;
+    private final Turret turret;
+    private boolean turretOn;
+    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.01, 0.0, 0.4);
     public final DcMotorEx intake;
     private boolean intakeOn;
 
     // Servos
     public final Servo leftPivot;
     public final Servo rightPivot;
-
     public final Servo blocker;
-
-    public final CRServo kicker;
+    public final Servo ramp;
 
     // Sensors
     public final RevColorSensorV3 leftColorSensor;
     public final RevColorSensorV3 rightColorSensor;
 
     // Camera
-    public Limelight3A limelight;
-    public LimelightAprilTagDetector limelightAprilTagDetector;
+    public final Limelight3A limelight;
+    public final LimelightAprilTagDetector limelightAprilTagDetector;
     public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
             0, 54,41,
-            1.5,0,0);
+            -3,0,0);
     public static int APRIL_TAG_PIPELINE = 1;
 
     // States
-    ArtifactState artifactState;
+    public final ArtifactState artifactState;
 
     // Cached Encoder Values
     private double flywheelVelocityTicksPerSecond = 0.0;
+    private int turretAngleTicks = 0;
 
     public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
         super(hardwareMap, followerConstants, driveConstants, localizer, pathConstraints);
@@ -78,6 +82,9 @@ public abstract class RobotBase extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
         // Motors:
+        turretMotor = hardwareMap.get(DcMotorEx.class, "turret");
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFlywheel = hardwareMap.get(DcMotorEx.class, "leftFlywheel");
         leftFlywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFlywheel = hardwareMap.get(DcMotorEx.class, "rightFlywheel");
@@ -85,13 +92,16 @@ public abstract class RobotBase extends MecanumDrive {
         leftFlywheel.setDirection(DcMotor.Direction.REVERSE);
         flywheelOn = false;
         intake = hardwareMap.get(DcMotorEx.class, "intake");
+        intake.setDirection(DcMotor.Direction.REVERSE);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeOn = false;
         // Servos:
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
+        leftPivot.setDirection(Servo.Direction.REVERSE);
+        rightPivot.setDirection(Servo.Direction.REVERSE);
         blocker = hardwareMap.get(Servo.class, "blocker");
-        kicker = hardwareMap.get(CRServo.class, "rollerKicker");
+        ramp = hardwareMap.get(Servo.class, "ramp");
         // Sensors:
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
@@ -100,6 +110,7 @@ public abstract class RobotBase extends MecanumDrive {
         limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
         // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
+        turret = new Turret(this, TURRET_PID_COEFFICIENTS, TURRET_TICKS_PER_RAD);
         artifactState = new ArtifactState(this);
     }
 
@@ -129,6 +140,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     private void updateEncoders() {
         flywheelVelocityTicksPerSecond = leftFlywheel.getVelocity();
+        turretAngleTicks = turretMotor.getCurrentPosition();
     }
 
     public void updateSensors() { //public for multithreading
@@ -139,6 +151,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     private void updatePIDs() {
         setFlywheelPower(flywheelPID.getPower());
+        setTurretPower(turret.getPower());
     }
 
     ///////////////////* INTAKE UTILS *///////////////////
@@ -177,13 +190,10 @@ public abstract class RobotBase extends MecanumDrive {
 
 
     ///////////////////* KICKER UTILS *///////////////////
-    public abstract double getKickerPower(KickerTask.Direction direction);
+    public abstract double getRampPosition(RampTask.Position position);
 
-    public void setKickerPower(KickerTask.Direction direction){
-        kicker.setPower(getKickerPower(direction));
-    }
-    public void stopKicker(){
-        kicker.setPower(0);
+    public void setRampPosition(RampTask.Position position){
+        ramp.setPosition(getRampPosition(position));
     }
 
     ///////////////////* FLYWHEEL UTILS *///////////////////
@@ -219,6 +229,17 @@ public abstract class RobotBase extends MecanumDrive {
     public abstract double calcPivotPosition();
     public abstract int calcFlywheelRpm();
 
+    ///////////////////* TURRET UTILS *///////////////////
+    public void setTurretPower(double power){
+        turretMotor.setPower(Utils.clamp(power, -1, 1));
+    }
+    public void setTurretTargetPosition(double angleRad){
+        turret.setTargetAngle((int)(angleRad*TURRET_TICKS_PER_RAD));
+    }
+    public int getTurretAngleTicks() {
+        return turretAngleTicks;
+    }
+
     ///////////////////* PIVOT UTILS *///////////////////
     public abstract double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position);
 
@@ -252,7 +273,7 @@ public abstract class RobotBase extends MecanumDrive {
         limelight.stop();
     }
     public void updateRobotPoseUsingLimelight() {
-        Pose newPose = limelightAprilTagDetector.getRobotPose();
+        Pose newPose = limelightAprilTagDetector.getLimelightFieldPose();
         if(newPose != null) {
             this.setPose(newPose);
         }

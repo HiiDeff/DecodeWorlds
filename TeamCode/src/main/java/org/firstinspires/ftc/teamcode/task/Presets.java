@@ -21,7 +21,7 @@ public class Presets {
                 new ParallelTask(
                         new UnboundedIntakeTask(robot, 0.7, false),
                         new BlockerTask(robot, BlockerTask.Position.OPEN),
-                        new UnboundedKickerTask(robot, KickerTask.Direction.UP),
+                        new RampTask(robot, RampTask.Position.UP),
                         new SleepTask(SHOOT_TIME)
                 )
         );
@@ -63,13 +63,13 @@ public class Presets {
                         new ParallelTask(
                                 new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.FAR),
                                 new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.FAR),
-                                new UnboundedKickerTask(robot, KickerTask.Direction.UP)
+                                new RampTask(robot, RampTask.Position.UP)
                         ),
                         new SleepTask(500),
                         new ParallelTask(
                                 new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.CLOSE),
                                 new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.CLOSE),
-                                new UnboundedKickerTask(robot, KickerTask.Direction.DOWN)
+                                new RampTask(robot, RampTask.Position.DOWN)
                         ),
                         new SleepTask(500),
                         new ParallelTask(
