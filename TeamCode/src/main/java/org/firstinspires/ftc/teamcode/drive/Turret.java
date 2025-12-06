@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Vector;
+
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.PIDModel;
 
 public class Turret extends PIDModel {
 
-
+    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 6.0;
+    public static double TURRET_DIST_TO_ROBOT_CENTER_INCH = 2.75;
     private final RobotBase robot;
     private final double ticksPerRadian;
     private int targetAngle;
@@ -14,6 +18,19 @@ public class Turret extends PIDModel {
         this.robot = robot;
         this.ticksPerRadian = ticksPerRadian;
     }
+
+    public Pose calcRobotPose(Pose limelightPose) {
+        double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian;
+        Vector toTurretCenter = limelightPose.getHeadingAsUnitVector().times(-LIMELIGHT_DIST_TO_TURRET_CENTER_INCH);
+        Pose turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
+        double robotHeading = limelightPose.getHeading()-turretAngleRad;
+        Vector toRobotCenter = new Vector(TURRET_DIST_TO_ROBOT_CENTER_INCH, robotHeading);
+        Pose robotPose = turretCenter.plus(new Pose(toRobotCenter.getXComponent(), toRobotCenter.getYComponent(), robotHeading));
+        return robotPose;
+    }
+
+
+    // PID Control
     public void setTargetAngle(int targetAngleTicks) {
         targetAngle = targetAngleTicks;
     }

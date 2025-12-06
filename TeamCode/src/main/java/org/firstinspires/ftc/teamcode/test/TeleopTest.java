@@ -85,6 +85,9 @@ public class TeleopTest extends LinearOpMode {
             update();
             robot.updateLimelight();
 
+            Pose robotPose = robot.turret.calcRobotPose(robot.limelightAprilTagDetector.getLimelightFieldPose());
+            multipleTelemetry.addData("robot position using limelight", robotPose.getX()+" "+robotPose.getY());
+
             if(turretActive) {
                 robot.setTurretTargetPosition(TURRET_TARGET_RAD);
             } else {
@@ -141,8 +144,8 @@ public class TeleopTest extends LinearOpMode {
             gp1.update();
             gp2.update();
 
-            multipleTelemetry.addData("dist to goal", robot.getDistToGoalInches());
-            multipleTelemetry.addData("robot pos", robot.getPose().getX()+" "+robot.getPose().getY()+" "+robot.getPose().getHeading());
+//            multipleTelemetry.addData("dist to goal", robot.getDistToGoalInches());
+//            multipleTelemetry.addData("robot pos", robot.getPose().getX()+" "+robot.getPose().getY()+" "+robot.getPose().getHeading());
             multipleTelemetry.addData("current rpm", robot.getFlywheelVelocityRpm());
             multipleTelemetry.addData("target rpm", FLYWHEEL_RPM);
             multipleTelemetry.addData("turret pos", robot.getTurretAngleTicks());

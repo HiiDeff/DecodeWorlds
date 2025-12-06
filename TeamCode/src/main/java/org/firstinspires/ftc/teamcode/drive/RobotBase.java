@@ -44,7 +44,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final FlywheelPID flywheelPID;
     private boolean flywheelOn;
     public final DcMotorEx turretMotor;
-    private final Turret turret;
+    public final Turret turret;
     private boolean turretOn;
     public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.01, 0.0, 0.4);
     public final DcMotorEx intake;
