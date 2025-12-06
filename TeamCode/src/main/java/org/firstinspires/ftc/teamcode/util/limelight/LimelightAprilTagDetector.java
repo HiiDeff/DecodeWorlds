@@ -19,8 +19,8 @@ import java.util.List;
 @Config
 public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
-    public static Pose RED_GOAL_POSE = new Pose(132, 132);
-    public static Pose BLUE_GOAL_POSE = new Pose(12, 132);
+    public static Pose RED_GOAL_POSE = new Pose(-60, 60);
+    public static Pose BLUE_GOAL_POSE = new Pose(-60, -60);
 
     private boolean isRedAlliance = false;
     private AprilTagType motif = null;
@@ -46,8 +46,8 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
                 YawPitchRollAngles llAngles = aTag.getRobotPoseFieldSpace().getOrientation();
                 Position llPos = aTag.getRobotPoseFieldSpace().getPosition();
                 Log.i("edbug limelight pos", llAngles.getYaw()+" "+llAngles.getPitch()+" "+llAngles.getRoll());
-                Log.i("edbug limelight pos", llPos.x+" "+llPos.y+" "+llPos.z);
-                limelightPose = new Pose(llPos.y, llPos.x, llAngles.getYaw(AngleUnit.RADIANS));
+                Log.i("edbug limelight pos", metersToInches(llPos.x)+" "+metersToInches(llPos.y)+" "+metersToInches(llPos.z));
+                limelightPose = new Pose(metersToInches(llPos.x), metersToInches(llPos.y), llAngles.getYaw(AngleUnit.RADIANS));
 
 //                double x = metersToInches(-goalPose.z);
 //                double y = metersToInches(goalPose.x);
