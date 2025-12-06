@@ -45,7 +45,7 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
             } else if(isRedAlliance ^ (type == AprilTagType.BLUE_GOAL)) {
                 YawPitchRollAngles llAngles = aTag.getRobotPoseFieldSpace().getOrientation();
                 Position llPos = aTag.getRobotPoseFieldSpace().getPosition();
-                Log.i("edbug limelight pos", llAngles.getYaw()+" "+llAngles.getPitch()+" "+llAngles.getRoll());
+                //Log.i("edbug limelight pos", llAngles.getYaw()+" "+llAngles.getPitch()+" "+llAngles.getRoll());
                 Log.i("edbug limelight pos", metersToInches(llPos.x)+" "+metersToInches(llPos.y)+" "+metersToInches(llPos.z));
                 limelightPose = new Pose(metersToInches(llPos.x), metersToInches(llPos.y), llAngles.getYaw(AngleUnit.RADIANS));
             }

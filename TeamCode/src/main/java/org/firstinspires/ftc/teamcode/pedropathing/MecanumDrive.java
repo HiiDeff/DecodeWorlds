@@ -5,11 +5,15 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.Mecanum;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,15 +29,21 @@ public abstract class MecanumDrive extends Follower {
     // Pedro
     private static Mecanum mecanum;
     private List<DcMotorEx> motors; //leftFront, leftRear, rightFront, rightRear;
+    private GoBildaPinpointDriver pinpointDriver;
 
-    public MecanumDrive(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
+    public MecanumDrive(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, PinpointLocalizer localizer, PathConstraints pathConstraints) {
         super(followerConstants, localizer, createMecanum(hardwareMap, driveConstants), pathConstraints);
+        this.pinpointDriver = localizer.getPinpoint();
         motors = mecanum.getMotors();
     }
 
     private static Mecanum createMecanum(HardwareMap hardwareMap, MecanumConstants driveConstants) {
         mecanum = new Mecanum(hardwareMap, driveConstants);
         return mecanum;
+    }
+
+    public double getIMUHeading() {
+        return pinpointDriver.getHeading(AngleUnit.RADIANS);
     }
 
     public void init(Pose startPose) {

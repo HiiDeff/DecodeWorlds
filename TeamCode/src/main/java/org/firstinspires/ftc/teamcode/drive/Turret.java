@@ -1,15 +1,20 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.util.Log;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
 
+import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.PIDModel;
 
+@Config
 public class Turret extends PIDModel {
 
-    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 6.0;
-    public static double TURRET_DIST_TO_ROBOT_CENTER_INCH = 2.75;
+    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 5.0;
+    public static double TURRET_DIST_TO_ROBOT_CENTER_INCH = 3.5;
     private final RobotBase robot;
     private final double ticksPerRadian;
     private int targetAngle;
@@ -21,12 +26,17 @@ public class Turret extends PIDModel {
 
     public Pose calcRobotPose(Pose limelightPose) {
         double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian;
-        double robotHeading = robot.getHeading();
-        double limelightHeading = robotHeading+turretAngleRad;
-        Vector toTurretCenter = new Vector(limelightHeading, -LIMELIGHT_DIST_TO_TURRET_CENTER_INCH);
+        double robotHeading = robot.getIMUHeading();
+        double limelightHeading = Utils.normalize(robotHeading+turretAngleRad);
+        Log.i("edbug vals", turretAngleRad+" "+robotHeading+" "+limelightHeading);
+        Vector toTurretCenter = new Vector(-LIMELIGHT_DIST_TO_TURRET_CENTER_INCH, limelightHeading);
+        Log.i("ndbug turret center vector", toTurretCenter.getXComponent() + " " + toTurretCenter.getYComponent());
         Pose turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
+        Log.i("ndbug turrent center pose", turretCenter.getX() + " " + turretCenter.getY() + " " + turretCenter.getHeading());
         Vector toRobotCenter = new Vector(TURRET_DIST_TO_ROBOT_CENTER_INCH, robotHeading);
+        Log.i("ndbug robot center vector", toRobotCenter.getXComponent() + " " + toRobotCenter.getYComponent());
         Pose robotPose = turretCenter.plus(new Pose(toRobotCenter.getXComponent(), toRobotCenter.getYComponent(), robotHeading));
+        Log.i("ndbug robot center pose", robotPose.getX() + " " + robotPose.getY() + " " + robotPose.getHeading());
         return robotPose;
     }
 

@@ -10,6 +10,16 @@ public class Utils {
     private Utils() {
     }
 
+    public static double normalize(double angleRad) {
+        double normalized = angleRad % (2*Math.PI);
+        if(normalized > Math.PI) {
+            normalized -= 2 * Math.PI;
+        } if(normalized < -Math.PI) {
+            normalized += 2 * Math.PI;
+        }
+        return normalized;
+    }
+
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(val, max));
     }

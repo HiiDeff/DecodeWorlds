@@ -68,7 +68,7 @@ public class TeleopTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         multipleTelemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = (RobotBase) RobotFactory.createRobot(hardwareMap);
-        robot.init(new Pose(0, 0, Math.PI/2));
+        robot.init(new Pose(0, 0, Math.PI));
 
         gp1 = new GamePad(gamepad1);
         gp2 = new GamePad(gamepad2);
@@ -85,8 +85,8 @@ public class TeleopTest extends LinearOpMode {
             update();
             robot.updateLimelight();
 
-            Pose robotPose = robot.turret.calcRobotPose(robot.limelightAprilTagDetector.getLimelightFieldPose());
-            multipleTelemetry.addData("robot position using limelight", robotPose.getX()+" "+robotPose.getY());
+            robot.updateRobotPoseUsingLimelight();
+            multipleTelemetry.addData("robot position using limelight", robot.getPose().getX()+" "+robot.getPose().getY());
 
             if(turretActive) {
                 robot.setTurretTargetPosition(TURRET_TARGET_RAD);
@@ -191,7 +191,7 @@ public class TeleopTest extends LinearOpMode {
 //        telemetry.addData("driving", x + " " + y + " " + a);
 
 //        robot.setDrivePowers(x, y, a);
-            if(Math.abs(a)<0.05) robot.updateRobotPoseUsingLimelight();
+//            if(Math.abs(a)<0.05) robot.updateRobotPoseUsingLimelight();
             robot.setTeleOpDrive(x, y, a, true);
         }
     }

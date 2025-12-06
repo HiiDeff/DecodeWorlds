@@ -5,6 +5,7 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathConstraints;
@@ -33,7 +34,7 @@ public abstract class RobotBase extends MecanumDrive {
     // Constants
     public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
-    public static double TURRET_TICKS_PER_RAD = 384.5*2.0;
+    public static double TURRET_TICKS_PER_RAD = 384.5*2.0/Math.PI;
 
     // Common
     protected final HardwareMap hardwareMap;
@@ -75,7 +76,7 @@ public abstract class RobotBase extends MecanumDrive {
     private double flywheelVelocityTicksPerSecond = 0.0;
     private int turretAngleTicks = 0;
 
-    public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, Localizer localizer, PathConstraints pathConstraints) {
+    public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, PinpointLocalizer localizer, PathConstraints pathConstraints) {
         super(hardwareMap, followerConstants, driveConstants, localizer, pathConstraints);
         this.hardwareMap = hardwareMap;
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
@@ -276,7 +277,7 @@ public abstract class RobotBase extends MecanumDrive {
         Pose limelightFieldPose = limelightAprilTagDetector.getLimelightFieldPose();
         if(limelightFieldPose != null) {
             Pose robotPose = turret.calcRobotPose(limelightFieldPose);
-            this.setPose(robotPose);
+            this.setPose(new Pose(robotPose.getX(), robotPose.getY(), this.getIMUHeading()));
         }
     }
     public double getDistToGoalInches() {
