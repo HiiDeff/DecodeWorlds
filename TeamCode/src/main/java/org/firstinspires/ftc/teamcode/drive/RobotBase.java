@@ -11,6 +11,7 @@ import com.pedropathing.math.Vector;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -60,8 +61,10 @@ public abstract class RobotBase extends MecanumDrive {
     public final Servo ramp;
 
     // Sensors
-    public final RevColorSensorV3 leftColorSensor;
-    public final RevColorSensorV3 rightColorSensor;
+    public final RevColorSensorV3 backColor1;
+    public final RevColorSensorV3 backColor2;
+    public final RevColorSensorV3 frontColor1;
+    public final RevColorSensorV3 frontColor2;
 
     // Camera
     public final Limelight3A limelight;
@@ -79,6 +82,9 @@ public abstract class RobotBase extends MecanumDrive {
     // Cached Encoder Values
     private double flywheelVelocityTicksPerSecond = 0.0;
     private int turretAngleTicks = 0;
+
+    // Lights
+    private final RevBlinkinLedDriver light;
 
     public RobotBase(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, PinpointLocalizer localizer, PathConstraints pathConstraints) {
         super(hardwareMap, followerConstants, driveConstants, localizer, pathConstraints);
@@ -104,12 +110,14 @@ public abstract class RobotBase extends MecanumDrive {
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
         leftPivot.setDirection(Servo.Direction.REVERSE);
-        rightPivot.setDirection(Servo.Direction.REVERSE);
+        rightPivot.setDirection(Servo.Direction.FORWARD);
         blocker = hardwareMap.get(Servo.class, "blocker");
         ramp = hardwareMap.get(Servo.class, "ramp");
         // Sensors:
-        leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "leftColorSensor");
-        rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "rightColorSensor");
+        frontColor1 = hardwareMap.get(RevColorSensorV3.class, "frontColor1");
+        frontColor2 = hardwareMap.get(RevColorSensorV3.class, "frontColor2");
+        backColor1 = hardwareMap.get(RevColorSensorV3.class, "backColor1");
+        backColor2 = hardwareMap.get(RevColorSensorV3.class, "backColor2");
         // Limelight:
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
@@ -117,6 +125,8 @@ public abstract class RobotBase extends MecanumDrive {
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
         turret = new Turret(this, TURRET_PID_COEFFICIENTS, TURRET_TICKS_PER_RAD);
         artifactState = new ArtifactState(this);
+        // Lights:
+        light = hardwareMap.get(RevBlinkinLedDriver.class, "light");
     }
 
     ///////////////////* INIT *///////////////////
@@ -251,6 +261,10 @@ public abstract class RobotBase extends MecanumDrive {
         setTurretTargetPosition(Utils.normalize(angleToGoal-getHeading()));
     }
 
+    public boolean turretAtTarget(){
+        return turret.isDone();
+    }
+
     ///////////////////* PIVOT UTILS *///////////////////
     public abstract double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position);
 
@@ -263,10 +277,14 @@ public abstract class RobotBase extends MecanumDrive {
         rightPivot.setPosition(getPivotTargetPos(PivotTask.WhichPivot.RIGHT, position));
     }
 
-    ///////////////////* COLOR SENSOR UTILS *///////////////////
+    ///////////////////* COLOR SENSOR + LIGHTS UTILS *///////////////////
 
     public boolean hasArtifact(){
         return artifactState.getArtifactState();
+    }
+
+    public void setLightColor(RevBlinkinLedDriver.BlinkinPattern pattern) {
+        light.setPattern(pattern);
     }
 
     ///////////////////* LIMELIGHT UTILS *///////////////////

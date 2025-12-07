@@ -61,7 +61,7 @@ public abstract class PIDModel {
     }
 
     public boolean isDone() {
-        return Math.abs(lastError) < getStopError() && Math.abs(dError_dT) < getStopErrorDerivative();
+        return Math.abs(lastError) < getStopError();// && Math.abs(dError_dT) < getStopErrorDerivative();
     }
 
     public abstract void cancel();

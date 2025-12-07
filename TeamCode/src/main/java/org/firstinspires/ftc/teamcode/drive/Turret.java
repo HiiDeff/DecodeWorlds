@@ -105,7 +105,7 @@ public class Turret extends PIDModel {
 
     @Override
     protected double getStopError() {
-        return 1;
+        return 10;
         //return 0; //don't stop
     }
 

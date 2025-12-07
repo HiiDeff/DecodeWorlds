@@ -72,13 +72,13 @@ public class TeleopTest extends LinearOpMode {
 
         gp1 = new GamePad(gamepad1);
         gp2 = new GamePad(gamepad2);
+        sensorUpdateThread = new SensorUpdateThread(robot);
 
         waitForStart();
 
         robot.startTeleopDrive();
         robot.startLimelight();
         robot.setLimelightAllianceColor(isRed);
-        sensorUpdateThread = new SensorUpdateThread(robot);
         sensorUpdateThread.start();
 
         while (opModeIsActive()) {
