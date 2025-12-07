@@ -7,7 +7,7 @@ import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.localization.Localizer;
+import com.pedropathing.math.Vector;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -16,12 +16,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
+import org.firstinspires.ftc.teamcode.util.filter.MovingAverage;
 import org.firstinspires.ftc.teamcode.util.limelight.AprilTagType;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightAprilTagDetector;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
@@ -34,7 +36,7 @@ public abstract class RobotBase extends MecanumDrive {
     // Constants
     public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
-    public static double TURRET_TICKS_PER_RAD = 384.5*2.0;
+    public static double TURRET_TICKS_PER_RAD = 384.5*2.0/Math.PI;
 
     // Common
     protected final HardwareMap hardwareMap;
@@ -47,7 +49,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final DcMotorEx turretMotor;
     public final Turret turret;
     private boolean turretOn;
-    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.01, 0.0, 0.4);
+    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.005, 0.0, 0.0, 0.0001);
     public final DcMotorEx intake;
     private boolean intakeOn;
 
@@ -86,7 +88,7 @@ public abstract class RobotBase extends MecanumDrive {
         }
         // Motors:
         turretMotor = hardwareMap.get(DcMotorEx.class, "turret");
-        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFlywheel = hardwareMap.get(DcMotorEx.class, "leftFlywheel");
         leftFlywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -237,10 +239,16 @@ public abstract class RobotBase extends MecanumDrive {
         turretMotor.setPower(Utils.clamp(power, -1, 1));
     }
     public void setTurretTargetPosition(double angleRad){
+        angleRad = Utils.normalize(angleRad);
+        angleRad = Utils.clamp(angleRad, -Math.PI/2, Math.PI/2);
         turret.setTargetAngle((int)(angleRad*TURRET_TICKS_PER_RAD));
     }
     public int getTurretAngleTicks() {
         return turretAngleTicks;
+    }
+    public void turretAutoAim() {
+        double angleToGoal = getVectorToGoal().getTheta();
+        setTurretTargetPosition(Utils.normalize(angleToGoal-getHeading()));
     }
 
     ///////////////////* PIVOT UTILS *///////////////////
@@ -269,7 +277,7 @@ public abstract class RobotBase extends MecanumDrive {
     public void setLimelightAllianceColor(boolean isRedAlliance) {
         limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
-    public void updateLimelight() { // public for teleop usage
+    public void updateLimelight() { // public for teleop usage, auto for motifs
         limelightAprilTagDetector.updateLimelight();
     }
     public void stopLimelight() {
@@ -292,13 +300,8 @@ public abstract class RobotBase extends MecanumDrive {
     public Pose getLimelightRobotPose() {
         return (limelightRobotPose==null) ? getPose().copy().plus(limelightTransOffset) : limelightRobotPose;
     }
-    public double getDistToGoalInches() {
-        double dist = this.getPose().distanceFrom(new Pose()) + LLConfig.xOffset;
-        Log.i("edbug dist to goal", ""+dist);
-        return dist;
-    }
-    public double getAngleToGoal() {
-        return Math.atan2(-this.getPose().getY(), -this.getPose().getX());
+    public Vector getVectorToGoal() {
+        return limelightAprilTagDetector.getVectorToGoal(getLimelightRobotPose(), getTranslationalVelocity());
     }
     public AprilTagType getMotif() {
         return limelightAprilTagDetector.getMotif();

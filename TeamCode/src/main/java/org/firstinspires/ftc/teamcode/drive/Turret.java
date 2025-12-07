@@ -14,14 +14,19 @@ import org.firstinspires.ftc.teamcode.util.pid.PIDModel;
 @Config
 public class Turret extends PIDModel {
 
-    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 5.25;
-    public static double TURRET_DIST_TO_ROBOT_CENTER_INCH = 3.75;
+    // all distances below are extensively tuned & correct
+    public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 5.5;
+    public static double TURRET_X_DIST_TO_ROBOT_CENTER_INCH = 3.25; //forwards is positive 4.0?
+    public static double TURRET_Y_DIST_TO_ROBOT_CENTER_INCH = -0.75; //left is positive
     private final RobotBase robot;
     private final double ticksPerRadian;
     private int targetAngle;
     private double prevLimelightHeading = 0.0;
     private ElapsedTime timer = null;
     public static double THRESHOLD_RAD_PER_SEC = 0.3, THRESHOLD_ROBOT_VELOCITY = 10; //tuned
+    private double limelightHeading = 0.0;
+    private Pose turretCenter = new Pose(0, 0);
+
     public Turret(RobotBase robot, PIDCoefficients pidCoefficients, double ticksPerRadian) {
         super(pidCoefficients);
         this.robot = robot;
@@ -29,16 +34,16 @@ public class Turret extends PIDModel {
     }
 
     public Pose calcRobotPose(Pose limelightPose) {
-        double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian*Math.PI;
+        double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian;
         double robotHeading = robot.getHeading();
-        double limelightHeading = Utils.normalize(robotHeading+turretAngleRad);
+        limelightHeading = Utils.normalize(robotHeading+turretAngleRad);
 
         if(timer == null || timer.seconds() >= 1) { //haven't used calcRobotPose in a while
             timer = new ElapsedTime();
             prevLimelightHeading = limelightHeading;
             return null;
         } else {
-            double dTheta_dT = (limelightHeading-prevLimelightHeading)/timer.seconds();
+            double dTheta_dT = Utils.normalize(limelightHeading-prevLimelightHeading)/timer.seconds(); //TODO: check jumps between -PI <-> PI
             Log.i("edbug turret dTheta_dT", dTheta_dT+"");
             prevLimelightHeading = limelightHeading;
             timer.reset();
@@ -48,29 +53,25 @@ public class Turret extends PIDModel {
         if(robot.getVelocity().getMagnitude()>THRESHOLD_ROBOT_VELOCITY) return null;
 
         Vector toTurretCenter = new Vector(-LIMELIGHT_DIST_TO_TURRET_CENTER_INCH, limelightHeading);
-        Pose turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
-        Vector toRobotCenter = new Vector(TURRET_DIST_TO_ROBOT_CENTER_INCH, robotHeading);
-        Pose robotPose = turretCenter.plus(new Pose(toRobotCenter.getXComponent(), toRobotCenter.getYComponent(), robotHeading));
+        turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
+
+        Vector toRobotCenterX = new Vector(TURRET_X_DIST_TO_ROBOT_CENTER_INCH, robotHeading);
+        Vector toRobotCenterY = new Vector(TURRET_Y_DIST_TO_ROBOT_CENTER_INCH, robotHeading+Math.PI/2);
+        Vector toRobotCenter = toRobotCenterX.plus(toRobotCenterY);
+
+        Pose robotPose = turretCenter.copy().plus(new Pose(toRobotCenter.getXComponent(), toRobotCenter.getYComponent()));
 
         Log.i("edbug vals", turretAngleRad+" "+robotHeading+" "+limelightHeading);
         Log.i("ndbug turret center vector", toTurretCenter.getXComponent() + " " + toTurretCenter.getYComponent());
         Log.i("ndbug turrent center pose", turretCenter.getX() + " " + turretCenter.getY() + " " + turretCenter.getHeading());
-        Log.i("ndbug robot center vector", toRobotCenter.getXComponent() + " " + toRobotCenter.getYComponent());
+        Log.i("ndbug robot centerX vector", toRobotCenterX.getXComponent() + " " + toRobotCenterX.getYComponent());
+        Log.i("ndbug robot center vector", toRobotCenterY.getXComponent() + " " + toRobotCenterY.getYComponent());
         Log.i("ndbug robot center pose", robotPose.getX() + " " + robotPose.getY() + " " + robotPose.getHeading());
 
-        return robotPose.setHeading(robotHeading);
+        return turretCenter.setHeading(robotHeading);
     }
-
-    public double calcTurretAngleToGoal() {
-        double robotAngleToGoal = robot.limelightAprilTagDetector.getAngleToGoal(robot.getPose());
-
-        return 0.0;
-    }
-    public double calcTurretAngleToGoalWithVelocity() {
-
-
-
-        return 0.0;
+    public Pose getTurretCenter() {
+        return turretCenter;
     }
 
 
@@ -80,15 +81,26 @@ public class Turret extends PIDModel {
     }
 
     @Override
-    public void cancel() {
-        //do nothing
-    }
-
-    @Override
     public double getError() {
         int error = targetAngle - robot.getTurretAngleTicks();
         return error;
         //return Math.sqrt(Math.abs(error))*Math.copySign(1, error);
+    }
+
+    @Override
+    public double getFeedForward() {
+        Vector r = new Vector(2.75, limelightHeading); //shooter COM
+        Vector a = robot.getTranslationalAcceleration(); //robot translational accel
+        double alpha = robot.getAngularAcceleration(); //robot angular accel
+
+        double tau_trans = (r.getXComponent() * a.getYComponent() - r.getYComponent() * a.getXComponent());
+        double tau_ang = alpha * (Math.pow(r.getMagnitude(), 2));
+        double tau_ff = tau_trans + tau_ang;
+
+        Log.i("edbug trans accel", a+"");
+        Log.i("edbug tau_ff", tau_ff+"");
+
+        return tau_ff;
     }
 
     @Override
@@ -100,5 +112,10 @@ public class Turret extends PIDModel {
     @Override
     protected double getStopErrorDerivative() {
         return 0;
+    }
+
+    @Override
+    public void cancel() {
+        //do nothing
     }
 }

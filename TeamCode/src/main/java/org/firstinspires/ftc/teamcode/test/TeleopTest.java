@@ -52,10 +52,10 @@ public class TeleopTest extends LinearOpMode {
 
     // Pivot DOWN: 0.57
     // Pivot FULL EXTENSION: 1
-    public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.7;
+    public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 1.0;
     public static double TURRET_TICKS_PER_RADIANS = 103.8*2.0, TURRET_TARGET_RAD = 0.0;
     public static boolean isRed = false;
-    public static boolean rampUp, flywheelActive, aiming, autoaim = false, turretActive = true;
+    public static boolean rampUp, flywheelActive, aiming, autoaim = true, turretActive = false, turretAutoAim = true, updateLimelight = true;
     private Task task;
 
     public MultipleTelemetry multipleTelemetry;
@@ -83,9 +83,10 @@ public class TeleopTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             update();
-            robot.updateLimelight();
-
-            robot.updateRobotPoseUsingLimelight();
+            if(updateLimelight) {
+                robot.updateLimelight();
+                robot.updateRobotPoseUsingLimelight();
+            }
             Pose limelightPose = robot.getLimelightRobotPose();
             multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
             Pose offsetPose = robot.limelightTransOffset;
@@ -93,8 +94,15 @@ public class TeleopTest extends LinearOpMode {
 
             if(turretActive) {
                 robot.setTurretTargetPosition(TURRET_TARGET_RAD);
-            } else {
+            } else if(turretAutoAim) {
+                robot.turretAutoAim();
+            }else {
                 robot.setTurretTargetPosition(0);
+            }
+
+            if(autoaim) {
+                FLYWHEEL_RPM = robot.calcFlywheelRpm();
+                PIVOT_POS = robot.calcPivotPosition();
             }
 
             robot.setPivotPosition(PIVOT_POS);
@@ -169,7 +177,7 @@ public class TeleopTest extends LinearOpMode {
             if(!aiming) {
                 robot.startTeleopDrive();
             } else {
-                robot.holdPoint(new BezierPoint(robot.getPose()), robot.getAngleToGoal(), false);
+                robot.holdPoint(new BezierPoint(robot.getPose()), robot.getVectorToGoal().getTheta(), false);
             }
         }
         if(aiming) {

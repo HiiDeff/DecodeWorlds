@@ -18,7 +18,7 @@ public class AlignTask extends TimedTask{
     @Override
     public boolean performInternal() {
         if (!started){
-            robot.holdPoint(new BezierPoint(robot.getPose()), robot.getAngleToGoal(), false);
+            robot.holdPoint(new BezierPoint(robot.getPose()), robot.getVectorToGoal().getTheta(), false);
             started = true;
         }
         return false;

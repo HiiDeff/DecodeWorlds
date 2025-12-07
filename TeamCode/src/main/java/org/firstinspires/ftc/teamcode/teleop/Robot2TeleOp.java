@@ -79,7 +79,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
         if(state == TeleOpState.DRIVING) {
             if(gp1.onceX()) {
                 state = TeleOpState.AIMING;
-                robot.holdPoint(new BezierPoint(robot.getPose()), robot.getAngleToGoal(), false);
+                robot.holdPoint(new BezierPoint(robot.getPose()), robot.getVectorToGoal().getTheta(), false);
             } else if(gp1.back() && gp1.onceY()) {
                 state = TeleOpState.OVERRIDE;
             } else if(drivePow<0.10) {
@@ -114,7 +114,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
             }
         }
 
-        multipleTelemetry.addData("dist to goal", robot.getDistToGoalInches());
+        multipleTelemetry.addData("dist to goal", robot.getVectorToGoal().getMagnitude());
         multipleTelemetry.addData("robot pos", robot.getPose().getX()+" "+robot.getPose().getY()+" "+robot.getPose().getHeading());
         multipleTelemetry.addData("current rpm", robot.getFlywheelVelocityRpm());
         multipleTelemetry.addData("target rpm", FLYWHEEL_TARGET_RPM);

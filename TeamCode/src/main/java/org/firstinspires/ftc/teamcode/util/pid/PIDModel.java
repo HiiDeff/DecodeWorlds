@@ -8,6 +8,7 @@ public abstract class PIDModel {
     private final double kP;
     private final double kI;
     private final double kD;
+    private final double feedForward;
 
     protected double lastTarget = Integer.MAX_VALUE;
 
@@ -17,6 +18,7 @@ public abstract class PIDModel {
         this.kP = pidCoefficients.kP;
         this.kI = pidCoefficients.kI;
         this.kD = pidCoefficients.kD;
+        this.feedForward = pidCoefficients.feedForward;
     }
 
     private ElapsedTime timer = null;
@@ -39,6 +41,8 @@ public abstract class PIDModel {
 //            integral += error * deltaT;
 //        }
         double power = kP * error + kI * integral + kD * dError_dT;
+
+        power += feedForward * getFeedForward();
 
         double absolutePower = Math.abs(power);
         if (absolutePower > maxPower) {
@@ -63,6 +67,7 @@ public abstract class PIDModel {
     public abstract void cancel();
     // Need to be public for PID tuning tools
     public abstract double getError();
+    public abstract double getFeedForward();
     protected abstract double getStopError();
     //maximum error derivative to be deemed at the target position:
     protected abstract double getStopErrorDerivative();

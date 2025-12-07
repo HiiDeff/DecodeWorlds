@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 public class Robot3 extends RobotBase {
 
     // Constants
-    public static double RAMP_UP = 0.38, RAMP_DOWN = 0.42;
-    public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0004, 0.0, 0.0,0.0005);
+    public static double RAMP_UP = 0.37, RAMP_DOWN = 0.42;
+    public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0002, 0.0, 0.0,0.0005);
     public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.29, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
 
     //CLOSE is 20 inches
@@ -47,7 +47,7 @@ public class Robot3 extends RobotBase {
             3.503716 * Math.pow(10.0, -16.0)
     };
     public static double rpmCoef[] = {
-            -6775.27473,
+            -6875.27473, //previously -6775.27473
             1568.71241,
             -110.08847,
             4.2639629,
@@ -154,7 +154,7 @@ public class Robot3 extends RobotBase {
 
     @Override
     public double calcPivotPosition() {
-        double distToGoalInch = Utils.clamp(getDistToGoalInches(), 20, 120);
+        double distToGoalInch = Utils.clamp(getVectorToGoal().getMagnitude(), 20, 120);
         double pos = 0;
         double pow = 1;
         for (double v : pivotCoef) {
@@ -166,7 +166,7 @@ public class Robot3 extends RobotBase {
 
     @Override
     public int calcFlywheelRpm() {
-        double distToGoalInch = Utils.clamp(getDistToGoalInches(), 20, 140);
+        double distToGoalInch = Utils.clamp(getVectorToGoal().getMagnitude(), 20, 140);
         double rpm = 0;
         double pow = 1;
         for(double v: rpmCoef) {

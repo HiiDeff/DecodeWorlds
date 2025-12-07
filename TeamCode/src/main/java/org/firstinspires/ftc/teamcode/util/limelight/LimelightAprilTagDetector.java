@@ -14,19 +14,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.util.Utils;
 
 import java.util.List;
 
 @Config
 public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
-    public static Pose RED_GOAL_POSE = new Pose(-60, 60);
-    public static Pose BLUE_GOAL_POSE = new Pose(-60, -60);
+    public static Pose RED_GOAL_POSE = new Pose(-65, 65);
+    public static Pose BLUE_GOAL_POSE = new Pose(-65, -65);
 
     private boolean isRedAlliance = false;
     private AprilTagType motif = null;
     private Pose limelightPose = null;
-    public static double GOAL_OFFSET_TO_ATAG_INCH = -10.0; // previously -7
+    public static double ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR = 0.7;
 
     public LimelightAprilTagDetector(Limelight3A limelight, LimelightConfig LLConfig) {
         super(limelight, LLConfig);
@@ -52,10 +53,12 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
             }
         }
     }
-    public double getAngleToGoal(Pose pose) {
+    public Vector getVectorToGoal(Pose pose, Vector velocity) {
         Pose goalPose = isRedAlliance ? RED_GOAL_POSE : BLUE_GOAL_POSE;
         Vector toGoal = new Vector(goalPose.minus(pose));
-        return toGoal.getTheta();
+        toGoal = toGoal.minus(velocity.times(ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR));
+        toGoal.setTheta(Utils.normalize(toGoal.getTheta()));
+        return toGoal;
     }
 
     public Pose getLimelightFieldPose() {
