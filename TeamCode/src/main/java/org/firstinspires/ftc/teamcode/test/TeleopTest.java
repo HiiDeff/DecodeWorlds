@@ -29,22 +29,22 @@ public class TeleopTest extends LinearOpMode {
 
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
-        130     ||  4050  ||     0.48
-        120     ||  3900  ||     0.48 DONE
-        110     ||  3700  ||     0.36 DONE
-        100     ||  3600  ||     0.34 DONE
-         90     ||  3450  ||     0.32 DONE
-         80     ||  3250  ||     0.32 DONE
+        130     ||  4000  ||     0.43 DONE
+        120     ||  3800  ||     0.44 DONE
+        110     ||  3700  ||     0.47 DONE
+        100     ||  3500  ||     0.46 DONE
+         90     ||  3400  ||     0.42 DONE
+         80     ||  3300  ||     0.4  DONE
                <----------->
-         80     ||  3250  ||     0.32 DONE
-         70     ||  3150  ||     0.31 DONE
-         60     ||  3000  ||     0.3  DONE
+         80     ||  3300  ||     0.4  DONE
+         70     ||  3150  ||     0.39 DONE
+         60     ||  3000  ||     0.34 DONE
                <----------->
-         60     ||  3000  ||     0.3  DONE
-         50     ||  2900  ||     0.29 DONE
-         40     ||  2800  ||     0.27 DONE
-         30     ||  2700  ||     0.21 DONE
-         20     ||  2600  ||     0.14 DONE
+         60     ||  3000  ||     0.34 DONE
+         50     ||  2900  ||     0.31 DONE
+         40     ||  2750  ||     0.22 DONE
+         30     ||  2600  ||     0.07 DONE
+         20     ||  N?A  ||     N/A
          10     ||  N/A  ||     N/A
      */
 
@@ -209,19 +209,18 @@ public class TeleopTest extends LinearOpMode {
 
     private double calcPivotPosition(double x) {
         double coef[] = {
-                8.55474359,
-                -1.46832254,
-                0.106241899,
-                -0.00422199996,
-                0.000102803617,
-                -0.00000160149163,
-                1.60354007 * Math.pow(10.0, -8.0),
-                -9.98609081 * Math.pow(10.0, -11.0),
-                3.51949442 * Math.pow(10.0, -13.0),
-                -5.36055472 * Math.pow(10.0, -16.0)
+                6.0344056,
+                -0.8906541,
+                0.05278609,
+                -0.001663271,
+                0.000031232217,
+                -3.6138889 * Math.pow(10.0, -7),
+                2.5287668 * Math.pow(10.0, -9),
+                -9.8106787 * Math.pow(10.0, -12.0),
+                1.6186299 * Math.pow(10.0, -14.0),
 
         };
-        x = Utils.clamp(x, 20, 120);
+        x = Utils.clamp(x, 30, 120);
 
         double pos = 0;
         for(double i =0; i<=9.0; i++){
@@ -243,7 +242,7 @@ public class TeleopTest extends LinearOpMode {
                 -2.52911 * Math.pow(10.0, -11.0)};
 
         double rpm = 0;
-        distToGoalInches = Utils.clamp(distToGoalInches, 20, 130);
+        distToGoalInches = Utils.clamp(distToGoalInches, 30, 130);
         for(double i = 0; i<=8.0; i++){
             rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
         }

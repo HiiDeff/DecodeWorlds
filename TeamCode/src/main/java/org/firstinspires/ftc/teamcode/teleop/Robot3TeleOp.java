@@ -79,8 +79,23 @@ public abstract class Robot3TeleOp extends LinearOpMode {
 
         if(gp1.onceY()) {
             robot.holdPoint(new BezierPoint(robot.getPose()), robot.getVectorToGoal().getTheta(), false);
+            state = TeleOpState.AIMING;
         }
 
+        if (state == TeleOpState.AIMING){
+            if(drivePow>0.25) {
+                state = TeleOpState.DRIVING;
+                if(task != null){
+                    task.cancel();
+                    task = null;
+                }
+                robot.updateRobotPoseUsingLimelight(); // only update robot pose here
+                robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+                robot.setRampPosition(RampTask.Position.DOWN);
+                robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
+                robot.startTeleopDrive();
+            }
+        }
 
         if(state == TeleOpState.OVERRIDE) {
             if(gp1.back() && gp1.onceY()) {

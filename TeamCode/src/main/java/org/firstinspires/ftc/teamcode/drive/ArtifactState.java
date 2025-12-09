@@ -105,11 +105,7 @@ public class ArtifactState {
 
         if(timer==null) timer = new ElapsedTime();
 
-        boolean flash = (timer.milliseconds() <= 250);
-
-        if (timer.milliseconds() >= 500){
-            timer.reset();
-        }
+        boolean flash = (timer.milliseconds() % 500 <= 250); // one every 500 ms
 
 
         if (ready){
