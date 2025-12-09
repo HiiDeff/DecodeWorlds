@@ -40,6 +40,7 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auto.defaultauto.far.FarAuto;
@@ -49,13 +50,14 @@ import org.firstinspires.ftc.teamcode.util.objectdetector.ImageProcessor;
 @Config
 public class ArtifactState {
     public static double BACK_MIN_DETECTION_DIST = 1.5;
-    public static double FRONT_MIN_DETECTION_DIST = 1.5;
+    public static double FRONT_MIN_DETECTION_DIST = 1.68;
 
     private RobotBase robot;
 
     private boolean hasArtifact = false;
     private boolean detectedIntake = false;
-    private boolean prevDetectedIntake = false;
+    private boolean flashingViolet = false;
+    private ElapsedTime timer = null;
 
     public ArtifactState(RobotBase robot){
         this.robot = robot;
@@ -86,8 +88,14 @@ public class ArtifactState {
         Log.e("adbug front sensors", frontDist1 + " " + frontDist2 + " " + front1DetectedColor + " " + front2DetectedColor + " " + detectedIntake);
         Log.e("adbug back sensors", backDist1 + " " + backDist2 + " " + back1DetectedColor + " " + back2DetectedColor + " " + hasArtifact);
 
+//        HSV hsv1 = ImageProcessor.ColorToHsv(robot.frontColor1.getNormalizedColors());
+//        HSV hsv2 = ImageProcessor.ColorToHsv(robot.frontColor2.getNormalizedColors());
+//
+//        Log.e("adbug frontcolor1", hsv1.h + " " + hsv1.s + " " + hsv1.v);
+//        Log.e("adbug frontcolor2", hsv2.h + " " + hsv2.s + " " + hsv2.v);
+
+
         setStripLightColors();
-        prevDetectedIntake = detectedIntake;
     }
 
     private void setStripLightColors() {
@@ -95,16 +103,33 @@ public class ArtifactState {
 
         boolean ready = robot.flywheelAtTarget() && robot.turretAtTarget();
 
-        if (detectedIntake){
-            if (ready){
-                pattern = RevBlinkinLedDriver.BlinkinPattern.STROBE_BLUE;
+        if(timer==null) timer = new ElapsedTime();
+
+        boolean flash = (timer.milliseconds() <= 250);
+
+        if (timer.milliseconds() >= 500){
+            timer.reset();
+        }
+
+
+        if (ready){
+            if (flash){
+                pattern = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
             }else{
-                pattern = RevBlinkinLedDriver.BlinkinPattern.STROBE_WHITE;
+                pattern = RevBlinkinLedDriver.BlinkinPattern.BLACK;
+            }
+
+            if (!detectedIntake){
+                pattern = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
             }
         }else{
-            if (ready){
-                pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            if (flash){
+                pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             }else{
+                pattern = RevBlinkinLedDriver.BlinkinPattern.BLACK;
+            }
+
+            if (!detectedIntake){
                 pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             }
         }

@@ -21,10 +21,10 @@ import org.firstinspires.ftc.teamcode.util.GamePad;
 
 @Config
 @TeleOp(name="Robot 2 TeleOp", group="TeleOp")
-public abstract class Robot2TeleOp extends LinearOpMode {
+public abstract class Robot3TeleOp extends LinearOpMode {
     public static int FLYWHEEL_TARGET_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
     public static double PIVOT_TARGET_POS = 0.07, MANUAL_OVERRIDE_PIVOT_POS = 0.07;
-    public static double FLYWHEEL_ON_INTAKE_POWER = 0.7, INTAKE_IDLE_POWER = 0.3;
+    public static double FLYWHEEL_ON_INTAKE_POWER = 1, INTAKE_IDLE_POWER = 0.3;
     public static TeleOpState state;
     public static double drivePow = 0.0;
     private Task task;
@@ -32,6 +32,8 @@ public abstract class Robot2TeleOp extends LinearOpMode {
     private SensorUpdateThread sensorUpdateThread;
     public GamePad gp1, gp2;
     private RobotBase robot;
+
+    private boolean shooting = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,13 +58,12 @@ public abstract class Robot2TeleOp extends LinearOpMode {
             drive();
             if(state == TeleOpState.DRIVING) {
                 runIntake();
-            } else if(state == TeleOpState.AIMING) {
-                autoAim();
-                shoot();
             } else if(state == TeleOpState.OVERRIDE) {
                 runIntake();
                 manualOverride();
             }
+            shoot();
+
         }
 
         sensorUpdateThread.interrupt();
@@ -76,31 +77,12 @@ public abstract class Robot2TeleOp extends LinearOpMode {
 
         if(task != null && task.perform()) task = null;
 
-        if(state == TeleOpState.DRIVING) {
-            if(gp1.onceX()) {
-                state = TeleOpState.AIMING;
-                robot.holdPoint(new BezierPoint(robot.getPose()), robot.getVectorToGoal().getTheta(), false);
-            } else if(gp1.back() && gp1.onceY()) {
-                state = TeleOpState.OVERRIDE;
-            } else if(drivePow<0.10) {
-                robot.updateLimelight();
-                robot.updateRobotPoseUsingLimelight();
-            }
-        } else if(state == TeleOpState.AIMING) {
-            robot.updateLimelight();
-            if(drivePow>0.25) {
-                state = TeleOpState.DRIVING;
-                if(task != null){
-                    task.cancel();
-                    task = null;
-                }
-                robot.updateRobotPoseUsingLimelight(); // only update robot pose here
-                robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-                robot.setRampPosition(RampTask.Position.DOWN);
-                robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
-                robot.startTeleopDrive();
-            }
-        } else if(state == TeleOpState.OVERRIDE) {
+        if(gp1.onceY()) {
+            robot.holdPoint(new BezierPoint(robot.getPose()), robot.getVectorToGoal().getTheta(), false);
+        }
+
+
+        if(state == TeleOpState.OVERRIDE) {
             if(gp1.back() && gp1.onceY()) {
                 state = TeleOpState.DRIVING;
                 if(task != null){
@@ -111,6 +93,17 @@ public abstract class Robot2TeleOp extends LinearOpMode {
                 robot.setRampPosition(RampTask.Position.DOWN);
                 robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
                 robot.startTeleopDrive();
+            }
+        }else{
+            robot.updateLimelight();
+            robot.updateRobotPoseUsingLimelight();
+
+            if(gp1.back() && gp1.onceY()) {
+                state = TeleOpState.OVERRIDE;
+                if(task != null){
+                    task.cancel();
+                    task = null;
+                }
             }
         }
 
@@ -141,14 +134,32 @@ public abstract class Robot2TeleOp extends LinearOpMode {
     }
 
     private void runIntake(){
-        if(gp1.rightTrigger()>0.3) {
+        if (!shooting){
+            if(gp1.rightTrigger()>0.3) {
+                robot.runIntake();
+            }
+            else if(gp1.leftTrigger()>0.3) {
+                robot.runIntakeReversed();
+            }
+            else if(task==null) {
+                robot.runIntakeWithPower(INTAKE_IDLE_POWER);
+            }
+        }
+    }
+
+    private void shoot(){
+        autoAim();
+        if(gp1.onceA()) {
+            shooting = !shooting;
+        }
+
+        if (shooting){
+            robot.setRampPosition(RampTask.Position.UP);
+            robot.setBlockerPosition(BlockerTask.Position.OPEN);
             robot.runIntake();
-        }
-        else if(gp1.leftTrigger()>0.3) {
-            robot.runIntakeReversed();
-        }
-        else if(task==null) {
-            robot.runIntakeWithPower(INTAKE_IDLE_POWER);
+        }else{
+            robot.setRampPosition(RampTask.Position.DOWN);
+            robot.setBlockerPosition(BlockerTask.Position.CLOSE);
         }
     }
 
@@ -157,17 +168,7 @@ public abstract class Robot2TeleOp extends LinearOpMode {
         PIVOT_TARGET_POS = robot.calcPivotPosition();
         robot.setFlywheelTargetVelocity(FLYWHEEL_TARGET_RPM);
         robot.setPivotPosition(PIVOT_TARGET_POS);
-    }
-
-    private void shoot(){
-        if(gp1.onceA() && robot.flywheelAtTarget()) {
-            task = new ParallelTask(
-                    new BlockerTask(robot, BlockerTask.Position.OPEN),
-                    new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, 150000),
-                    new RampTask(robot, RampTask.Position.UP),
-                    new SleepTask(15000)
-            );
-        }
+        robot.turretAutoAim();
     }
 
     private void drive() {

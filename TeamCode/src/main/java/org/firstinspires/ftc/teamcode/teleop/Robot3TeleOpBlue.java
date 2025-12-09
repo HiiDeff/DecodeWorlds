@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Red \uD83D\uDD34 Robot 2 TeleOp", group = "Competition")
-public class Robot2TeleOpRed extends Robot2TeleOp {
+@TeleOp(name = "Blue \uD83D\uDD35 Robot 3 TeleOp", group = "Competition")
+public class Robot3TeleOpBlue extends Robot3TeleOp {
     @Override
     protected boolean isRed() {
-        return true;
+        return false;
     }
 }
