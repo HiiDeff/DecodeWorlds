@@ -160,6 +160,7 @@ public class TeleopTest extends LinearOpMode {
             multipleTelemetry.addData("current rpm", robot.getFlywheelVelocityRpm());
             multipleTelemetry.addData("target rpm", FLYWHEEL_RPM);
             multipleTelemetry.addData("turret pos", robot.getTurretAngleTicks());
+            multipleTelemetry.addData("distance to goal", robot.getVectorToGoal().getMagnitude());
             multipleTelemetry.update();
         }
         sensorUpdateThread.interrupt();
@@ -209,21 +210,21 @@ public class TeleopTest extends LinearOpMode {
 
     private double calcPivotPosition(double x) {
         double coef[] = {
-                6.0344056,
-                -0.8906541,
-                0.05278609,
-                -0.001663271,
-                0.000031232217,
-                -3.6138889 * Math.pow(10.0, -7),
-                2.5287668 * Math.pow(10.0, -9),
-                -9.8106787 * Math.pow(10.0, -12.0),
-                1.6186299 * Math.pow(10.0, -14.0),
+                10.55642,
+                -1.401254,
+                0.07598485,
+                -0.002224134,
+                0.00003908917,
+                -4.254337 * Math.pow(10.0, -7),
+                2.810717 * Math.pow(10.0, -9),
+                -1.032864 * Math.pow(10.0, -11.0),
+                1.61863 * Math.pow(10.0, -14.0),
 
         };
         x = Utils.clamp(x, 30, 120);
 
         double pos = 0;
-        for(double i =0; i<=9.0; i++){
+        for(double i =0; i<=8.0; i++){
             pos+=Math.pow(x, i) *coef[(int)i];
         }
 
@@ -231,19 +232,18 @@ public class TeleopTest extends LinearOpMode {
     }
     private int calcFlywheelRpm(double distToGoalInches) {
         double coef[] = {
-                -2753.23427,
-                834.76971,
-                -53.89067,
-                1.88809,
-                -0.0389984,
-                0.00048851,
-                -0.00000363913,
-                1.48046 * Math.pow(10.0, -8.0),
-                -2.52911 * Math.pow(10.0, -11.0)};
+                -9694.03184,
+                1213.27876,
+                -50.00778,
+                1.114469,
+                -0.0143744,
+                0.0001075768,
+                -4.338235 * Math.pow(10.0, -7.0),
+                7.294585 * Math.pow(10.0, -10.0)};
 
         double rpm = 0;
         distToGoalInches = Utils.clamp(distToGoalInches, 30, 130);
-        for(double i = 0; i<=8.0; i++){
+        for(double i = 0; i<=7.0; i++){
             rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
         }
 

@@ -314,12 +314,16 @@ public abstract class RobotBase extends MecanumDrive {
                 limelightRobotPose.getY()-getPose().getY()
             );
         }
+        limelightAprilTagDetector.updateVectorToGoal(getLimelightRobotPose(), getTranslationalVelocity());
     }
     public Pose getLimelightRobotPose() {
         return (limelightRobotPose==null) ? getPose().copy().plus(limelightTransOffset) : limelightRobotPose;
     }
     public Vector getVectorToGoal() {
-        return limelightAprilTagDetector.getVectorToGoal(getLimelightRobotPose(), getTranslationalVelocity());
+        return limelightAprilTagDetector.getVectorToGoal();
+    }
+    public double getRawDistToGoal() {
+        return limelightAprilTagDetector.getRawDistToGoal();
     }
     public AprilTagType getMotif() {
         return limelightAprilTagDetector.getMotif();

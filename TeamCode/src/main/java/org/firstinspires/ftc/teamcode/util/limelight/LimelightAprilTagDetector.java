@@ -28,6 +28,8 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
     private AprilTagType motif = null;
     private Pose limelightPose = null;
     public static double ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR = 0.7;
+    private Vector vectorToGoal;
+    private double rawDistToGoal;
 
     public LimelightAprilTagDetector(Limelight3A limelight, LimelightConfig LLConfig) {
         super(limelight, LLConfig);
@@ -40,6 +42,7 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
     @Override
     protected void update() {
         limelightPose = null;
+        if(rawDistToGoal<60.0) return;
         for(LLResultTypes.FiducialResult aTag: result.getFiducialResults()) {
             AprilTagType type = AprilTagType.getAprilTagType(aTag.getFiducialId());
             if(type.isMotif()) {
@@ -53,12 +56,19 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
             }
         }
     }
-    public Vector getVectorToGoal(Pose pose, Vector velocity) {
+    public void updateVectorToGoal(Pose pose, Vector velocity) {
         Pose goalPose = isRedAlliance ? RED_GOAL_POSE : BLUE_GOAL_POSE;
         Vector toGoal = new Vector(goalPose.minus(pose));
+        rawDistToGoal = toGoal.getMagnitude();
         toGoal = toGoal.minus(velocity.times(ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR));
         toGoal.setTheta(Utils.normalize(toGoal.getTheta()));
-        return toGoal;
+        vectorToGoal = toGoal;
+    }
+    public Vector getVectorToGoal() {
+        return vectorToGoal;
+    }
+    public double getRawDistToGoal() {
+        return rawDistToGoal;
     }
 
     public Pose getLimelightFieldPose() {
