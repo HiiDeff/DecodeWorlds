@@ -29,23 +29,25 @@ public class TeleopTest extends LinearOpMode {
 
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
-        130     ||  4000  ||     0.43 DONE
-        120     ||  3800  ||     0.44 DONE
-        110     ||  3700  ||     0.47 DONE
-        100     ||  3500  ||     0.46 DONE
-         90     ||  3400  ||     0.42 DONE
-         80     ||  3300  ||     0.4  DONE
+        150     ||  4050  ||     0.48 DONE
+        140     ||  3950  ||     0.47 DONE
+        130     ||  3800  ||     0.45 DONE
+        120     ||  3650  ||     0.44 DONE
+        110     ||  3600  ||     0.41 DONE
+        100     ||  3400  ||     0.38 DONE
+         90     ||  3200  ||     0.35 DONE
+         80     ||  3100  ||     0.33 DONE
                <----------->
-         80     ||  3300  ||     0.4  DONE
-         70     ||  3150  ||     0.39 DONE
-         60     ||  3000  ||     0.34 DONE
+         80     ||  3100  ||     0.33 DONE
+         70     ||  2950  ||     0.29 DONE
+         60     ||  2850  ||     0.24 DONE
                <----------->
-         60     ||  3000  ||     0.34 DONE
-         50     ||  2900  ||     0.31 DONE
-         40     ||  2750  ||     0.22 DONE
-         30     ||  2600  ||     0.07 DONE
-         20     ||  N?A  ||     N/A
-         10     ||  N/A  ||     N/A
+         60     ||  2850  ||     0.24 DONE
+         50     ||  2700  ||     0.18 DONE
+         40     ||  2600  ||     0.11 DONE
+         35     ||  2400  ||     0.07 DONE
+         20     ||  N/A   ||     N/A
+         10     ||  N/A   ||     N/A
      */
 
     public static int FLYWHEEL_RPM = 2500;
@@ -210,21 +212,21 @@ public class TeleopTest extends LinearOpMode {
 
     private double calcPivotPosition(double x) {
         double coef[] = {
-                10.55642,
-                -1.401254,
-                0.07598485,
-                -0.002224134,
-                0.00003908917,
-                -4.254337 * Math.pow(10.0, -7),
-                2.810717 * Math.pow(10.0, -9),
-                -1.032864 * Math.pow(10.0, -11.0),
-                1.61863 * Math.pow(10.0, -14.0),
+                -6.653177,
+                0.7294976,
+                -0.03392037,
+                0.0008750063,
+                -0.00001355061,
+                1.290464 * Math.pow(10.0, -7.0),
+                -7.400309 * Math.pow(10.0, -10.0),
+                2.344162 * Math.pow(10.0, -12.0),
+                -3.150742 * Math.pow(10.0, -15.0)
 
         };
-        x = Utils.clamp(x, 30, 120);
+        x = Utils.clamp(x, 35, 150);
 
         double pos = 0;
-        for(double i =0; i<=8.0; i++){
+        for(double i =0; i<9.0; i++){
             pos+=Math.pow(x, i) *coef[(int)i];
         }
 
@@ -232,18 +234,20 @@ public class TeleopTest extends LinearOpMode {
     }
     private int calcFlywheelRpm(double distToGoalInches) {
         double coef[] = {
-                -9694.03184,
-                1213.27876,
-                -50.00778,
-                1.114469,
-                -0.0143744,
-                0.0001075768,
-                -4.338235 * Math.pow(10.0, -7.0),
-                7.294585 * Math.pow(10.0, -10.0)};
+                -144032.529,
+                17312.5221,
+                -880.32487,
+                25.271665,
+                -0.45127892,
+                0.0052033398,
+                -0.00003878999,
+                1.8057785 * Math.pow(10.0, -7.0),
+                -4.7719158 * Math.pow(10.0, -10.0),
+                5.4638853 * Math.pow(10.0, -13.0)};
 
         double rpm = 0;
-        distToGoalInches = Utils.clamp(distToGoalInches, 30, 130);
-        for(double i = 0; i<=7.0; i++){
+        distToGoalInches = Utils.clamp(distToGoalInches, 35, 150);
+        for(double i = 0; i<10.0; i++){
             rpm+=Math.pow(distToGoalInches, i) * coef[(int)i];
         }
 

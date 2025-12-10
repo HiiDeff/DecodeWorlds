@@ -35,26 +35,27 @@ public class Robot3 extends RobotBase {
 
     // Flywheel Tuning Vals
     public static double pivotCoef[] = {
-            0.01384615,
-            -0.02723895,
-            0.004729816,
-            -0.0002475551,
-            0.00000657951,
-            -9.842729 * Math.pow(10.0, -8),
-            8.380203 * Math.pow(10.0, -10),
-            -3.787655 * Math.pow(10.0, -12),
-            7.048872 * Math.pow(10.0, -15)
+            -6.653177,
+            0.7294976,
+            -0.03392037,
+            0.0008750063,
+            -0.00001355061,
+            1.290464 * Math.pow(10.0, -7.0),
+            -7.400309 * Math.pow(10.0, -10.0),
+            2.344162 * Math.pow(10.0, -12.0),
+            -3.150742 * Math.pow(10.0, -15.0)
     };
     public static double rpmCoef[] = {
-            62613.2867,
-            -7830.5078,
-            428.97785,
-            -12.895101,
-            0.2332698,
-            -0.0026052696,
-            0.000017583204,
-            -6.5724974 * Math.pow(10.0, -8),
-            1.0442774 * Math.pow(10.0, -10)
+            -144032.529,
+            17312.5221,
+            -880.32487,
+            25.271665,
+            -0.45127892,
+            0.0052033398,
+            -0.00003878999,
+            1.8057785 * Math.pow(10.0, -7.0),
+            -4.7719158 * Math.pow(10.0, -10.0),
+            5.4638853 * Math.pow(10.0, -13.0)
     };
 
     // Pedro Constants
@@ -152,7 +153,7 @@ public class Robot3 extends RobotBase {
 
     @Override
     public double calcPivotPosition() {
-        double distToGoalInch = Utils.clamp(getVectorToGoal().getMagnitude(), 20, 120);
+        double distToGoalInch = Utils.clamp(getVectorToGoal().getMagnitude(), 35, 150);
         double pos = 0;
         double pow = 1;
         for (double v : pivotCoef) {
@@ -164,7 +165,7 @@ public class Robot3 extends RobotBase {
 
     @Override
     public int calcFlywheelRpm() {
-        double distToGoalInch = Utils.clamp(getVectorToGoal().getMagnitude(), 20, 140);
+        double distToGoalInch = Utils.clamp(getVectorToGoal().getMagnitude(), 35, 150);
         double rpm = 0;
         double pow = 1;
         for(double v: rpmCoef) {
