@@ -60,14 +60,14 @@ public class Robot3 extends RobotBase {
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
-            .mass(11.7)
-            .forwardZeroPowerAcceleration(-34.5367405423)
-            .lateralZeroPowerAcceleration(-65.3199225832)
+            .mass(12.1)
+            .forwardZeroPowerAcceleration(-33.8288466667)
+            .lateralZeroPowerAcceleration(-63.6322266667)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.35, 0.0, 0.02, 0.02))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.2, 0.0, 0.04, 0.03))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.012,0.0,0.001,0.6,0.04))
-            .centripetalScaling(0.0006);
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.5, 0.0, 0.02, 0.035))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0.0, 0.04, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.003,0.6,0.055))
+            .centripetalScaling(0.001);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()
             .rightFrontMotorName("rightFront")
@@ -79,8 +79,8 @@ public class Robot3 extends RobotBase {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
-            .xVelocity(74)
-            .yVelocity(62)
+            .xVelocity(81.31)
+            .yVelocity(61.52)
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
