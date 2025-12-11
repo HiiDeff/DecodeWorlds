@@ -64,9 +64,9 @@ public class Robot3 extends RobotBase {
             .forwardZeroPowerAcceleration(-33.8288466667)
             .lateralZeroPowerAcceleration(-63.6322266667)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.5, 0.0, 0.02, 0.035))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0.0, 0.04, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.003,0.6,0.055))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.6, 0.0, 0.035, 0.035))
+            .headingPIDFCoefficients(new PIDFCoefficients(2.0, 0.0, 0.02, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.055,0.0,0.0075,0.6,0.055))
             .centripetalScaling(0.001);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()
