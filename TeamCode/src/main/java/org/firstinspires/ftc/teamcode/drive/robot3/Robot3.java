@@ -26,7 +26,7 @@ public class Robot3 extends RobotBase {
     // Constants
     public static double RAMP_UP = 0.37, RAMP_DOWN = 0.42;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0002, 0.0, 0.0,0.0005);
-    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.29, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
+    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.27, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
 
     //CLOSE is 20 inches
     //MID is 53 inches
@@ -66,7 +66,7 @@ public class Robot3 extends RobotBase {
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
             .translationalPIDFCoefficients(new PIDFCoefficients(0.6, 0.0, 0.035, 0.035))
             .headingPIDFCoefficients(new PIDFCoefficients(2.0, 0.0, 0.02, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.055,0.0,0.0075,0.6,0.055))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.055,0.0,0.007,0.6,0.055))
             .centripetalScaling(0.001);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class CloseAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2950;
+    public static int FLYWHEEL_VELOCITY = 2900;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -33,7 +33,7 @@ public abstract class CloseAuto extends AutoBase {
                                 builder -> {
                                     Pose pose = getShoot1Pose();
                                     return builder
-                                            .addPath(new BezierCurve(robot.getPose(),pose))
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 }
