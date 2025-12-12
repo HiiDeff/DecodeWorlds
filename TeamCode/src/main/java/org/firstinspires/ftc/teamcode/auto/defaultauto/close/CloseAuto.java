@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class CloseAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2930;
+    public static int FLYWHEEL_VELOCITY = 2850;
     public static double INTAKE_HOLD_SPEED = 0.6;
 
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;

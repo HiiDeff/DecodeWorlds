@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.util.Utils;
 public class Presets {
     public static int KICKER_SLEEP = 300;
     public static int SHOOT_TIME = 2000;
-    public static double ANGLE = -0.05;
+    public static double ANGLE = -0.065;
 
     //assume velocity and pivot position are already set
     public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt, PivotTask.Position pivotPos){
