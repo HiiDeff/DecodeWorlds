@@ -60,14 +60,14 @@ public class Robot3 extends RobotBase {
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
-            .mass(12.1)
-            .forwardZeroPowerAcceleration(-33.8288466667)
-            .lateralZeroPowerAcceleration(-63.6322266667)
+            .mass(12.5)
+            .forwardZeroPowerAcceleration(-100)
+            .lateralZeroPowerAcceleration(-20)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.45, 0.0, 0.035, 0.03))
-            .headingPIDFCoefficients(new PIDFCoefficients(2.0, 0.0, 0.02, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.06,0.0,0.0008,0.6,0.03))
-            .centripetalScaling(0.001);
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0.0, 0.03, 0.025))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.6, 0.0, 0.06, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.1,0.0,0.0005,0.6,0.045))
+            .centripetalScaling(0.003);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()
             .rightFrontMotorName("rightFront")
@@ -79,8 +79,8 @@ public class Robot3 extends RobotBase {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
-            .xVelocity(81.31)
-            .yVelocity(61.52)
+            .xVelocity(77)
+            .yVelocity(60)
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
@@ -94,7 +94,7 @@ public class Robot3 extends RobotBase {
 
     public static double T_VALUE_CONSTRAINT = 0.99;
     public static double TIMEOUT_CONSTRAINT = 100;
-    public static double BRAKING_STRENGTH = 0.8;
+    public static double BRAKING_STRENGTH = 0.65;
     public static double BRAKING_START = 1;
 
     public Robot3(HardwareMap hardwareMap) {

@@ -23,10 +23,10 @@ public class PedroTestAuto extends AutoBase {
         POS2_X, POS2_Y, POS2_H,
         POS3_X, POS3_Y, POS3_H;
 
-    static{
-        POS1_X = 48.809; POS1_Y = 53.317;  POS1_H = 1.579;
-        POS2_X = 65.164; POS2_Y = -22.504; POS2_H = -1.570;
-        POS3_X = 1.060;  POS3_Y = 1.618;   POS3_H = -1.570;
+    static {
+        POS1_X = 48.5; POS1_Y = 52.4;  POS1_H = Math.PI/2;
+        POS2_X = 65.8; POS2_Y = -22.7; POS2_H = -Math.PI/2;
+        POS3_X = 2.1;  POS3_Y = 1.1;   POS3_H = -Math.PI/2;
     }
     @Override
     protected RobotBase createRobot(HardwareMap hardwareMap) {
