@@ -20,7 +20,10 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class CloseAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2900;
+    public static int FLYWHEEL_VELOCITY = 2930;
+    public static double INTAKE_HOLD_SPEED = 0.6;
+
+    public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -28,6 +31,7 @@ public abstract class CloseAuto extends AutoBase {
         task.add(
                 new ParallelTask(
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
+                        new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false),
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
@@ -123,10 +127,13 @@ public abstract class CloseAuto extends AutoBase {
                                     if(cycleNumber==2) pose = getIntake2ForwardPose();
                                     else if(cycleNumber==3) pose = getIntake3ForwardPose();
                                     return builder
-                                            .addPath(new BezierLine(robot.getPose(), pose.getPose()))
+                                            .addPath(
+                                                    new BezierLine(robot.getPose(), pose.getPose())
+                                            )
                                             .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
-                                }
+                                },
+                                INTAKE_VELOCITY_CONSTRAINT
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
@@ -144,7 +151,7 @@ public abstract class CloseAuto extends AutoBase {
                                                 .build();
                                     }
                             ),
-                            new UnboundedIntakeTask(robot, 0.4, false)
+                            new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
                     )
             );
             task.add(new SleepTask(300));
@@ -171,7 +178,7 @@ public abstract class CloseAuto extends AutoBase {
                                 }
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                        new UnboundedIntakeTask(robot, 0.4, false)
+                        new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
                 )
         );
         task.add(new SleepTask(100));

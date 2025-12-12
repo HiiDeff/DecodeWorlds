@@ -26,7 +26,7 @@ public class Robot3 extends RobotBase {
     // Constants
     public static double RAMP_UP = 0.37, RAMP_DOWN = 0.42;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0002, 0.0, 0.0,0.0005);
-    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.27, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
+    public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.30, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
 
     //CLOSE is 20 inches
     //MID is 53 inches
@@ -61,8 +61,8 @@ public class Robot3 extends RobotBase {
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
             .mass(12.5)
-            .forwardZeroPowerAcceleration(-100)
-            .lateralZeroPowerAcceleration(-20)
+            .forwardZeroPowerAcceleration(-70)
+            .lateralZeroPowerAcceleration(-30)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
             .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0.0, 0.03, 0.025))
             .headingPIDFCoefficients(new PIDFCoefficients(1.6, 0.0, 0.06, 0.025))

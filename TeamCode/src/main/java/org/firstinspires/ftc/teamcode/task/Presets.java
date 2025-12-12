@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.task;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
+import org.firstinspires.ftc.teamcode.util.Utils;
 
 @Config
 public class Presets {
     public static int KICKER_SLEEP = 300;
     public static int SHOOT_TIME = 2000;
+    public static double ANGLE = -0.05;
 
     //assume velocity and pivot position are already set
     public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt, PivotTask.Position pivotPos){
@@ -16,10 +18,11 @@ public class Presets {
                 new ParallelTask(
                         new PivotTask(robot, PivotTask.WhichPivot.LEFT,pivotPos),
                         new PivotTask(robot, PivotTask.WhichPivot.RIGHT, pivotPos),
-                        new FlywheelTask(robot, targetRPM, 2000)
+                        new FlywheelTask(robot, targetRPM, 2000),
+                        new TurretTask(robot, ANGLE, 2000)
                 ),
                 new ParallelTask(
-                        new UnboundedIntakeTask(robot, 0.7, false),
+                        new UnboundedIntakeTask(robot, 1.0, false),
                         new BlockerTask(robot, BlockerTask.Position.OPEN),
                         new RampTask(robot, RampTask.Position.UP),
                         new SleepTask(SHOOT_TIME)
