@@ -23,7 +23,7 @@ public abstract class CloseAuto extends AutoBase {
     public static int FLYWHEEL_VELOCITY = 2850;
     public static double INTAKE_HOLD_SPEED = 0.6;
 
-    public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
+    public static double INTAKE_VELOCITY_CONSTRAINT = 0.4;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -167,7 +167,7 @@ public abstract class CloseAuto extends AutoBase {
                                     else if(cycleNumber==3) pose = getShoot4Pose();
                                     if(cycleNumber==1){
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-80, -20*getSign()), pose.getPose()))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(80, 20*getSign()), pose.getPose()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }

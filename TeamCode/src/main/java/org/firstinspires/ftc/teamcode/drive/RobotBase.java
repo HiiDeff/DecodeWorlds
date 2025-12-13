@@ -131,11 +131,14 @@ public abstract class RobotBase extends MecanumDrive {
 
     ///////////////////* INIT *///////////////////
     public void teleOpInit() {
+        setMaxPower(1.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
     }
 
     public void autoInit() {
+        resetTurret();
+        setMaxPower(1.0);
         setTurretTargetPosition(0.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
@@ -246,6 +249,11 @@ public abstract class RobotBase extends MecanumDrive {
     public abstract int calcFlywheelRpm();
 
     ///////////////////* TURRET UTILS *///////////////////
+    public void resetTurret() {
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
     public void setTurretPower(double power){
         turretMotor.setPower(Utils.clamp(power, -1, 1));
     }

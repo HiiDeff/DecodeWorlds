@@ -12,7 +12,6 @@ public class RuntimeDrivingTask implements Task {
 
     private final Follower robot;
     private final PathActioner actioner;
-
     private double maxPower = 1.0;
     private boolean started = false;
     private PathChain path;

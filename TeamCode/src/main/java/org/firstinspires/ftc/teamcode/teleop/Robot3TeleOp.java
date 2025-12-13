@@ -20,20 +20,18 @@ import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 
 @Config
-@TeleOp(name="Robot 2 TeleOp", group="TeleOp")
 public abstract class Robot3TeleOp extends LinearOpMode {
     public static int FLYWHEEL_TARGET_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
     public static double PIVOT_TARGET_POS = 0.07, MANUAL_OVERRIDE_PIVOT_POS = 0.07;
     public static double FLYWHEEL_ON_INTAKE_POWER = 1, INTAKE_IDLE_POWER = 0.3;
-    public static TeleOpState state;
-    public static double drivePow = 0.0;
+    private TeleOpState state;
+    private boolean shooting = false;
+    private double drivePow = 0.0;
     private Task task;
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
-    public GamePad gp1, gp2;
+    private GamePad gp1, gp2;
     private RobotBase robot;
-
-    private boolean shooting = false;
 
     @Override
     public void runOpMode() throws InterruptedException {

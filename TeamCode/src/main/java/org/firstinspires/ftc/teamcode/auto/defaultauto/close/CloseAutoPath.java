@@ -24,22 +24,22 @@ public abstract class CloseAutoPath extends CloseAuto {
             PARK_X, PARK_Y, PARK_H;
 
     static {
-        SHOOT_1_X = -41.362; SHOOT_1_Y = -19.814; SHOOT_1_H = 0.800;
-        SHOOT_2_X = -41.362; SHOOT_2_Y = -19.814; SHOOT_2_H = 0.800;
-        SHOOT_3_X = -41.362; SHOOT_3_Y = -19.814; SHOOT_3_H = 0.800;
+        SHOOT_1_X = 41.362; SHOOT_1_Y = 19.814; SHOOT_1_H = -2.45;
+        SHOOT_2_X = 41.362; SHOOT_2_Y = 19.814; SHOOT_2_H = -2.45;
+        SHOOT_3_X = 41.362; SHOOT_3_Y = 19.814; SHOOT_3_H = -2.45;
 
-        INTAKE_1_X = -73.015; INTAKE_1_Y = -11.249; INTAKE_1_H = Math.PI/2;
-        INTAKE_FORWARD_1_X = -73.015; INTAKE_FORWARD_1_Y = 8.291; INTAKE_FORWARD_1_H = Math.PI/2;
+        INTAKE_1_X = 70.015; INTAKE_1_Y = 13; INTAKE_1_H = -Math.PI/2;
+        INTAKE_FORWARD_1_X = 73.015; INTAKE_FORWARD_1_Y = -8; INTAKE_FORWARD_1_H = -Math.PI/2;
 
-        INTAKE_2_X = -49.528; INTAKE_2_Y = -10.174; INTAKE_2_H = Math.PI/2;
-        INTAKE_FORWARD_2_X = -49.528; INTAKE_FORWARD_2_Y = 8.291; INTAKE_FORWARD_2_H = Math.PI/2;
+        INTAKE_2_X = 48.528; INTAKE_2_Y = 13; INTAKE_2_H = -Math.PI/2;
+        INTAKE_FORWARD_2_X = 48.528; INTAKE_FORWARD_2_Y = -8; INTAKE_FORWARD_2_H = -Math.PI/2;
 
-        INTAKE_3_X = -96.885; INTAKE_3_Y = -10.966; INTAKE_3_H = Math.PI/2;
-        INTAKE_FORWARD_3_X = -96.885; INTAKE_FORWARD_3_Y = 7.791; INTAKE_FORWARD_3_H = Math.PI/2;
+        INTAKE_3_X = 93.885; INTAKE_3_Y = 13; INTAKE_3_H = -Math.PI/2;
+        INTAKE_FORWARD_3_X = 96.885; INTAKE_FORWARD_3_Y = -8; INTAKE_FORWARD_3_H = -Math.PI/2;
 
-        SHOOT_4_X = -41.362; SHOOT_4_Y = -19.814; SHOOT_4_H = 0.800;
-        GATE_X = -65.392; GATE_Y = 15.622; GATE_H = Math.PI;
-        PARK_X = -59.526; PARK_Y = -6.827; PARK_H = 0.409;
+        SHOOT_4_X = 41.362; SHOOT_4_Y = 19.814; SHOOT_4_H = -2.45;
+        GATE_X = 65.392; GATE_Y = -15.622; GATE_H = 0;
+        PARK_X = 59.526; PARK_Y = 6.827; PARK_H = Math.PI+0.409;
     }
 
     @Override
@@ -49,7 +49,7 @@ public abstract class CloseAutoPath extends CloseAuto {
 
     @Override
     protected Pose getStartingPose() {
-        return new Pose(0,0,2*Math.PI);
+        return new Pose(0,0,Math.PI);
     }
 
     @Override
