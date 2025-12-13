@@ -60,6 +60,8 @@ public class TeleopTest extends LinearOpMode {
     public static boolean rampUp, flywheelActive, aiming, autoaim = true, turretActive = false, turretAutoAim = true, updateLimelight = true;
     private Task task;
 
+    public static double PARK_POSITION = 1.0;
+
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
 
@@ -151,6 +153,9 @@ public class TeleopTest extends LinearOpMode {
                 robot.setRampPosition(RampTask.Position.DOWN);
                 robot.setBlockerPosition(BlockerTask.Position.CLOSE);
             }
+
+            robot.leftPark.setPosition(PARK_POSITION);
+            robot.rightPark.setPosition(PARK_POSITION);
 
             drive();
 

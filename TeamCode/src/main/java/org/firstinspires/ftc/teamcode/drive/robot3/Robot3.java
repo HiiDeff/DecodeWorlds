@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
+import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
@@ -27,6 +28,7 @@ public class Robot3 extends RobotBase {
     public static double RAMP_UP = 0.37, RAMP_DOWN = 0.42;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0002, 0.0, 0.0,0.0005);
     public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.29, PIVOT_FAR = 0.42; //all the way down is 0.07, all the way up is 0.5
+    public static double PARK_DOWN = 0.9, PARK_UP = 0.7;
 
     //CLOSE is 20 inches
     //MID is 53 inches
@@ -150,6 +152,18 @@ public class Robot3 extends RobotBase {
                 return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE: PIVOT_CLOSE;
         }
     }
+
+    @Override
+    public double getParkPosition(ParkTask.WhichPark park, ParkTask.Position position){
+        switch (position){
+            case DOWN:
+                return park == ParkTask.WhichPark.LEFT ? PARK_DOWN : PARK_DOWN;
+            default:
+            case UP:
+                return park == ParkTask.WhichPark.LEFT ? PARK_UP : PARK_UP;
+        }
+    }
+
 
     @Override
     public double calcPivotPosition() {

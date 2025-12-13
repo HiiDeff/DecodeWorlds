@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.util.objectdetector.ImageProcessor;
 @Config
 public class ArtifactState {
     public static double BACK_MIN_DETECTION_DIST = 1.5;
-    public static double FRONT_MIN_DETECTION_DIST = 1.68;
+    public static double FRONT_MIN_DETECTION_DIST = 1.52;
 
     private RobotBase robot;
 

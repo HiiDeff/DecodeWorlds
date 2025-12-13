@@ -280,7 +280,7 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     ///////////////////* PIVOT UTILS *///////////////////
-    public abstract double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position);
+    public abstract double getPivotTargetPos(PivotTask.WhichPivot park, PivotTask.Position position);
 
     public void setPivotPosition(double position) {
         leftPivot.setPosition(position);
