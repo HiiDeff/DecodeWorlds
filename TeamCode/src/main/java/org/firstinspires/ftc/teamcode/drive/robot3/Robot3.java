@@ -28,7 +28,7 @@ public class Robot3 extends RobotBase {
     public static double RAMP_UP = 0.37, RAMP_DOWN = 0.42;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0002, 0.0, 0.0,0.0005);
     public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.29, PIVOT_FAR = 0.47; //all the way down is 0.07, all the way up is 0.5
-    public static double PARK_DOWN = 0.9, PARK_UP = 0.7;
+    public static double PARK_DOWN = 0.96, PARK_UP = 0.42;
 
     //CLOSE is 20 inches
     //MID is 53 inches

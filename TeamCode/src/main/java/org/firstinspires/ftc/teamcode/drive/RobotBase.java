@@ -47,7 +47,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final DcMotorEx turretMotor;
     public final Turret turret;
     private boolean turretOn;
-    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.005, 0.0, 0.0, 0.0001);
+    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.007, 0.0, 0.0, 0.0001);
     public final DcMotorEx intake;
     private boolean intakeOn;
 
@@ -135,6 +135,7 @@ public abstract class RobotBase extends MecanumDrive {
         setMaxPower(1.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
+        setParkPosition(ParkTask.Position.UP);
         setStartingPose(new Pose(100, 0, heading));
     }
 
@@ -145,6 +146,7 @@ public abstract class RobotBase extends MecanumDrive {
         setTurretTargetPosition(0.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
+        setParkPosition(ParkTask.Position.UP);
         setRampPosition(RampTask.Position.DOWN);
     }
     ///////////////////* UPDATES *///////////////////

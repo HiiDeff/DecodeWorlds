@@ -21,6 +21,8 @@ import java.util.List;
 @Config
 public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
+    // if limelight seen in the last update loop and there's a large jump in the angle of the apriltag, then return null
+
     public static Pose RED_GOAL_POSE = new Pose(-65, 65);
     public static Pose BLUE_GOAL_POSE = new Pose(-65, -65);
 
@@ -30,6 +32,12 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
     public static double ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR = 0.7;
     private Vector vectorToGoal;
     private double rawDistToGoal;
+    public static int MIN_DIST_DETECTABLE = 60; //don't change this
+
+    private boolean goalSeenLastLoop = false;
+    private ElapsedTime timeSinceLastDetection = null;
+    private double lastSeenGoalYaw = 0.0;
+    public static int SUDDEN_ATAG_JUMP_IN_YAW_FILTER_MS = 500, SUDDEN_ATAG_JUMP_IN_YAW_FILTER_DEGREE = 10;
 
     public LimelightAprilTagDetector(Limelight3A limelight, LimelightConfig LLConfig) {
         super(limelight, LLConfig);
@@ -41,8 +49,11 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
     @Override
     protected void update() {
+        if(timeSinceLastDetection==null) {
+            timeSinceLastDetection = new ElapsedTime();
+        }
         limelightPose = null;
-        if(rawDistToGoal<60.0) return;
+        if(rawDistToGoal<MIN_DIST_DETECTABLE) return;
         for(LLResultTypes.FiducialResult aTag: result.getFiducialResults()) {
             AprilTagType type = AprilTagType.getAprilTagType(aTag.getFiducialId());
             if(type.isMotif()) {
@@ -52,7 +63,14 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
                 Position llPos = aTag.getRobotPoseFieldSpace().getPosition();
                 //Log.i("edbug limelight pos", llAngles.getYaw()+" "+llAngles.getPitch()+" "+llAngles.getRoll());
                 Log.i("edbug limelight pos", metersToInches(llPos.x)+" "+metersToInches(llPos.y)+" "+metersToInches(llPos.z));
-                limelightPose = new Pose(metersToInches(llPos.x), metersToInches(llPos.y), llAngles.getYaw(AngleUnit.RADIANS));
+                Log.i("edbug atag yaw", llAngles.getYaw(AngleUnit.DEGREES)+"");
+                Log.i("edbug goal seen last loop", goalSeenLastLoop+"");
+
+                if(!(timeSinceLastDetection.milliseconds()<SUDDEN_ATAG_JUMP_IN_YAW_FILTER_MS && Math.abs(llAngles.getYaw(AngleUnit.DEGREES)-lastSeenGoalYaw) > SUDDEN_ATAG_JUMP_IN_YAW_FILTER_DEGREE)) {
+                    limelightPose = new Pose(metersToInches(llPos.x), metersToInches(llPos.y), llAngles.getYaw(AngleUnit.RADIANS));
+                    lastSeenGoalYaw = llAngles.getYaw(AngleUnit.DEGREES);
+                }
+                timeSinceLastDetection.reset();
             }
         }
     }

@@ -117,7 +117,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         robot.setFlywheelTargetVelocity(MANUAL_OVERRIDE_FLYWHEEL_RPM);
         robot.setPivotPosition(MANUAL_OVERRIDE_PIVOT_POS);
         robot.setTurretTargetPosition(0);
-        if(gp1.onceA() && robot.flywheelAtTarget()) {
+        if(!gp1.back() && gp1.onceA() && robot.flywheelAtTarget()) {
             if(task!=null) task.cancel();
             task = new SeriesTask(
                     new ParallelTask(
@@ -150,12 +150,12 @@ public abstract class Robot3TeleOp extends LinearOpMode {
             robot.runIntakeReversed();
         }
         else if(task == null) {
-//            if(robot.hasArtifact()) {
-//                robot.runIntakeWithPower(INTAKE_IDLE_POWER);
-//            } else {
-//                robot.stopIntake();
-//            }
-            robot.runIntakeWithPower(INTAKE_IDLE_POWER);
+            if(robot.hasArtifact()) {
+                robot.runIntakeWithPower(INTAKE_IDLE_POWER);
+            } else {
+                robot.stopIntake();
+            }
+//            robot.runIntakeWithPower(INTAKE_IDLE_POWER);
         }
     }
 
@@ -171,7 +171,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         robot.setPivotPosition(PIVOT_TARGET_POS);
         robot.turretAutoAim();
 
-        if(gp1.onceA() && robot.flywheelAtTarget()) {
+        if(!gp1.back() && gp1.onceA() && (robot.flywheelAtTarget()||!robot.hasArtifact())) {
             if(task!=null) task.cancel();
             task = new SeriesTask(
                     new ParallelTask(

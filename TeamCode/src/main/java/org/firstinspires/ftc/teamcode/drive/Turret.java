@@ -89,7 +89,7 @@ public class Turret extends PIDModel {
 
     @Override
     public double getFeedForward() {
-        Vector r = new Vector(2.75, limelightHeading); //shooter COM
+        Vector r = new Vector(4.5, limelightHeading); //shooter COM 2.75 according to clevin
         Vector a = robot.getTranslationalAcceleration(); //robot translational accel
         double alpha = robot.getAngularAcceleration(); //robot angular accel
 
