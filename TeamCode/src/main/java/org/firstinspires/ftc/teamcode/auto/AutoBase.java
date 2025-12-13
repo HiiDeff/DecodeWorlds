@@ -82,6 +82,8 @@ public abstract class AutoBase extends LinearOpMode {
     private void resetRobot() {
         robot.autoInit();
         robot.setStartingPose(getStartingPose());
+        robot.setPose(getStartingPose());
+        robot.updateHeading(Math.PI); //cheese
     }
 
     protected abstract RobotBase createRobot(HardwareMap hardwareMap);

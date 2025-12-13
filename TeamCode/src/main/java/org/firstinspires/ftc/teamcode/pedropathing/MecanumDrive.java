@@ -66,8 +66,16 @@ public abstract class MecanumDrive extends Follower {
     @Override
     public void update() {
         super.update();
-        heading = getHeading();
+        updateHeading();
         updateAcceleration();
+    }
+    public void updateHeading() {
+        heading = getHeading();
+        Log.i("edbug raw heading", heading+"");
+    }
+    public void updateHeading(double override) {
+        heading = override;
+        Log.i("edbug raw heading", heading+"");
     }
     private void updateAcceleration() {
         Pose pose = getPose();

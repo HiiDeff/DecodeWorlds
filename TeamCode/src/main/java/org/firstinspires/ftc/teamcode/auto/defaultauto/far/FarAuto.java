@@ -132,22 +132,23 @@ public abstract class FarAuto extends AutoBase {
                 )
         );
         if(cycleNumber==1){
-        task.add(
-                new ParallelTask(
-                        new RuntimeDrivingTask(
-                                robot,
-                                builder -> {
-                                    Pose pose = getGatePose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                }
-                        ),
-                        new UnboundedIntakeTask(robot, 0.4, false)
-                )
-        );
-        task.add(new SleepTask(300));}
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(
+                                    robot,
+                                    builder -> {
+                                        Pose pose = getGatePose();
+                                        return builder
+                                                .addPath(new BezierCurve(robot.getPose(), pose))
+                                                .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                                .build();
+                                    }
+                            ),
+                            new UnboundedIntakeTask(robot, 0.4, false)
+                    )
+            );
+            task.add(new SleepTask(300));
+        }
         task.add(new SleepTask(70));
         task.add(
                 new ParallelTask(

@@ -39,7 +39,7 @@ public abstract class CloseAutoPath extends CloseAuto {
 
         SHOOT_4_X = 41.362; SHOOT_4_Y = 19.814; SHOOT_4_H = -2.45;
         GATE_X = 65.392; GATE_Y = -15.622; GATE_H = 0;
-        PARK_X = 59.526; PARK_Y = 6.827; PARK_H = Math.PI+0.409;
+        PARK_X = 49; PARK_Y = 6.827; PARK_H = Math.PI+0.409;
     }
 
     @Override

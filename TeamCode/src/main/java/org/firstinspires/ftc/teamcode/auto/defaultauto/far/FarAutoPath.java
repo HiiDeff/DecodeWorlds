@@ -48,7 +48,6 @@ public abstract class FarAutoPath extends FarAuto {
         return (RobotBase) RobotFactory.createRobot(hardwareMap);
     }
 
-
     @Override
     protected Pose getStartingPose() {
         return new Pose(0,0,Math.PI);

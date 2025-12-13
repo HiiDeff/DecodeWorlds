@@ -135,7 +135,7 @@ public abstract class RobotBase extends MecanumDrive {
         setMaxPower(1.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
-        setPose(new Pose(1000, 0, heading));
+        setStartingPose(new Pose(100, 0, heading));
     }
 
     public void autoInit() {
@@ -145,6 +145,7 @@ public abstract class RobotBase extends MecanumDrive {
         setTurretTargetPosition(0.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
+        setRampPosition(RampTask.Position.DOWN);
     }
     ///////////////////* UPDATES *///////////////////
     public void updateEverything() {
