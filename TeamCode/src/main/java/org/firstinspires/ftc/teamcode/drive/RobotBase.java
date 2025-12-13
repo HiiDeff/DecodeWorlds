@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
+import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
@@ -59,6 +60,8 @@ public abstract class RobotBase extends MecanumDrive {
     public final Servo rightPivot;
     public final Servo blocker;
     public final Servo ramp;
+    public final Servo leftPark;
+    public final Servo rightPark;
 
     // Sensors
     public final RevColorSensorV3 backColor1;
@@ -113,6 +116,8 @@ public abstract class RobotBase extends MecanumDrive {
         rightPivot.setDirection(Servo.Direction.FORWARD);
         blocker = hardwareMap.get(Servo.class, "blocker");
         ramp = hardwareMap.get(Servo.class, "ramp");
+        leftPark = hardwareMap.get(Servo.class, "leftPark");
+        rightPark = hardwareMap.get(Servo.class, "rightPark");
         // Sensors:
         frontColor1 = hardwareMap.get(RevColorSensorV3.class, "frontColor1");
         frontColor2 = hardwareMap.get(RevColorSensorV3.class, "frontColor2");
@@ -294,6 +299,18 @@ public abstract class RobotBase extends MecanumDrive {
 
     public void setLightColor(RevBlinkinLedDriver.BlinkinPattern pattern) {
         light.setPattern(pattern);
+    }
+
+    ///////////////////* PARK UTILS *///////////////////
+    public abstract double getParkPosition(ParkTask.WhichPark pivot, ParkTask.Position position);
+
+    public void setParkPosition(double position) {
+        leftPark.setPosition(position);
+        rightPark.setPosition(position);
+    }
+    public void setParkPosition(ParkTask.Position position){
+        leftPark.setPosition(getParkPosition(ParkTask.WhichPark.LEFT, position));
+        rightPark.setPosition(getParkPosition(ParkTask.WhichPark.RIGHT, position));
     }
 
     ///////////////////* LIMELIGHT UTILS *///////////////////
