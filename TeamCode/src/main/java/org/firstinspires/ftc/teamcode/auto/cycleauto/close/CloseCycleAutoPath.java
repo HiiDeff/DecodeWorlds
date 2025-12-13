@@ -1,15 +1,14 @@
-package org.firstinspires.ftc.teamcode.auto.defaultauto.close;
+package org.firstinspires.ftc.teamcode.auto.cycleauto.close;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.auto.cycleauto.far.FarCycleAuto;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 
 @Config
-public abstract class CloseAutoPath extends CloseAuto {
+public abstract class CloseCycleAutoPath extends CloseCycleAuto {
     public static double
             SHOOT_1_X, SHOOT_1_Y, SHOOT_1_H,
             INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H,
@@ -24,9 +23,6 @@ public abstract class CloseAutoPath extends CloseAuto {
             GATE_1_X, GATE_1_Y, GATE_1_H,
             GATE_2_X, GATE_2_Y, GATE_2_H,
             PARK_X, PARK_Y, PARK_H;
-
-//    public static Location[] order = new Location[4];
-public static Location[] order = {null, Location.MID, Location.CLOSE, Location.FAR};
 
     static {
         SHOOT_1_X = 41.362; SHOOT_1_Y = 19.814; SHOOT_1_H = -2.45;
@@ -45,56 +41,8 @@ public static Location[] order = {null, Location.MID, Location.CLOSE, Location.F
         SHOOT_4_X = 41.362; SHOOT_4_Y = 19.814; SHOOT_4_H = -2.45;
         GATE_1_X = 65.392; GATE_1_Y = -15.622; GATE_1_H = 0;
         GATE_2_X = 65.392; GATE_2_Y = -15.622; GATE_2_H = Math.PI;
+
         PARK_X = 49; PARK_Y = 6.827; PARK_H = Math.PI+0.409;
-    }
-
-    protected Pose getIntakePose(int cycle){
-        return getIntakePose(order[cycle]);
-    }
-
-    protected Pose getIntakePose(Location location){
-        switch (location){
-            case FAR:
-                return new Pose(INTAKE_3_X, INTAKE_3_Y*getSign(), INTAKE_3_H*getSign());
-            case MID:
-                return new Pose(INTAKE_1_X, INTAKE_1_Y*getSign(), INTAKE_1_H*getSign());
-            default:
-            case CLOSE:
-                return new Pose(INTAKE_2_X, INTAKE_2_Y*getSign(), INTAKE_2_H*getSign());
-        }
-    }
-
-    protected Pose getShootPose(int cycle){
-        return getShootPose(order[cycle]);
-    }
-
-    protected Pose getShootPose(Location location){
-        switch (location){
-            case FAR:
-                return new Pose(SHOOT_4_X, SHOOT_4_Y*getSign(), SHOOT_4_H*getSign());
-            case MID:
-                return new Pose(SHOOT_2_X, SHOOT_2_Y*getSign(), SHOOT_2_H*getSign());
-            default:
-            case CLOSE:
-                return new Pose(SHOOT_3_X, SHOOT_3_Y*getSign(), SHOOT_3_H*getSign());
-        }
-    }
-
-    protected Pose getIntakeForwardPose(int cycle){
-        return getIntakeForwardPose(order[cycle]);
-    }
-
-    protected Pose getIntakeForwardPose(Location location){
-        switch (location){
-            case FAR:
-                return new Pose(INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y*getSign(), INTAKE_FORWARD_3_H*getSign());
-            case MID:
-                return new Pose(INTAKE_FORWARD_1_X, INTAKE_FORWARD_1_Y*getSign(), INTAKE_FORWARD_1_H*getSign());
-            default:
-            case CLOSE:
-                return new Pose(INTAKE_FORWARD_2_X, INTAKE_FORWARD_2_Y*getSign(), INTAKE_FORWARD_2_H*getSign());
-
-        }
     }
 
     @Override
@@ -161,18 +109,8 @@ public static Location[] order = {null, Location.MID, Location.CLOSE, Location.F
     protected Pose getIntake3ForwardPose() {return new Pose(INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y*getSign(), INTAKE_FORWARD_3_H*getSign());}
 
     @Override
-    protected Pose getGatePose(int cycleNumber) {
-        switch (order[cycleNumber]){
-            case MID:
-                return new Pose(GATE_1_X, GATE_1_Y*getSign(), GATE_1_H*getSign());
-            default:
-                return new Pose(GATE_2_X, GATE_2_Y*getSign(), GATE_2_H*getSign());
-        }
-    }
+    protected Pose getGate1Pose() {return new Pose(GATE_1_X, GATE_1_Y*getSign(), GATE_1_H*getSign());}
 
-    public enum Location{
-        CLOSE,
-        MID,
-        FAR
-    }
+    @Override
+    protected Pose getGate2Pose() {return new Pose(GATE_2_X, GATE_2_Y*getSign(), GATE_2_H*getSign());}
 }
