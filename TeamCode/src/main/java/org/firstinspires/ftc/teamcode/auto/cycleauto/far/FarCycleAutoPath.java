@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.defaultauto.close;//package org.firstinspires.ftc.teamcode.auto.experimental;
+package org.firstinspires.ftc.teamcode.auto.cycleauto.far;//package org.firstinspires.ftc.teamcode.auto.experimental;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
@@ -19,11 +19,10 @@ import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
-public abstract class CloseAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2930;
-    public static double INTAKE_HOLD_SPEED = 0.6;
+public abstract class FarCycleAutoPath extends AutoBase {
+    public static int FLYWHEEL_VELOCITY = 3950;
 
-    public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
+    public static boolean takeFarBalls = true;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -31,13 +30,12 @@ public abstract class CloseAuto extends AutoBase {
         task.add(
                 new ParallelTask(
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                        new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false),
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
                                     Pose pose = getShoot1Pose();
                                     return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .addPath(new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 }
@@ -89,11 +87,56 @@ public abstract class CloseAuto extends AutoBase {
                 )
         );*/
         task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.MID));
+        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
         task.add(new SeriesTask(
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new RampTask(robot, RampTask.Position.DOWN)
         ));
+
+        if(takeFarBalls){
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot, builder -> {
+                                Pose pose = getIntake1Pose();
+                                return builder.addPath( new BezierCurve(robot.getPose(), pose))
+                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                        .build();
+                            }),
+                            new FlywheelTask(robot, 0, 500)
+                    )
+            );
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot, builder -> {
+                                Pose pose = getIntake1ForwardPose();
+                                return builder.addPath(new BezierLine(robot.getPose(), pose))
+                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                        .build();
+                            }),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(new SleepTask(200));
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot, builder -> {
+                                Pose pose = getShoot2Pose();
+                                return builder.addPath(new BezierCurve(robot.getPose(), pose))
+                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                        .build();
+                            }),
+                            new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2500)
+                    )
+            );
+            task.add(new SleepTask(200));
+            task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
+            task.add(new SeriesTask(
+                    new BlockerTask(robot, BlockerTask.Position.CLOSE),
+                    new RampTask(robot, RampTask.Position.DOWN)
+            ));
+            autoStates.setCycleNumber(2);
+        }
+
         return task;
     }
 
@@ -106,17 +149,16 @@ public abstract class CloseAuto extends AutoBase {
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-//                                    Pose pose = getIntake1Pose();
-//                                    if(cycleNumber==2) pose = getIntake2Pose();
-//                                    else if(cycleNumber==3) pose = getIntake3Pose();
-                                    Pose pose = getIntakePose(cycleNumber);
+                                    Pose pose = getIntake2Pose();
+                                    if(cycleNumber==2) pose = getIntake3Pose();
+                                    else if(cycleNumber==3) pose = getIntake4Pose();
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 }
                         ),
-                        new FlywheelTask(robot, 0, 300)
+                        new FlywheelTask(robot, 0, 500)
                 )
         );
         task.add(new SleepTask(100));
@@ -124,68 +166,53 @@ public abstract class CloseAuto extends AutoBase {
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-//                                    Pose pose = getIntake1ForwardPose();
-//                                    if(cycleNumber==2) pose = getIntake2ForwardPose();
-//                                    else if(cycleNumber==3) pose = getIntake3ForwardPose();
-                                    Pose pose = getIntakeForwardPose(cycleNumber);
+                                    Pose pose = getIntake2ForwardPose();
+                                    if(cycleNumber==2) pose = getIntake3ForwardPose();
+                                    else if(cycleNumber==3) pose = getIntake4ForwardPose();
                                     return builder
-                                            .addPath(
-                                                    new BezierLine(robot.getPose(), pose.getPose())
-                                            )
+                                            .addPath(new BezierLine(robot.getPose(), pose.getPose()))
                                             .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
-                                },
-                                INTAKE_VELOCITY_CONSTRAINT
+                                }
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
-        if(cycleNumber==1){
-            task.add(
-                    new ParallelTask(
-                            new RuntimeDrivingTask(
-                                    robot,
-                                    builder -> {
-                                        Pose pose = getGatePose(cycleNumber);
-                                        return builder
-                                                .addPath(new BezierCurve(robot.getPose(), pose))
-                                                .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                                .build();
-                                    }
-                            ),
-                            new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
-                    )
-            );
-            task.add(new SleepTask(300));
-        }
-        task.add(new SleepTask(70));
+        /*if(cycleNumber==1){
+        task.add(
+                new SeriesTask(
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = getGatePose();
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        )
+                )
+        );}*/
+        task.add(new SleepTask(200));
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-//                                    Pose pose = getShoot2Pose();
-//                                    if(cycleNumber==2) pose = getShoot3Pose();
-//                                    else if(cycleNumber==3) pose = getShoot4Pose();
-                                    Pose pose = getShootPose(cycleNumber);
-                                    if(cycleNumber==1){
-                                        return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-80, -20*getSign()), pose.getPose()))
-                                                .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                                .build();
-                                    }
+                                    Pose pose = getShoot2Pose();
+                                    if(cycleNumber==2) pose = getShoot3Pose();
+                                    else if(cycleNumber==3) pose = getShoot4Pose();
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 }
                         ),
-                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                        new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2000)
                 )
         );
-        task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.MID));
+        task.add(new SleepTask(200));
+        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
         task.add(new SeriesTask(
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new RampTask(robot, RampTask.Position.DOWN)
@@ -222,14 +249,12 @@ public abstract class CloseAuto extends AutoBase {
     protected abstract Pose getShoot3Pose();
     protected abstract Pose getIntake3Pose();
     protected abstract Pose getShoot4Pose();
-    protected abstract Pose getGatePose(int cycleNumber);
+    protected abstract Pose getIntake4Pose();
+    protected abstract Pose getGatePose();
     protected abstract Pose getParkPose();
     protected abstract Pose getIntake1ForwardPose();
     protected abstract Pose getIntake2ForwardPose();
+
     protected abstract Pose getIntake3ForwardPose();
-
-    protected abstract Pose getShootPose(int cycleNumber);
-    protected abstract Pose getIntakePose(int cycleNumber);
-    protected abstract Pose getIntakeForwardPose(int cycleNumber);
-
+    protected abstract Pose getIntake4ForwardPose();
 }

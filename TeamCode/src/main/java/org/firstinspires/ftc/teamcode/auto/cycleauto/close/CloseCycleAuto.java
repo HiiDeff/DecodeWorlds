@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.defaultauto.close;//package org.firstinspires.ftc.teamcode.auto.experimental;
+package org.firstinspires.ftc.teamcode.auto.cycleauto.close;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
@@ -19,11 +19,11 @@ import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
-public abstract class CloseAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2930;
+public abstract class CloseCycleAuto extends AutoBase {
+    public static int FLYWHEEL_VELOCITY = 2850;
     public static double INTAKE_HOLD_SPEED = 0.6;
 
-    public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
+    public static double INTAKE_VELOCITY_CONSTRAINT = 0.4;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -102,14 +102,14 @@ public abstract class CloseAuto extends AutoBase {
         state = AutoState.CYCLE;
         int cycleNumber = autoStates.getCycleNumber();
         SeriesTask task = new SeriesTask();
+        // Go to intake position
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-//                                    Pose pose = getIntake1Pose();
-//                                    if(cycleNumber==2) pose = getIntake2Pose();
-//                                    else if(cycleNumber==3) pose = getIntake3Pose();
-                                    Pose pose = getIntakePose(cycleNumber);
+                                    Pose pose = getIntake1Pose();
+                                    if(cycleNumber==2) pose = getIntake2Pose();
+                                    else if(cycleNumber==3) pose = getIntake3Pose();
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
@@ -119,15 +119,15 @@ public abstract class CloseAuto extends AutoBase {
                         new FlywheelTask(robot, 0, 300)
                 )
         );
+        // Intake the balls
         task.add(new SleepTask(100));
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-//                                    Pose pose = getIntake1ForwardPose();
-//                                    if(cycleNumber==2) pose = getIntake2ForwardPose();
-//                                    else if(cycleNumber==3) pose = getIntake3ForwardPose();
-                                    Pose pose = getIntakeForwardPose(cycleNumber);
+                                    Pose pose = getIntake1ForwardPose();
+                                    if(cycleNumber==2) pose = getIntake2ForwardPose();
+                                    else if(cycleNumber==3) pose = getIntake3ForwardPose();
                                     return builder
                                             .addPath(
                                                     new BezierLine(robot.getPose(), pose.getPose())
@@ -140,13 +140,15 @@ public abstract class CloseAuto extends AutoBase {
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
-        if(cycleNumber==1){
+        // Open Gate
+        if (cycleNumber == 1 || cycleNumber == 2){
             task.add(
                     new ParallelTask(
                             new RuntimeDrivingTask(
                                     robot,
                                     builder -> {
-                                        Pose pose = getGatePose(cycleNumber);
+                                        Pose pose = getGate1Pose();
+                                        if (cycleNumber == 2) pose = getGate2Pose();
                                         return builder
                                                 .addPath(new BezierCurve(robot.getPose(), pose))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
@@ -156,21 +158,21 @@ public abstract class CloseAuto extends AutoBase {
                             new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
                     )
             );
-            task.add(new SleepTask(300));
         }
+        task.add(new SleepTask(300));
         task.add(new SleepTask(70));
+        // Go back to shoot position
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-//                                    Pose pose = getShoot2Pose();
-//                                    if(cycleNumber==2) pose = getShoot3Pose();
-//                                    else if(cycleNumber==3) pose = getShoot4Pose();
-                                    Pose pose = getShootPose(cycleNumber);
+                                    Pose pose = getShoot2Pose();
+                                    if(cycleNumber==2) pose = getShoot3Pose();
+                                    else if(cycleNumber==3) pose = getShoot4Pose();
                                     if(cycleNumber==1){
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-80, -20*getSign()), pose.getPose()))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(80, 20*getSign()), pose.getPose()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }
@@ -222,14 +224,11 @@ public abstract class CloseAuto extends AutoBase {
     protected abstract Pose getShoot3Pose();
     protected abstract Pose getIntake3Pose();
     protected abstract Pose getShoot4Pose();
-    protected abstract Pose getGatePose(int cycleNumber);
+    protected abstract Pose getGate1Pose();
+    protected abstract Pose getGate2Pose();
     protected abstract Pose getParkPose();
     protected abstract Pose getIntake1ForwardPose();
     protected abstract Pose getIntake2ForwardPose();
     protected abstract Pose getIntake3ForwardPose();
-
-    protected abstract Pose getShootPose(int cycleNumber);
-    protected abstract Pose getIntakePose(int cycleNumber);
-    protected abstract Pose getIntakeForwardPose(int cycleNumber);
 
 }
