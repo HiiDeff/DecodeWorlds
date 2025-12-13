@@ -16,8 +16,10 @@ import org.firstinspires.ftc.teamcode.task.IntakeTask;
 import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
+import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
+import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 
 @Config
@@ -30,6 +32,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
     private boolean parking = false;
     private double drivePow = 0.0;
     private Task task;
+    private Task shootTask;
     public MultipleTelemetry multipleTelemetry;
     private SensorUpdateThread sensorUpdateThread;
     private GamePad gp1, gp2;
@@ -76,6 +79,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         gp2.update();
 
         if(task != null && task.perform()) task = null;
+        if(shootTask != null && shootTask.perform()) shootTask = null;
 
 
         if(state == TeleOpState.OVERRIDE) {
@@ -137,39 +141,53 @@ public abstract class Robot3TeleOp extends LinearOpMode {
             else if(gp1.leftTrigger()>0.3) {
                 robot.runIntakeReversed();
             }
-            else if(robot.hasArtifact()) {
+            /*else if(robot.hasArtifact()) {
                 robot.runIntakeWithPower(INTAKE_IDLE_POWER);
-            }
+            }*/
             else if(task == null){
-                robot.stopIntake();
+                //robot.stopIntake();
+                robot.runIntakeWithPower(0.4); // Since front color sensors aren't working well
             }
         }
     }
 
     private void shoot(){
         autoAim();
-        if(gp1.onceA()) {
-            shooting = !shooting;
+        if(gp1.onceA() && shootTask==null) {
+            shootTask = new SeriesTask(
+                    new ParallelTask(
+                            new RampTask(robot, RampTask.Position.UP),
+                            new BlockerTask(robot, BlockerTask.Position.OPEN),
+                            new UnboundedIntakeTask(robot, 1.0, false),
+                            new SleepTask(2000)
+                    ),
+                    new ParallelTask(
+                            new RampTask(robot, RampTask.Position.DOWN),
+                            new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                    )
+            );
         }
 
-        if (shooting){
-            robot.setRampPosition(RampTask.Position.UP);
-            robot.setBlockerPosition(BlockerTask.Position.OPEN);
-            robot.runIntake();
-        }else{
-            robot.setRampPosition(RampTask.Position.DOWN);
-            robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-        }
+//        if (shooting){
+//
+//            robot.setRampPosition(RampTask.Position.UP);
+//            robot.setBlockerPosition(BlockerTask.Position.OPEN);
+//            robot.runIntake();
+//        }else{
+//            robot.setRampPosition(RampTask.Position.DOWN);
+//            robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+//        }
     }
 
     private void autoAim(){
         FLYWHEEL_TARGET_RPM = robot.calcFlywheelRpm();
         PIVOT_TARGET_POS = robot.calcPivotPosition();
-        if(robot.hasArtifact()){
+        if(robot.hasArtifact()||shootTask!=null){
             robot.setFlywheelTargetVelocity(FLYWHEEL_TARGET_RPM);
         }else{
             robot.setFlywheelTargetVelocity(0);
         }
+        robot.setFlywheelTargetVelocity(FLYWHEEL_TARGET_RPM);
         robot.setPivotPosition(PIVOT_TARGET_POS);
         robot.turretAutoAim();
     }

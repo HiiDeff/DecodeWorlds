@@ -23,6 +23,8 @@ public class TestAuto extends TestAutoPath {
             SHOOT_3_X, SHOOT_3_Y, SHOOT_3_H,
             INTAKE_3_X, INTAKE_3_Y, INTAKE_3_H,
             INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y, INTAKE_FORWARD_3_H,
+            INTAKE_4_X, INTAKE_4_Y, INTAKE_4_H,
+            INTAKE_FORWARD_4_X, INTAKE_FORWARD_4_Y, INTAKE_FORWARD_4_H,
             SHOOT_4_X, SHOOT_4_Y, SHOOT_4_H,
             GATE_X, GATE_Y, GATE_H,
             PARK_X, PARK_Y, PARK_H;
@@ -58,6 +60,9 @@ public class TestAuto extends TestAutoPath {
 //        SHOOT_3_X = 45.743; SHOOT_3_Y = -3.066; SHOOT_3_H = -2.35;
         INTAKE_3_X = 74.885; INTAKE_3_Y = 13.874; INTAKE_3_H = Math.PI/2;
         INTAKE_FORWARD_3_X = 74.885; INTAKE_FORWARD_3_Y = 31.516; INTAKE_FORWARD_3_H = Math.PI/2;
+
+        INTAKE_4_X = 5; INTAKE_4_Y = 5; INTAKE_4_H = 5;
+        INTAKE_FORWARD_4_X = 5; INTAKE_FORWARD_4_Y = 5; INTAKE_FORWARD_4_H = 5;
         SHOOT_4_X = 8.493; SHOOT_4_Y = 0.686; SHOOT_4_H = 0.390;
         GATE_X = 56.620; GATE_Y = 37.334; GATE_H = Math.PI;
         PARK_X = 25.113; PARK_Y = 5.868; PARK_H = 0.390;
@@ -119,6 +124,11 @@ public class TestAuto extends TestAutoPath {
     }
 
     @Override
+    protected Pose getIntake4Pose() {
+        return new Pose(INTAKE_4_X, INTAKE_4_Y*getSign(), INTAKE_4_H*getSign());
+    }
+
+    @Override
     protected Pose getParkPose() {
         return new Pose(PARK_X, PARK_Y*getSign(), PARK_H*getSign());
     }
@@ -131,6 +141,9 @@ public class TestAuto extends TestAutoPath {
 
     @Override
     protected Pose getIntake3ForwardPose() {return new Pose(INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y*getSign(), INTAKE_FORWARD_3_H*getSign());}
+
+    @Override
+    protected Pose getIntake4ForwardPose() {return new Pose(INTAKE_FORWARD_4_X, INTAKE_FORWARD_4_Y*getSign(), INTAKE_FORWARD_4_H*getSign());}
 
     @Override
     protected Pose getGatePose() {return new Pose(GATE_X, GATE_Y*getSign(), GATE_H*getSign());}

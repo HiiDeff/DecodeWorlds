@@ -46,6 +46,9 @@ public abstract class MecanumDrive extends Follower {
 
     //Translational Acceleration
 
+    //Transfer Values Between Auto and TeleOp
+    public static double heading = 0;
+
     public MecanumDrive(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, PinpointLocalizer localizer, PathConstraints pathConstraints) {
         super(followerConstants, localizer, createMecanum(hardwareMap, driveConstants), pathConstraints);
         motors = mecanum.getMotors();
@@ -63,11 +66,11 @@ public abstract class MecanumDrive extends Follower {
     @Override
     public void update() {
         super.update();
+        heading = getHeading();
         updateAcceleration();
     }
     private void updateAcceleration() {
         Pose pose = getPose();
-        double heading = getHeading();
 
         if (timer == null) {
             timer = new ElapsedTime();
@@ -115,6 +118,8 @@ public abstract class MecanumDrive extends Follower {
         Log.i("edbug angular accel", angularAccelerationFilter.get()+"");
         Log.i("edbug translational velo", "("+velXFilter.get()+" "+velYFilter.get()+")");
         Log.i("edbug translational accel", "("+accelXFilter.get()+" "+accelYFilter.get()+")");
+
+        // Heading for transfer between teleop and auto
     }
 
     public Vector getTranslationalVelocity() {

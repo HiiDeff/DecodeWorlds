@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
@@ -17,7 +15,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
@@ -25,7 +22,6 @@ import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
-import org.firstinspires.ftc.teamcode.util.filter.MovingAverage;
 import org.firstinspires.ftc.teamcode.util.limelight.AprilTagType;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightAprilTagDetector;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
@@ -139,10 +135,12 @@ public abstract class RobotBase extends MecanumDrive {
         setMaxPower(1.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
+        setPose(new Pose(1000, 0, heading));
     }
 
     public void autoInit() {
         resetTurret();
+        heading = 0;
         setMaxPower(1.0);
         setTurretTargetPosition(0.0);
         setPivotPosition(PivotTask.Position.MID);
