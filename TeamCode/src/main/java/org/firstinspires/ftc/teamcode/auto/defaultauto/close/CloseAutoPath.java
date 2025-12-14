@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.auto.cycleauto.far.FarCycleAuto;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
@@ -26,12 +27,13 @@ public abstract class CloseAutoPath extends CloseAuto {
             PARK_X, PARK_Y, PARK_H;
 
 //    public static Location[] order = new Location[4];
-public static Location[] order = {null, Location.MID, Location.CLOSE, Location.FAR};
+    public static Location[] order = {null, Location.MID, Location.CLOSE, Location.FAR};
 
     static {
-        SHOOT_1_X = 41.362; SHOOT_1_Y = 19.814; SHOOT_1_H = -2.45;
-        SHOOT_2_X = 41.362; SHOOT_2_Y = 19.814; SHOOT_2_H = -2.45;
-        SHOOT_3_X = 41.362; SHOOT_3_Y = 19.814; SHOOT_3_H = -2.45;
+        SHOOT_1_X = 41.362; SHOOT_1_Y = 19.814; SHOOT_1_H = -2.41;
+        SHOOT_2_X = 41.362; SHOOT_2_Y = 19.814; SHOOT_2_H = -2.43;
+        SHOOT_3_X = 41.362; SHOOT_3_Y = 19.814; SHOOT_3_H = -2.41;
+        SHOOT_4_X = 41.362; SHOOT_4_Y = 19.814; SHOOT_4_H = -2.40;
 
         INTAKE_1_X = 70.015; INTAKE_1_Y = 13; INTAKE_1_H = -Math.PI/2;
         INTAKE_FORWARD_1_X = 73.015; INTAKE_FORWARD_1_Y = -8; INTAKE_FORWARD_1_H = -Math.PI/2;
@@ -42,9 +44,8 @@ public static Location[] order = {null, Location.MID, Location.CLOSE, Location.F
         INTAKE_3_X = 93.885; INTAKE_3_Y = 13; INTAKE_3_H = -Math.PI/2;
         INTAKE_FORWARD_3_X = 96.885; INTAKE_FORWARD_3_Y = -8; INTAKE_FORWARD_3_H = -Math.PI/2;
 
-        SHOOT_4_X = 41.362; SHOOT_4_Y = 19.814; SHOOT_4_H = -2.45;
         GATE_1_X = 65.392; GATE_1_Y = -15.622; GATE_1_H = 0;
-        GATE_2_X = 65.392; GATE_2_Y = -15.622; GATE_2_H = Math.PI;
+        GATE_2_X = 60.392; GATE_2_Y = -15.622; GATE_2_H = Math.PI;
         PARK_X = 49; PARK_Y = 6.827; PARK_H = Math.PI+0.409;
     }
 
@@ -168,11 +169,5 @@ public static Location[] order = {null, Location.MID, Location.CLOSE, Location.F
             default:
                 return new Pose(GATE_2_X, GATE_2_Y*getSign(), GATE_2_H*getSign());
         }
-    }
-
-    public enum Location{
-        CLOSE,
-        MID,
-        FAR
     }
 }

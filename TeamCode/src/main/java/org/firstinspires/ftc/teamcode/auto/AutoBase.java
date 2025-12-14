@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.task.Task;
 @Config
 public abstract class AutoBase extends LinearOpMode {
 
+    public static Location firstLocation = Location.MID;
     public static int AA_TOTAL_TIME_MILLIS = 30000;
 
     public static int AA_NUM_OF_CYCLES = 3; // 2 for far
@@ -38,6 +39,8 @@ public abstract class AutoBase extends LinearOpMode {
 
         state = AutoState.START;
         Task task = createStartTask();
+        telemetry.addData("FIRST INTAKE LOCATION (only for far auton)",firstLocation);
+        telemetry.update();
 
         waitForStart();
 

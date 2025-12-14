@@ -170,7 +170,7 @@ public abstract class CloseAuto extends AutoBase {
                                     Pose pose = getShootPose(cycleNumber);
                                     if(cycleNumber==1){
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-80, -20*getSign()), pose.getPose()))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(80, 20*getSign()), pose.getPose()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }

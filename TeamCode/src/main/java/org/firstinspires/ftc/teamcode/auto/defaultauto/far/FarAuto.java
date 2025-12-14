@@ -6,6 +6,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
+import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
@@ -20,7 +21,8 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class FarAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 3950;
+    public static int FLYWHEEL_VELOCITY = 3850;
+    public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
@@ -31,7 +33,7 @@ public abstract class FarAuto extends AutoBase {
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-                                    Pose pose = getShoot1Pose();
+                                    Pose pose = getShootStartPose();
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
@@ -102,16 +104,17 @@ public abstract class FarAuto extends AutoBase {
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-                                    Pose pose = getIntake1Pose();
-                                    if(cycleNumber==2) pose = getIntake2Pose();
-                                    else if(cycleNumber==3) pose = getIntake3Pose();
+                                    Pose pose = getIntakePose();
                                     return builder
-                                            .addPath(new BezierCurve(robot.getPose(),pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .addPath(getLocation()==Location.LOADING_ZONE? new BezierCurve(robot.getPose(), new Pose(5, -50*getSign()), pose):new BezierCurve(robot.getPose(),pose))
+                                            .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
-                                }
+                                },
+                                (getLocation()==Location.LOADING_ZONE? 0.7:1.0),
+                                (getLocation()==Location.LOADING_ZONE? 2000:30000)
                         ),
-                        new FlywheelTask(robot, 0, 500)
+                        new FlywheelTask(robot, 0, 500),
+                        new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
         task.add(new SleepTask(100));
@@ -119,19 +122,19 @@ public abstract class FarAuto extends AutoBase {
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-                                    Pose pose = getIntake1ForwardPose();
-                                    if(cycleNumber==2) pose = getIntake2ForwardPose();
-                                    else if(cycleNumber==3) pose = getIntake3ForwardPose();
+                                    Pose pose = getIntakeForwardPose();
                                     return builder
                                             .addPath(new BezierLine(robot.getPose(), pose.getPose()))
-                                            .setConstantHeadingInterpolation(pose.getHeading())
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                INTAKE_VELOCITY_CONSTRAINT,
+                                (getLocation()==Location.LOADING_ZONE? 1000:30000)
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
-        if(cycleNumber==1){
+        if(firstLocation == Location.MID && autoStates.getCycleNumber()==1){
             task.add(
                     new ParallelTask(
                             new RuntimeDrivingTask(
@@ -155,12 +158,13 @@ public abstract class FarAuto extends AutoBase {
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-                                    Pose pose = getShoot2Pose();
-                                    if(cycleNumber==2) pose = getShoot3Pose();
-                                    else if(cycleNumber==3) pose = getShoot4Pose();
-                                    if(cycleNumber==1){
+//                                    Pose pose = getShoot2Pose();
+//                                    if(cycleNumber==2) pose = getShoot3Pose();
+//                                    else if(cycleNumber==3) pose = getShoot4Pose();
+                                    Pose pose = getShootPose();
+                                    if(firstLocation == Location.MID && autoStates.getCycleNumber()==1){
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), new Pose(32, -5*getSign()), pose.getPose()))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(-32, 5*getSign()), pose.getPose()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }
@@ -205,17 +209,58 @@ public abstract class FarAuto extends AutoBase {
         return task;
     }
 
-    protected abstract Pose getShoot1Pose();
-    protected abstract Pose getIntake1Pose();
-    protected abstract Pose getShoot2Pose();
-    protected abstract Pose getIntake2Pose();
-    protected abstract Pose getShoot3Pose();
-    protected abstract Pose getIntake3Pose();
-    protected abstract Pose getShoot4Pose();
+    protected abstract Pose getIntakeMidPose();
+    protected abstract Pose getIntakeFarPose();
+    protected abstract Pose getIntakeLoadingZonePose();
     protected abstract Pose getGatePose();
     protected abstract Pose getParkPose();
-    protected abstract Pose getIntake1ForwardPose();
-    protected abstract Pose getIntake2ForwardPose();
+    protected abstract Pose getIntakeMidForwardPose();
+    protected abstract Pose getIntakeFarForwardPose();
+    protected abstract Pose getIntakeLoadingZoneForwardPose();
+    protected abstract Pose getShootMidPose();
+    protected abstract Pose getShootFarPose();
+    protected abstract Pose getShootStartPose();
+    protected abstract Pose getShootLoadingZonePose();
 
-    protected abstract Pose getIntake3ForwardPose();
+    protected Pose getIntakePose() {
+        if(firstLocation == Location.MID && autoStates.getCycleNumber()==1) {
+            return getIntakeMidPose();
+        } else if ((firstLocation == Location.MID && autoStates.getCycleNumber() == 2) || (firstLocation == Location.FAR && autoStates.getCycleNumber() == 1)) {
+            return getIntakeFarPose();
+        } else {
+            return getIntakeLoadingZonePose();
+        }
+    }
+
+    protected Pose getIntakeForwardPose() {
+        if(firstLocation == Location.MID && autoStates.getCycleNumber()==1) {
+            return getIntakeMidForwardPose();
+        } else if ((firstLocation == Location.MID && autoStates.getCycleNumber() == 2) || (firstLocation == Location.FAR && autoStates.getCycleNumber() == 1)) {
+            return getIntakeFarForwardPose();
+        } else {
+            return getIntakeLoadingZoneForwardPose();
+        }
+    }
+
+    protected Pose getShootPose() {
+        if(autoStates.getCycleNumber()==0) {
+            return getShootStartPose();
+        }else if(firstLocation == Location.MID && autoStates.getCycleNumber()==1) {
+            return getShootMidPose();
+        } else if ((firstLocation == Location.MID && autoStates.getCycleNumber() == 2) || (firstLocation == Location.FAR && autoStates.getCycleNumber() == 1)) {
+            return getShootFarPose();
+        } else {
+            return getShootLoadingZonePose();
+        }
+    }
+
+    protected Location getLocation() {
+        if(firstLocation == Location.MID && autoStates.getCycleNumber()==1) {
+            return Location.MID;
+        } else if ((firstLocation == Location.MID && autoStates.getCycleNumber() == 2) || (firstLocation == Location.FAR && autoStates.getCycleNumber() == 1)) {
+            return Location.FAR;
+        } else {
+            return Location.LOADING_ZONE;
+        }
+    }
 }

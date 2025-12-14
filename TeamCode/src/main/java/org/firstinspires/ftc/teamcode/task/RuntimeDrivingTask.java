@@ -8,7 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.common.PathActioner;
 
-public class RuntimeDrivingTask implements Task {
+public class RuntimeDrivingTask extends TimedTask {
 
     private final Follower robot;
     private final PathActioner actioner;
@@ -19,16 +19,23 @@ public class RuntimeDrivingTask implements Task {
     public RuntimeDrivingTask(Follower robot, PathActioner actioner){
         this.robot = robot;
         this.actioner = actioner;
+        setFinishTimeMillis(30000);
     }
-
     public RuntimeDrivingTask(Follower robot, PathActioner actioner, double maxPower) {
         this.robot = robot;
         this.actioner = actioner;
         this.maxPower  = maxPower;
+        setFinishTimeMillis(30000);
+    }
+    public RuntimeDrivingTask(Follower robot, PathActioner actioner, double maxPower, int timeoutMs){
+        this.robot = robot;
+        this.actioner = actioner;
+        this.maxPower = maxPower;
+        setFinishTimeMillis(timeoutMs);
     }
 
     @Override
-    public boolean perform() {
+    protected boolean performInternal() {
         if(!started) {
             started = true;
             path = actioner.createPath(robot.pathBuilder());
@@ -38,5 +45,9 @@ public class RuntimeDrivingTask implements Task {
         }
         Log.i("el_debug performing",""+robot.isBusy());
         return !robot.isBusy();
+    }
+
+    @Override
+    public void cancel() {
     }
 }

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.auto.cycleauto.close.CloseCycleAutoPath;
 
 @Config
-@Autonomous(name = "Blue \uD83D\uDD35 Close Cycle Auto", group = "Competition")
+@Autonomous(name = "Blue \uD83D\uDD35 Close Auto PLAYOFFS \uD83C\uDFC6", group = "Competition")
 public class BlueCloseCycleAuto extends CloseCycleAutoPath {
     @Override
     protected boolean isRed() {
