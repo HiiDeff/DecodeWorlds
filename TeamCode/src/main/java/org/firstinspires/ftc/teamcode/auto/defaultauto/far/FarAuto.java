@@ -24,6 +24,10 @@ public abstract class FarAuto extends AutoBase {
     public static int FLYWHEEL_VELOCITY = 3850;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     @Override
+    protected Location getFirstLocation() {
+        return Location.MID;
+    }
+    @Override
     protected Task createStartTask() {
         state = AutoState.START;
         SeriesTask task = new SeriesTask();
@@ -202,7 +206,8 @@ public abstract class FarAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                0.4
                         )
                 )
         );

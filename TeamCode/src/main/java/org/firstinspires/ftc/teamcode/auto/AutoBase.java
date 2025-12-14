@@ -23,7 +23,7 @@ public abstract class AutoBase extends LinearOpMode {
 
     public static int INIT_DELAY_TIME = 0;
     public static int AA_TIME_FOR_A_CYCLE = 2000;
-    public static int AA_TIME_FOR_PARK = 1000; //prioritize shooting
+    public static int AA_TIME_FOR_PARK = 1500;
 
     protected final ElapsedTime timer = new ElapsedTime();
     protected RobotBase robot;
@@ -39,6 +39,7 @@ public abstract class AutoBase extends LinearOpMode {
 
         state = AutoState.START;
         Task task = createStartTask();
+        firstLocation = getFirstLocation();
         telemetry.addData("FIRST INTAKE LOCATION (only for far auton)",firstLocation);
         telemetry.update();
 
@@ -90,7 +91,7 @@ public abstract class AutoBase extends LinearOpMode {
     }
 
     protected abstract RobotBase createRobot(HardwareMap hardwareMap);
-
+    protected abstract Location getFirstLocation();
     protected abstract Task createStartTask();
     protected abstract Task createCycleTask();
     protected abstract Task createFinishTask();

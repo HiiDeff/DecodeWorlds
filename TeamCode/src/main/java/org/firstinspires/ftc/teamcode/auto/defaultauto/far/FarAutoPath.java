@@ -30,7 +30,7 @@ public abstract class FarAutoPath extends FarAuto {
         SHOOT_LOADING_X = -8.493; SHOOT_LOADING_Y = -0.686; SHOOT_LOADING_H = -2.76;
 
         INTAKE_MID_X = -47.394; INTAKE_MID_Y = -15; INTAKE_1_H = -Math.PI/2;
-        INTAKE_MID_FORWARD_X = -49.394; INTAKE_MID_FORWARD_Y = -33; INTAKE_MID_FORWARD_H = -Math.PI/2;
+        INTAKE_MID_FORWARD_X = -49.394; INTAKE_MID_FORWARD_Y = -36; INTAKE_MID_FORWARD_H = -Math.PI/2;
 
         INTAKE_FAR_X = -24; INTAKE_FAR_Y = -14; INTAKE_FAR_H = -Math.PI/2;
         INTAKE_FAR_FORWARD_X = -27; INTAKE_FAR_FORWARD_Y = -36; INTAKE_FAR_FORWARD_H = -Math.PI/2;
@@ -40,7 +40,7 @@ public abstract class FarAutoPath extends FarAuto {
         INTAKE_LOADING_FORWARD_X = -8.052; INTAKE_LOADING_FORWARD_Y = -44.875; INTAKE_LOADING_FORWARD_H = -1.459;
 
         GATE_X = -56.620; GATE_Y = -39.834; GATE_H = 0;
-        PARK_X = -25.113; PARK_Y = -5.868; PARK_H = 0.390-Math.PI;
+        PARK_X = -8.493; PARK_Y = -15; PARK_H = -2.76;
     }
 
     @Override

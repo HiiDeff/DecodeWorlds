@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
+import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
@@ -28,6 +29,12 @@ public class PedroTestAuto extends AutoBase {
         POS2_X = 65.8; POS2_Y = -22.7; POS2_H = -Math.PI/2;
         POS3_X = 2.1;  POS3_Y = 1.1;   POS3_H = -Math.PI/2;
     }
+
+    @Override
+    protected Location getFirstLocation() {
+        return Location.MID;
+    }
+
     @Override
     protected RobotBase createRobot(HardwareMap hardwareMap) {
         return (RobotBase) RobotFactory.createRobot(hardwareMap);

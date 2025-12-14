@@ -6,6 +6,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
+import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
@@ -23,6 +24,11 @@ public abstract class TestAutoPath extends AutoBase {
     public static int FLYWHEEL_VELOCITY = 3950;
     
     public static boolean takeFarBalls = true;
+
+    @Override
+    protected Location getFirstLocation() {
+        return Location.MID;
+    }
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
