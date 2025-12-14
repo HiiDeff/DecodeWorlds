@@ -111,7 +111,7 @@ public abstract class CloseAutoPath extends CloseAuto {
 
     @Override
     protected Pose getGatePose() {
-        return new Pose(GATE_1_X, GATE_1_Y, GATE_1_H);
+        return new Pose(GATE_1_X, GATE_1_Y*getSign(), GATE_1_H*getSign());
     }
 
 }
