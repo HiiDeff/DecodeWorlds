@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 
-@Config
 @Autonomous(name = "Red \uD83D\uDD34 Far Auto", group = "Competition")
 public class RedFarAuto extends FarAutoPath {
     @Override
