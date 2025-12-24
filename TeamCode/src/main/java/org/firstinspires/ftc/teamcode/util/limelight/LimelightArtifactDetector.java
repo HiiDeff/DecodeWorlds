@@ -10,7 +10,7 @@ import java.util.List;
 public class LimelightArtifactDetector extends LimelightProcessorBase {
 
     public static double ARTIFACT_HEIGHT_INCH = 4.9;
-    protected List<Coords> targetCoords;
+    protected List<Coords> targetCoords = new ArrayList<>();
     protected List<Double> radii;
 
     public LimelightArtifactDetector(Limelight3A limelight, LimelightConfig LLConfig) {
@@ -18,21 +18,29 @@ public class LimelightArtifactDetector extends LimelightProcessorBase {
     }
     @Override
     protected void update() {
+        targetCoords.clear();
         if(result==null) {
-            targetCoords.clear();
             return;
         }
         double[] pythonResult = result.getPythonOutput();
-
-        targetCoords = new ArrayList<>();
         for(int i=1; i<pythonResult[0]*3+1; i+=3) {
             if(i+2>=pythonResult.length) break;
             Coords anglesToTarget = pixelToAngle(new Coords(pythonResult[i], pythonResult[i+1]));
             targetCoords.add(anglesToRealWorldPos(anglesToTarget));
             radii.add(pythonResult[i+2]);
         }
+    }
 
-//        sort();
+    public Coords getTargetPosition() {
+        double maxRadius = 0;
+        int idx = 0;
+        for(int i=0; i<radii.size(); i++){
+            if(radii.get(i)>maxRadius) {
+                maxRadius = radii.get(i);
+                idx = i;
+            }
+        }
+        return targetCoords.get(idx);
     }
 
     private Coords anglesToRealWorldPos(Coords angles) {
