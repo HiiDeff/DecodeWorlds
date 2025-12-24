@@ -17,7 +17,7 @@ public class LimelightArtifactDetector extends LimelightProcessorBase {
         super(limelight, LLConfig);
     }
     @Override
-    protected void update() {
+    protected void updateInternal() {
         targetCoords.clear();
         if(result==null) {
             return;

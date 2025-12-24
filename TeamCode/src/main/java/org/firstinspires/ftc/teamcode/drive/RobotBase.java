@@ -323,7 +323,7 @@ public abstract class RobotBase extends MecanumDrive {
         limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
     public void updateLimelight() { // public for teleop usage, auto for motifs
-        limelightAprilTagDetector.updateLimelight();
+        limelightAprilTagDetector.update();
     }
     public void stopLimelight() {
         limelight.stop();

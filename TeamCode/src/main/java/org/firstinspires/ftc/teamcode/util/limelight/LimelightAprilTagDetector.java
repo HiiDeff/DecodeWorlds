@@ -47,7 +47,7 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
     }
 
     @Override
-    protected void update() {
+    protected void updateInternal() {
         if(timeSinceLastDetection==null) {
             timeSinceLastDetection = new ElapsedTime();
         }

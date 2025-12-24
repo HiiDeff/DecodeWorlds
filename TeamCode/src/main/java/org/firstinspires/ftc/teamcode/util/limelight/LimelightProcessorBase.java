@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.util.limelight;
 
-import android.util.Log;
-
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
@@ -16,9 +14,9 @@ public abstract class LimelightProcessorBase {
         this.LLConfig = LLConfig;
     }
 
-    public void updateLimelight() {
+    public void update() {
         result = limelight.getLatestResult();
-        update();
+        updateInternal();
 //        if(!result.isValid()) {
 //            Log.i("edbug", ":(");
 //            result = null;
@@ -51,5 +49,5 @@ public abstract class LimelightProcessorBase {
         return new Coords(thetaX, thetaY);
     }
 
-    protected abstract void update();
+    protected abstract void updateInternal();
 }
