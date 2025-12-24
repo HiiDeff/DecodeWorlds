@@ -1,22 +1,22 @@
 package org.firstinspires.ftc.teamcode.util.limelight;
 
-public class Coordinates {
+public class Coords {
 
     public double x, y, z;
     public double angle;
-    public Coordinates(double x, double y){
+    public Coords(double x, double y){
         this.x = x;
         this.y = y;
         this.z = 0;
         this.angle = 0.0;
     }
-    public Coordinates(double x, double y, double angle) {
+    public Coords(double x, double y, double angle) {
         this.x = x;
         this.y = y;
         this.z = 0;
         this.angle = angle;
     }
-    public Coordinates(double x, double y, double z, double angle) {
+    public Coords(double x, double y, double z, double angle) {
         this.x = x;
         this.y = y;
         this.z = z;

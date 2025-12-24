@@ -3,15 +3,7 @@ package org.firstinspires.ftc.teamcode.util.limelight;
 import android.util.Log;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-
-import org.firstinspires.ftc.teamcode.drive.RobotBase;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public abstract class LimelightProcessorBase {
 
@@ -36,18 +28,27 @@ public abstract class LimelightProcessorBase {
 //            update();
 //        }
     }
+    protected Coords pixelToNormalized(Coords pixel) {
+        double cx = (LLConfig.resolutionX-1)/2.0;
+        double cy = (LLConfig.resolutionY-1)/2.0;
 
-    // please just don't
-    public synchronized LLResult getLLResult() {
-        return result;
+        double nx = (pixel.x-cx) / (LLConfig.resolutionX/2.0);
+        double ny = (cy-pixel.y) / (LLConfig.resolutionY/2.0);
+
+        return new Coords(nx, ny);
     }
+    protected Coords pixelToAngle(Coords pixel) {
+        Coords n = pixelToNormalized(pixel);
+        double nx = n.getX(), ny = n.getY();
 
-    protected double toRadians(double angDeg) {
-        return Math.toRadians(angDeg);
-    }
+        // find angle to plane 1 unit away
+        double x = nx * Math.tan(LLConfig.hFovRadians/2.0);
+        double y = ny * Math.tan(LLConfig.vFovRadians/2.0);
 
-    protected double toDegrees(double angRad) {
-        return Math.toDegrees(angRad);
+        double thetaX = Math.atan(x);
+        double thetaY = Math.atan(y);
+
+        return new Coords(thetaX, thetaY);
     }
 
     protected abstract void update();

@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.util.limelight;
 public class LimelightConfig {
     // all measurements are in inches and degrees
     public int resolutionX, resolutionY;
-    public double horizontalFOV, verticalFOV;
+    public double hFovRadians, vFovRadians;
     public double angleWithHorizontal;
     public double xOffset, yOffset, zOffset;
     // xOffset: right is positive, left is negative
@@ -19,12 +19,12 @@ public class LimelightConfig {
 
     public LimelightConfig(int resolutionX, int resolutionY,
                            double angleWithHorizontalDegrees,
-                           double horizontalFOV, double verticalFOV,
+                           double horizontalFOVDegrees, double verticalFOVDegrees,
                            double xOffsetInch, double yOffsetInch, double zOffsetInch) {
         this.resolutionX = resolutionX;
         this.resolutionY = resolutionY;
-        this.horizontalFOV = horizontalFOV;
-        this.verticalFOV = verticalFOV;
+        this.hFovRadians = Math.toRadians(horizontalFOVDegrees);
+        this.vFovRadians = Math.toRadians(verticalFOVDegrees);
         this.angleWithHorizontal = angleWithHorizontalDegrees;
         this.xOffset = xOffsetInch;
         this.yOffset = yOffsetInch;
