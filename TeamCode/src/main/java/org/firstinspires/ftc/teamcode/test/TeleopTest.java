@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 import org.firstinspires.ftc.teamcode.util.Utils;
+import org.firstinspires.ftc.teamcode.util.limelight.Coords;
 
 @Config
 @TeleOp(name = "Test TeleOp", group = "Test")
@@ -82,7 +83,10 @@ public class TeleopTest extends LinearOpMode {
 
         robot.startTeleopDrive();
         robot.startLimelight();
+        robot.startArtifactPipeline();
+
         robot.setLimelightAllianceColor(isRed);
+
         sensorUpdateThread.start();
 
         while (opModeIsActive()) {
@@ -91,10 +95,15 @@ public class TeleopTest extends LinearOpMode {
                 robot.updateLimelight();
                 robot.updateRobotPoseUsingLimelight();
             }
-            Pose limelightPose = robot.getLimelightRobotPose();
-            multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
-            Pose offsetPose = robot.limelightTransOffset;
-            multipleTelemetry.addData("robot offset using limelight", offsetPose.getX()+" "+offsetPose.getY()+" "+offsetPose.getHeading());
+//            Pose limelightPose = robot.getLimelightRobotPose();
+//            multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
+//            Pose offsetPose = robot.limelightTransOffset;
+//            multipleTelemetry.addData("robot offset using limelight", offsetPose.getX()+" "+offsetPose.getY()+" "+offsetPose.getHeading());
+
+            Pose clusterPose = robot.getTargetArtifactClusterPose();
+            multipleTelemetry.addData("closest cluster pose", clusterPose.getX()+" "+clusterPose.getY()+" "+clusterPose.getHeading());
+            Coords clusterCoords = robot.getTargetArtifactClusterCoords();
+            multipleTelemetry.addData("closest cluster coords", clusterCoords.getX()+" "+clusterCoords.getY()+" "+clusterCoords.getAngle());
 
             if(turretActive) {
                 robot.setTurretTargetPosition(TURRET_TARGET_RAD);

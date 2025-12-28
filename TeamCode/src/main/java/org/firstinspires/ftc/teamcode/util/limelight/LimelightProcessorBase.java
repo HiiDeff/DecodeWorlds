@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.limelight;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
@@ -35,8 +37,9 @@ public abstract class LimelightProcessorBase {
 
         return new Coords(nx, ny);
     }
-    protected Coords pixelToAngle(Coords pixel) {
+    protected Coords pixelToAngleRadians(Coords pixel) {
         Coords n = pixelToNormalized(pixel);
+        Log.e("adbug ll pixel normalized", n.toString());
         double nx = n.getX(), ny = n.getY();
 
         // find angle to plane 1 unit away

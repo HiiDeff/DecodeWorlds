@@ -23,7 +23,9 @@ import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.limelight.AprilTagType;
+import org.firstinspires.ftc.teamcode.util.limelight.Coords;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightAprilTagDetector;
+import org.firstinspires.ftc.teamcode.util.limelight.LimelightArtifactDetector;
 import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
@@ -68,15 +70,18 @@ public abstract class RobotBase extends MecanumDrive {
     // Camera
     public final Limelight3A limelight;
     public final LimelightAprilTagDetector limelightAprilTagDetector;
+    public final LimelightArtifactDetector limelightArtifactDetector;
     public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
-            0, 54,41,
-            -3,0,0);
+            Math.toRadians(10), 54.371,42.318,
+            0,0,12.5);
+    public static int ARTIFACT_PIPELINE = 1;
     public static int APRIL_TAG_PIPELINE = 1;
 
     // States
     public final ArtifactState artifactState;
     public Pose limelightRobotPose; // estimated robot pose if limelight sees ATag, otherwise null
     public Pose limelightTransOffset = new Pose(0, 0); //offset values based on last seen ATag values
+    private boolean detectingAprilTags = true;
 
     // Cached Encoder Values
     private double flywheelVelocityTicksPerSecond = 0.0;
@@ -122,6 +127,7 @@ public abstract class RobotBase extends MecanumDrive {
         // Limelight:
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
+        limelightArtifactDetector = new LimelightArtifactDetector(limelight, LLConfig);
         // Motion Control:
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
         turret = new Turret(this, TURRET_PID_COEFFICIENTS, TURRET_TICKS_PER_RAD);
@@ -316,14 +322,29 @@ public abstract class RobotBase extends MecanumDrive {
 
     ///////////////////* LIMELIGHT UTILS *///////////////////
     public void startLimelight() {
-        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
+        startAprilTagPipeline();
         limelight.start();
     }
+
+    public void startAprilTagPipeline() {
+        limelight.pipelineSwitch(APRIL_TAG_PIPELINE);
+        detectingAprilTags = true;
+    }
+
+    public void startArtifactPipeline() {
+        limelight.pipelineSwitch(ARTIFACT_PIPELINE);
+        detectingAprilTags = false;
+    }
+
     public void setLimelightAllianceColor(boolean isRedAlliance) {
         limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
     public void updateLimelight() { // public for teleop usage, auto for motifs
-        limelightAprilTagDetector.update();
+        if (detectingAprilTags){
+            limelightAprilTagDetector.update();
+        }else{
+            limelightArtifactDetector.update();
+        }
     }
     public void stopLimelight() {
         limelight.stop();
@@ -354,5 +375,21 @@ public abstract class RobotBase extends MecanumDrive {
     }
     public AprilTagType getMotif() {
         return limelightAprilTagDetector.getMotif();
+    }
+
+    public Coords getTargetArtifactClusterCoords(){return limelightArtifactDetector.getTargetPosition();}
+    public Pose getTargetArtifactClusterPose(){return coordsToPose(limelightArtifactDetector.getTargetPosition());}
+
+    public Pose coordsToPose(Coords coords){
+        // x is forward, y is left-right
+
+        Pose robotPose = getPose();
+        double robotHeading = robotPose.getHeading();
+
+        // Rotation of coords by robotHeading, then translate by robot position
+        double x = robotPose.getX() + coords.getY() * Math.cos(robotHeading) - coords.getX() * Math.sin(robotHeading);
+        double y = robotPose.getY() + coords.getY() * Math.sin(robotHeading) + coords.getX() * Math.cos(robotHeading);
+
+        return new Pose(x, y, robotHeading);
     }
 }

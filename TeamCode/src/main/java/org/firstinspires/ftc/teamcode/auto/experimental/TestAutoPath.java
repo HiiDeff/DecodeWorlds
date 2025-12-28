@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto.experimental;//package org.firstinspires.ftc.teamcode.auto.experimental;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -21,8 +23,8 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class TestAutoPath extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 3950;
-    
+    public static int FLYWHEEL_VELOCITY = 2000;
+
     public static boolean takeFarBalls = true;
 
     @Override
@@ -31,119 +33,123 @@ public abstract class TestAutoPath extends AutoBase {
     }
     @Override
     protected Task createStartTask() {
-        state = AutoState.START;
-        SeriesTask task = new SeriesTask();
-        task.add(
-            new ParallelTask(
-                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                    new RuntimeDrivingTask(
-                            robot,
-                            builder -> {
-                                Pose pose = getShoot1Pose();
-                                return builder
-                                        .addPath(new BezierCurve(robot.getPose(),pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }
-                    )
-            )
-        );
-        //task.add(new SleepTask(5000));
-        /*task.add(
-                new RuntimeDrivingTask(
-                        robot,
-                        builder -> {
-                            Pose pose = getShoot2Pose();
-                            return builder
-                                    .addPath(new BezierCurve(robot.getPose(),pose))
-                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                    .build();
-                        }
-                )
-        );
-        task.add(new SleepTask(5000));
-        task.add(
-                new RuntimeDrivingTask(
-                        robot,
-                        builder -> {
-                            Pose pose = getShoot3Pose();
-                            return builder
-                                    .addPath(new BezierCurve(robot.getPose(),pose))
-                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                    .build();
-                        }
-                )
-        );
-        task.add(new SleepTask(500000));
-        task.add(
-                new ParallelTask(
-                        new RuntimeDrivingTask(
-                                robot,
-                                builder -> {
-                                    Pose pose = getShoot1Pose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(),pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                }
-                        ),
-                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID)
-                )
-        );*/
-        task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
-        task.add(new SeriesTask(
-                new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new RampTask(robot, RampTask.Position.DOWN)
-        ));
-        
-        if(takeFarBalls){
-            task.add(
-                    new ParallelTask(
-                            new RuntimeDrivingTask(robot, builder -> {
-                                Pose pose = getIntake1Pose();
-                                return builder.addPath(new BezierCurve(robot.getPose(), pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }),
-                            new FlywheelTask(robot, 0, 500)
-                    )
-            );
-            task.add(
-                    new ParallelTask(
-                            new RuntimeDrivingTask(robot, builder -> {
-                                Pose pose = getIntake1ForwardPose();
-                                return builder.addPath(new BezierLine(robot.getPose(), pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }),
-                            new UnboundedIntakeTask(robot, 1.0, false)
-                    )
-            );
-            task.add(new SleepTask(200));
-            task.add(
-                    new ParallelTask(
-                            new RuntimeDrivingTask(robot, builder -> {
-                                Pose pose = getShoot2Pose();
-                                return builder.addPath(new BezierCurve(robot.getPose(), pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }),
-                            new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2500)
-                    )
-            );
-            task.add(new SleepTask(200));
-            task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
-            task.add(new SeriesTask(
-                    new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                    new RampTask(robot, RampTask.Position.DOWN)
-            ));
-            autoStates.setCycleNumber(2);
-        }
-        
-        return task;
+//        state = AutoState.START;
+//        SeriesTask task = new SeriesTask();
+//        task.add(
+//            new ParallelTask(
+//                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
+//                    new RuntimeDrivingTask(
+//                            robot,
+//                            builder -> {
+//                                Pose pose = getShoot1Pose();
+//                                return builder
+//                                        .addPath(new BezierCurve(robot.getPose(),pose))
+//                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                        .build();
+//                            }
+//                    )
+//            )
+//        );
+//        //task.add(new SleepTask(5000));
+//        /*task.add(
+//                new RuntimeDrivingTask(
+//                        robot,
+//                        builder -> {
+//                            Pose pose = getShoot2Pose();
+//                            return builder
+//                                    .addPath(new BezierCurve(robot.getPose(),pose))
+//                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                    .build();
+//                        }
+//                )
+//        );
+//        task.add(new SleepTask(5000));
+//        task.add(
+//                new RuntimeDrivingTask(
+//                        robot,
+//                        builder -> {
+//                            Pose pose = getShoot3Pose();
+//                            return builder
+//                                    .addPath(new BezierCurve(robot.getPose(),pose))
+//                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                    .build();
+//                        }
+//                )
+//        );
+//        task.add(new SleepTask(500000));
+//        task.add(
+//                new ParallelTask(
+//                        new RuntimeDrivingTask(
+//                                robot,
+//                                builder -> {
+//                                    Pose pose = getShoot1Pose();
+//                                    return builder
+//                                            .addPath(new BezierCurve(robot.getPose(),pose))
+//                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                            .build();
+//                                }
+//                        ),
+//                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
+//                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
+//                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID)
+//                )
+//        );*/
+//        task.add(new SleepTask(100));
+//        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
+//        task.add(new SeriesTask(
+//                new BlockerTask(robot, BlockerTask.Position.CLOSE),
+//                new RampTask(robot, RampTask.Position.DOWN)
+//        ));
+//
+//        if(takeFarBalls){
+//            task.add(
+//                    new ParallelTask(
+//                            new RuntimeDrivingTask(robot, builder -> {
+//                                Pose pose = getIntake1Pose();
+//                                return builder.addPath(new BezierCurve(robot.getPose(), pose))
+//                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                        .build();
+//                            }),
+//                            new FlywheelTask(robot, 0, 500)
+//                    )
+//            );
+//            task.add(
+//                    new ParallelTask(
+//                            new RuntimeDrivingTask(robot, builder -> {
+//                                Pose pose = getIntake1ForwardPose();
+//                                return builder.addPath(new BezierLine(robot.getPose(), pose))
+//                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                        .build();
+//                            }),
+//                            new UnboundedIntakeTask(robot, 1.0, false)
+//                    )
+//            );
+//            task.add(new SleepTask(200));
+//            task.add(
+//                    new ParallelTask(
+//                            new RuntimeDrivingTask(robot, builder -> {
+//                                Pose pose = getShoot2Pose();
+//                                return builder.addPath(new BezierCurve(robot.getPose(), pose))
+//                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                        .build();
+//                            }),
+//                            new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2500)
+//                    )
+//            );
+//            task.add(new SleepTask(200));
+//            task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
+//            task.add(new SeriesTask(
+//                    new BlockerTask(robot, BlockerTask.Position.CLOSE),
+//                    new RampTask(robot, RampTask.Position.DOWN)
+//            ));
+//            autoStates.setCycleNumber(2);
+//        }
+//
+//        return task;
+        robot.limelight.start();
+        robot.limelight.pipelineSwitch(0);
+        robot.updateLimelight();
+        return new SeriesTask();
     }
 
     @Override
@@ -151,35 +157,35 @@ public abstract class TestAutoPath extends AutoBase {
         state = AutoState.CYCLE;
         int cycleNumber = autoStates.getCycleNumber();
         SeriesTask task = new SeriesTask();
-        task.add(
-                new ParallelTask(
-                        new RuntimeDrivingTask(robot,
-                                builder -> {
-                                    Pose pose = getIntake2Pose();
-                                    if(cycleNumber==2) pose = getIntake3Pose();
-                                    else if(cycleNumber==3) pose = getIntake4Pose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(),pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                }
-                        ),
-                        new FlywheelTask(robot, 0, 500)
-                )
-        );
+        robot.updateLimelight();
+//        task.add(
+//                new ParallelTask(
+//                        new RuntimeDrivingTask(robot,
+//                                builder -> {
+//                                    Pose pose = robot.getLargestArtifactClusterPose();
+//                                    return builder
+//                                            .addPath(new BezierCurve(robot.getPose(),pose))
+//                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                            .build();
+//                                }
+//                        ),
+//                        new FlywheelTask(robot, 0, 500)
+//                )
+//        );
         task.add(new SleepTask(100));
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
                                 builder -> {
-                                    Pose pose = getIntake2ForwardPose();
-                                    if(cycleNumber==2) pose = getIntake3ForwardPose();
-                                    else if(cycleNumber==3) pose = getIntake4ForwardPose();
+                                    Pose pose = robot.getTargetArtifactClusterPose();
+                                    Log.e("adbug test auto pose", pose.getX()+" "+pose.getY()+" "+pose.getHeading());
                                     return builder
                                             .addPath(new BezierLine(robot.getPose(), pose.getPose()))
                                             .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
-                                }
+                                },
+                                1.0,
+                                10000
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
@@ -202,19 +208,17 @@ public abstract class TestAutoPath extends AutoBase {
         task.add(new SleepTask(200));
         task.add(
                 new ParallelTask(
-                    new RuntimeDrivingTask(
-                            robot,
-                            builder -> {
-                                Pose pose = getShoot2Pose();
-                                if(cycleNumber==2) pose = getShoot3Pose();
-                                else if(cycleNumber==3) pose = getShoot4Pose();
-                                return builder
-                                        .addPath(new BezierCurve(robot.getPose(), pose))
-                                        .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                        .build();
-                            }
-                    ),
-                    new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2000)
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = new Pose(0,0, Math.PI);
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        ),
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2000)
                 )
         );
         task.add(new SleepTask(200));
@@ -228,24 +232,24 @@ public abstract class TestAutoPath extends AutoBase {
 
     @Override
     protected Task createFinishTask() {
-        state = AutoState.FINISH;
-        SeriesTask task = new SeriesTask();
-        task.add(
-                new ParallelTask(
-                        new FlywheelTask(robot, 0,1000),
-                        new RuntimeDrivingTask(
-                                robot,
-                                builder -> {
-                                    Pose pose = getParkPose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                }
-                        )
-                )
-        );
-        return task;
+//        state = AutoState.FINISH;
+//        SeriesTask task = new SeriesTask();
+//        task.add(
+//                new ParallelTask(
+//                        new FlywheelTask(robot, 0,1000),
+//                        new RuntimeDrivingTask(
+//                                robot,
+//                                builder -> {
+//                                    Pose pose = getParkPose();
+//                                    return builder
+//                                            .addPath(new BezierCurve(robot.getPose(), pose))
+//                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                            .build();
+//                                }
+//                        )
+//                )
+//        );
+        return new SeriesTask();
     }
 
     protected abstract Pose getShoot1Pose();
