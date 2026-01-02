@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
@@ -74,8 +76,8 @@ public abstract class RobotBase extends MecanumDrive {
     public static LimelightConfig LLConfig = new LimelightConfig(640, 480,
             Math.toRadians(10), 54.371,42.318,
             0,0,12.5);
-    public static int ARTIFACT_PIPELINE = 1;
-    public static int APRIL_TAG_PIPELINE = 1;
+    public static int ARTIFACT_PIPELINE = 0;
+    public static int APRIL_TAG_PIPELINE = 2;
 
     // States
     public final ArtifactState artifactState;
@@ -378,7 +380,7 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     public Coords getTargetArtifactClusterCoords(){return limelightArtifactDetector.getTargetPosition();}
-    public Pose getTargetArtifactClusterPose(){return coordsToPose(limelightArtifactDetector.getTargetPosition());}
+    public abstract Pose getTargetArtifactClusterPose();
 
     public Pose coordsToPose(Coords coords){
         // x is forward, y is left-right
@@ -387,8 +389,13 @@ public abstract class RobotBase extends MecanumDrive {
         double robotHeading = robotPose.getHeading();
 
         // Rotation of coords by robotHeading, then translate by robot position
-        double x = robotPose.getX() + coords.getY() * Math.cos(robotHeading) - coords.getX() * Math.sin(robotHeading);
-        double y = robotPose.getY() + coords.getY() * Math.sin(robotHeading) + coords.getX() * Math.cos(robotHeading);
+        // Coords: This means we have to switch x/y, and invert x
+        //      +y
+        //  -x robot +x
+        //      -y
+        //
+        double x = robotPose.getX() + coords.getY() * Math.cos(robotHeading) - (-coords.getX()) * Math.sin(robotHeading);
+        double y = robotPose.getY() + (coords.getY() * Math.sin(robotHeading) - coords.getX() * Math.cos(robotHeading));
 
         return new Pose(x, y, robotHeading);
     }

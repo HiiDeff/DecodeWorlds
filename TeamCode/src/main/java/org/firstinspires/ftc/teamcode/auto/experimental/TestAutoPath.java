@@ -148,6 +148,7 @@ public abstract class TestAutoPath extends AutoBase {
 //        return task;
         robot.limelight.start();
         robot.limelight.pipelineSwitch(0);
+        robot.startArtifactPipeline();
         robot.updateLimelight();
         return new SeriesTask();
     }

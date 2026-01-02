@@ -7,6 +7,7 @@ import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.Utils;
+import org.firstinspires.ftc.teamcode.util.limelight.Coords;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
 @Config
@@ -34,6 +36,7 @@ public class Robot3 extends RobotBase {
     //MID is 53 inches
     //FAR is 115 inches
     public static double BLOCKER_BLOCKING = 0.65, BLOCKER_NONBLOCKING = 0.9;
+    public static double limelightIntakeOffsetInch = -4.3;
 
     // Flywheel Tuning Vals
     public static double pivotCoef[] = {
@@ -187,5 +190,14 @@ public class Robot3 extends RobotBase {
             pow *= distToGoalInch;
         }
         return (int) rpm;
+    }
+
+    @Override
+    public Pose getTargetArtifactClusterPose(){
+        Coords coordsFromLimelight = limelightArtifactDetector.getTargetPosition();
+        Coords coordsFromIntake = new Coords(coordsFromLimelight.getX(), coordsFromLimelight.getY() + limelightIntakeOffsetInch,
+                coordsFromLimelight.getZ(), coordsFromLimelight.getAngle());
+
+        return coordsToPose(coordsFromIntake);
     }
 }
