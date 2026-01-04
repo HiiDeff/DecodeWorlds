@@ -224,8 +224,8 @@ public abstract class TestAutoPath extends AutoBase {
                                                 .setTangentHeadingInterpolation()
                                                 .build();
                                     },
-                                    0.7,
-                                    10000
+                                    1.0,
+                                    3000
                             ),
                             new UnboundedIntakeTask(robot, 1.0, false)
                     )
@@ -242,7 +242,7 @@ public abstract class TestAutoPath extends AutoBase {
                                                 .build();
                                     },
                                     0.7,
-                                    10000
+                                    2000
                             ),
                             new UnboundedIntakeTask(robot, 1.0, false)
                     )
@@ -257,8 +257,7 @@ public abstract class TestAutoPath extends AutoBase {
                                                 .setLinearHeadingInterpolation(robot.getHeading(), robot.getHeading())
                                                 .build();
                                     },
-                                    0.7,
-                                    10000
+                                    1.0
                             ),
                             new UnboundedIntakeTask(robot, 1.0, false)
                     )
@@ -281,7 +280,7 @@ public abstract class TestAutoPath extends AutoBase {
                         )
                 )
         );}*/
-        task.add(new SleepTask(3000));
+        task.add(new SleepTask(50));
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
