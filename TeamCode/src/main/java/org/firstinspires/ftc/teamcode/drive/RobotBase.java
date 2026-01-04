@@ -32,6 +32,8 @@ import org.firstinspires.ftc.teamcode.util.limelight.LimelightConfig;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
+import java.util.List;
+
 @Config
 public abstract class RobotBase extends MecanumDrive {
 
@@ -381,6 +383,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public Coords getTargetArtifactClusterCoords(){return limelightArtifactDetector.getTargetPosition();}
     public abstract Pose getTargetArtifactClusterPose();
+    public abstract List<Pose> getTopThreeTargetPositions();
 
     public Pose coordsToPose(Coords coords){
         // x is forward, y is left-right

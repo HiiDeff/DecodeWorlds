@@ -23,6 +23,9 @@ import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.limelight.Coords;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Config
 public class Robot3 extends RobotBase {
 
@@ -195,9 +198,25 @@ public class Robot3 extends RobotBase {
     @Override
     public Pose getTargetArtifactClusterPose(){
         Coords coordsFromLimelight = limelightArtifactDetector.getTargetPosition();
-        Coords coordsFromIntake = new Coords(coordsFromLimelight.getX(), coordsFromLimelight.getY() + limelightIntakeOffsetInch,
+        Coords coordsFromIntake = new Coords(coordsFromLimelight.getX(), coordsFromLimelight.getY(),
                 coordsFromLimelight.getZ(), coordsFromLimelight.getAngle());
 
         return coordsToPose(coordsFromIntake);
+    }
+
+    public List<Pose> getTopThreeTargetPositions(){
+        List<Coords> coordsFromLimelight = limelightArtifactDetector.getTopThreeTargetPositions();
+
+        List<Pose> result = new ArrayList<>();
+
+        for (Coords location: coordsFromLimelight){
+            Coords coordsFromIntake = new Coords(location.getX(), location.getY(),
+                    location.getZ(), location.getAngle());
+
+            result.add(coordsToPose(coordsFromIntake));
+        }
+
+
+        return result;
     }
 }

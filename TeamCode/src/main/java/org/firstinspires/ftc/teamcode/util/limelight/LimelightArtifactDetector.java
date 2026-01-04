@@ -6,6 +6,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Config
@@ -52,6 +55,64 @@ public class LimelightArtifactDetector extends LimelightProcessorBase {
             }
         }
         return targetCoords.get(idx);
+    }
+
+    public List<Coords> getTopThreeTargetPositions() {
+        if (targetCoords == null || targetCoords.isEmpty()){
+            return null;
+        }
+
+        List<Integer> indices = new ArrayList<>();
+
+        for (int i = 0; i < radii.size(); i++){
+            indices.add(i);
+        }
+
+        // Sort indices by decreasing radii
+        Collections.sort(indices, new Comparator<Integer>() {
+            @Override
+            public int compare (Integer a, Integer b){
+                double difference = radii.get(b) - radii.get(a);
+
+                if (difference < 0){
+                    return -1;
+                }else if (difference > 0){
+                    return 1;
+                }
+                return 0;
+            }
+        });
+
+        return Arrays.asList(targetCoords.get(indices.get(0)), targetCoords.get(indices.get(1)), targetCoords.get(indices.get(2)));
+
+//        double maxRadius1 = 0;
+//        double maxRadius2 = 0;
+//        double maxRadius3 = 0;
+//        int idx1 = 0;
+//        int idx2 = 0;
+//        int idx3 = 0;
+//        for(int i=0; i<radii.size(); i++){
+//            if(radii.get(i)>=maxRadius1) {
+//                idx3 = idx2;
+//                maxRadius3 = maxRadius2;
+//
+//                idx2 = idx1;
+//                maxRadius2 = maxRadius1;
+//
+//                maxRadius1 = radii.get(i);
+//                idx1 = i;
+//            }else if (radii.get(i) >= maxRadius2){
+//                idx3 = idx2;
+//                maxRadius3 = maxRadius2;
+//
+//                maxRadius2 = radii.get(i);
+//                idx2 = i;
+//            }else if (radii.get(i) >= maxRadius3){
+//                maxRadius3 = radii.get(i);
+//                idx3 = i;
+//            }
+//        }
+//        return Arrays.asList(targetCoords.get(idx1), targetCoords.get(idx2), targetCoords.get(idx3));
     }
 
     private Coords anglesToRealWorldPos(Coords anglesRadians) {

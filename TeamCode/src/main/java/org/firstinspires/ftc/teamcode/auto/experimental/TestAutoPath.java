@@ -20,10 +20,20 @@ import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
+import org.firstinspires.ftc.teamcode.util.limelight.Coords;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Config
 public abstract class TestAutoPath extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2000;
+    public static int FLYWHEEL_VELOCITY = 4000;
+
+    public static double INTAKE_OFFSET_X = 0, INTAKE_OFFSET_Y = -15;
+    public static double INTAKE_FORWARD_OFFSET_X = 0, INTAKE_FORWARD_OFFSET_Y = 0;
+    public static double INTAKE_BACK_OFFSET_X = 0, INTAKE_BACK_OFFSET_Y = -20;
 
     public static boolean takeFarBalls = true;
 
@@ -153,6 +163,30 @@ public abstract class TestAutoPath extends AutoBase {
         return new SeriesTask();
     }
 
+    Pose getNewPose(Pose start, Pose end, Pose offset){
+        double heading = Math.atan2(end.getY() - start.getY(), end.getX() - start.getX());
+
+        double x = end.getX() + offset.getY() * Math.cos(heading) - offset.getX() * Math.sin(heading);
+        double y = end.getY() + (offset.getY() * Math.sin(heading) + offset.getX() * Math.cos(heading));
+
+        return new Pose(x, y);
+    }
+
+    Pose getNewPose(Pose start, Pose end, Pose offset, double heading){
+        double x = end.getX() + offset.getY() * Math.cos(heading) - offset.getX() * Math.sin(heading);
+        double y = end.getY() + (offset.getY() * Math.sin(heading) + offset.getX() * Math.cos(heading));
+
+        return new Pose(x, y);
+    }
+
+    BezierLine getBezierLine(Pose start, Pose end, Pose offset) {
+        return new BezierLine(start, getNewPose(start, end, offset));
+    }
+
+    BezierLine getBezierLine(Pose start, Pose end, Pose offset, double heading) {
+        return new BezierLine(start, getNewPose(start, end, offset, heading));
+    }
+
     @Override
     protected Task createCycleTask() {
         state = AutoState.CYCLE;
@@ -174,23 +208,64 @@ public abstract class TestAutoPath extends AutoBase {
 //                )
 //        );
         task.add(new SleepTask(100));
-        task.add(
-                new ParallelTask(
-                        new RuntimeDrivingTask(robot,
-                                builder -> {
-                                    Pose pose = robot.getTargetArtifactClusterPose();
-                                    Log.e("adbug test auto pose", pose.getX()+" "+pose.getY()+" "+pose.getHeading());
-                                    return builder
-                                            .addPath(new BezierLine(robot.getPose(), pose.getPose()))
-                                            .setConstantHeadingInterpolation(pose.getHeading())
-                                            .build();
-                                },
-                                1.0,
-                                10000
-                        ),
-                        new UnboundedIntakeTask(robot, 1.0, false)
-                )
-        );
+
+        List<Pose> poses = robot.getTopThreeTargetPositions();
+
+        for (int i = 0; i < 3; i++){
+            Pose currentPose = poses.get(i);
+
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot,
+                                    builder -> {
+                                        Log.e("adbug test auto pose", currentPose.toString());
+                                        return builder
+                                                .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_OFFSET_X, INTAKE_OFFSET_Y)))
+                                                .setTangentHeadingInterpolation()
+                                                .build();
+                                    },
+                                    0.7,
+                                    10000
+                            ),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(new SleepTask(100));
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot,
+                                    builder -> {
+                                        Log.e("adbug test auto pose", currentPose.toString());
+                                        return builder
+                                                .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_FORWARD_OFFSET_X, INTAKE_FORWARD_OFFSET_Y)))
+                                                .setTangentHeadingInterpolation()
+                                                .build();
+                                    },
+                                    0.7,
+                                    10000
+                            ),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot,
+                                    builder -> {
+                                        Log.e("adbug test auto pose", currentPose.toString());
+                                        return builder
+                                                .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_BACK_OFFSET_X, INTAKE_BACK_OFFSET_Y), robot.getHeading()))
+                                                .setLinearHeadingInterpolation(robot.getHeading(), robot.getHeading())
+                                                .build();
+                                    },
+                                    0.7,
+                                    10000
+                            ),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(new SleepTask(100));
+        }
+
         /*if(cycleNumber==1){
         task.add(
                 new SeriesTask(
@@ -206,7 +281,7 @@ public abstract class TestAutoPath extends AutoBase {
                         )
                 )
         );}*/
-        task.add(new SleepTask(200));
+        task.add(new SleepTask(3000));
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
@@ -268,4 +343,11 @@ public abstract class TestAutoPath extends AutoBase {
 
     protected abstract Pose getIntake3ForwardPose();
     protected abstract Pose getIntake4ForwardPose();
+}
+
+class Compare implements Comparator<Pose>{
+    @Override
+    public int compare(Pose a, Pose b){
+        return (int)(a.getX() - b.getX());
+    }
 }
