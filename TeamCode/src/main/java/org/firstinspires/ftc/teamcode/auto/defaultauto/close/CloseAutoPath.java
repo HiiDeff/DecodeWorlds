@@ -62,11 +62,6 @@ public abstract class CloseAutoPath extends CloseAuto {
     }
 
     @Override
-    protected Pose getShoot1Pose() {
-        return new Pose(SHOOT_1_X, SHOOT_1_Y*getSign(), SHOOT_1_H*getSign());
-    }
-
-    @Override
     protected Pose getIntake1Pose() {
         return new Pose(INTAKE_1_X, INTAKE_1_Y*getSign(), INTAKE_1_H*getSign());
     }
@@ -108,6 +103,11 @@ public abstract class CloseAutoPath extends CloseAuto {
 
     @Override
     protected Pose getIntake3ForwardPose() {return new Pose(INTAKE_FORWARD_3_X, INTAKE_FORWARD_3_Y*getSign(), INTAKE_FORWARD_3_H*getSign());}
+
+    @Override
+    protected Pose getShootPose() {
+        return new Pose(SHOOT_1_X, SHOOT_1_Y*getSign(), SHOOT_1_H*getSign());
+    }
 
     @Override
     protected Pose getGatePose() {

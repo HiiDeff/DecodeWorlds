@@ -117,7 +117,7 @@ public abstract class RobotBase extends MecanumDrive {
         // Servos:
         leftPivot = hardwareMap.get(Servo.class, "leftPivot");
         rightPivot = hardwareMap.get(Servo.class, "rightPivot");
-        leftPivot.setDirection(Servo.Direction.REVERSE);
+        leftPivot.setDirection(Servo.Direction.FORWARD);
         rightPivot.setDirection(Servo.Direction.FORWARD);
         blocker = hardwareMap.get(Servo.class, "blocker");
         ramp = hardwareMap.get(Servo.class, "ramp");

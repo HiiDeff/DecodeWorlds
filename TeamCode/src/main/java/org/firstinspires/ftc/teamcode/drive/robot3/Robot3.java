@@ -38,7 +38,7 @@ public class Robot3 extends RobotBase {
     //CLOSE is 20 inches
     //MID is 53 inches
     //FAR is 115 inches
-    public static double BLOCKER_BLOCKING = 0.65, BLOCKER_NONBLOCKING = 0.9;
+    public static double BLOCKER_BLOCKING = 0.6, BLOCKER_NONBLOCKING = 0.4;
     public static double limelightIntakeOffsetInch = -4.3;
 
     // Flywheel Tuning Vals

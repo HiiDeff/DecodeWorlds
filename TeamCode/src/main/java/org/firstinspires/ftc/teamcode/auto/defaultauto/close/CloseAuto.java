@@ -40,7 +40,7 @@ public abstract class CloseAuto extends AutoBase {
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-                                    Pose pose = getShoot1Pose();
+                                    Pose pose = getShootPose();
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
@@ -170,7 +170,7 @@ public abstract class CloseAuto extends AutoBase {
         return task;
     }
 
-    protected abstract Pose getShoot1Pose();
+    protected abstract Pose getShootPose();
     protected abstract Pose getIntake1Pose();
     protected abstract Pose getShoot2Pose();
     protected abstract Pose getIntake2Pose();

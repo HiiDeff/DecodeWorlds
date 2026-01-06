@@ -43,6 +43,8 @@ public abstract class TestAutoPath extends AutoBase {
     }
     @Override
     protected Task createStartTask() {
+        state = AutoState.START;
+        SeriesTask task = new SeriesTask();
 //        state = AutoState.START;
 //        SeriesTask task = new SeriesTask();
 //        task.add(
@@ -156,6 +158,24 @@ public abstract class TestAutoPath extends AutoBase {
 //        }
 //
 //        return task;
+
+        task.add(
+                new ParallelTask(
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
+                        new UnboundedIntakeTask(robot, 0.3, false),
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = new Pose(-8.493, -0.686, -Math.PI/2);
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        )
+                )
+        );
+
         robot.limelight.start();
         robot.limelight.pipelineSwitch(0);
         robot.startArtifactPipeline();
@@ -207,6 +227,22 @@ public abstract class TestAutoPath extends AutoBase {
 //                        new FlywheelTask(robot, 0, 500)
 //                )
 //        );
+
+        task.add(
+                new ParallelTask(
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = new Pose(-8.493,  -0.686, -Math.PI);
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        )
+                )
+        );
+
         task.add(new SleepTask(100));
 
         List<Pose> poses = robot.getTopThreeTargetPositions();
@@ -235,7 +271,7 @@ public abstract class TestAutoPath extends AutoBase {
                     new ParallelTask(
                             new RuntimeDrivingTask(robot,
                                     builder -> {
-                                        Log.e("adbug test auto pose", currentPose.toString());
+                                        Log.e("adbug test auto moving forward", currentPose.toString());
                                         return builder
                                                 .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_FORWARD_OFFSET_X, INTAKE_FORWARD_OFFSET_Y)))
                                                 .setTangentHeadingInterpolation()
@@ -251,13 +287,14 @@ public abstract class TestAutoPath extends AutoBase {
                     new ParallelTask(
                             new RuntimeDrivingTask(robot,
                                     builder -> {
-                                        Log.e("adbug test auto pose", currentPose.toString());
+                                        Log.e("adbug test auto moving back", currentPose.toString());
                                         return builder
                                                 .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_BACK_OFFSET_X, INTAKE_BACK_OFFSET_Y), robot.getHeading()))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), robot.getHeading())
                                                 .build();
                                     },
-                                    1.0
+                                    1.0,
+                                    2000
                             ),
                             new UnboundedIntakeTask(robot, 1.0, false)
                     )
@@ -280,13 +317,13 @@ public abstract class TestAutoPath extends AutoBase {
                         )
                 )
         );}*/
-        task.add(new SleepTask(50));
+        Log.e("adbug test auto", "Moving back");
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-                                    Pose pose = new Pose(0,0, Math.PI);
+                                    Pose pose = new Pose(-8.493,  -0.686, -2.75);
                                     return builder
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
@@ -327,21 +364,7 @@ public abstract class TestAutoPath extends AutoBase {
         return new SeriesTask();
     }
 
-    protected abstract Pose getShoot1Pose();
-    protected abstract Pose getIntake1Pose();
-    protected abstract Pose getShoot2Pose();
-    protected abstract Pose getIntake2Pose();
-    protected abstract Pose getShoot3Pose();
-    protected abstract Pose getIntake3Pose();
-    protected abstract Pose getShoot4Pose();
-    protected abstract Pose getIntake4Pose();
-    protected abstract Pose getGatePose();
-    protected abstract Pose getParkPose();
-    protected abstract Pose getIntake1ForwardPose();
-    protected abstract Pose getIntake2ForwardPose();
 
-    protected abstract Pose getIntake3ForwardPose();
-    protected abstract Pose getIntake4ForwardPose();
 }
 
 class Compare implements Comparator<Pose>{
