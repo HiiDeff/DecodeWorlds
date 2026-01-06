@@ -30,7 +30,7 @@ import java.util.List;
 public class Robot3 extends RobotBase {
 
     // Constants
-    public static double RAMP_UP = 0.38, RAMP_DOWN = 0.42;
+    public static double RAMP_UP = 0.54, RAMP_DOWN = 0.49;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0002, 0.0, 0.0,0.0005);
     public static double PIVOT_CLOSE = 0.14, PIVOT_MID = 0.29, PIVOT_FAR = 0.47; //all the way down is 0.07, all the way up is 0.5
     public static double PARK_DOWN = 0.96, PARK_UP = 0.42;
@@ -38,7 +38,7 @@ public class Robot3 extends RobotBase {
     //CLOSE is 20 inches
     //MID is 53 inches
     //FAR is 115 inches
-    public static double BLOCKER_BLOCKING = 0.6, BLOCKER_NONBLOCKING = 0.4;
+    public static double BLOCKER_BLOCKING = 0.36, BLOCKER_NONBLOCKING = 0.539;
     public static double limelightIntakeOffsetInch = -4.3;
 
     // Flywheel Tuning Vals
