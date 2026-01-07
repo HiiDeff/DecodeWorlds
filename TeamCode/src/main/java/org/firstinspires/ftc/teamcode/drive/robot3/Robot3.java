@@ -68,13 +68,18 @@ public class Robot3 extends RobotBase {
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
-            .mass(12.5)
-            .forwardZeroPowerAcceleration(-35)
-            .lateralZeroPowerAcceleration(-70)
-            .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0.0, 0.02, 0.025))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.4, 0.0, 0.04, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.0008,0.6,0.045))
+            .mass(12.6)
+            .forwardZeroPowerAcceleration(-35.618068367118305)
+            .lateralZeroPowerAcceleration(-68)
+            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryDrivePIDF(true)/*true for 2 PIDs*/
+            .useSecondaryHeadingPIDF(false)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0, 0.00, 0.02))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.2, 0.0, 0.01, 0.003))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.4, 0.0, 0.04, 0.020))
+//            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.4, 0.0, 0.04, 0.025))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.02,0.0,0.00035,0.6,0.04))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.00008,0.6,0.04))
             .centripetalScaling(0.003);
 
     public static MecanumConstants DRIVE_CONSTANTS = new MecanumConstants()
@@ -87,13 +92,13 @@ public class Robot3 extends RobotBase {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .maxPower(1.0)
-            .xVelocity(75)
-            .yVelocity(60)
+            .xVelocity(79.19765861858123) // 79.5881669257437 + 78.958785 + 79.04602393
+            .yVelocity(61.66185161427456)
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants PINPOINT_CONSTANTS = new PinpointConstants()
-            .forwardPodY(-1.5)
-            .strafePodX(-6.125)
+            .forwardPodY(3.5)
+            .strafePodX(-6)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
@@ -102,7 +107,7 @@ public class Robot3 extends RobotBase {
 
     public static double T_VALUE_CONSTRAINT = 0.99;
     public static double TIMEOUT_CONSTRAINT = 100;
-    public static double BRAKING_STRENGTH = 0.65;
+    public static double BRAKING_STRENGTH = 1.1;
     public static double BRAKING_START = 1;
 
     public Robot3(HardwareMap hardwareMap) {

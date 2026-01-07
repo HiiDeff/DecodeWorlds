@@ -236,6 +236,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     public void setFlywheelPower(double power){
         if(!flywheelOn || flywheelPID.getTarget()==0) power = 0; //cut power
+        Log.e("adbug flywheel power", power+"");
         leftFlywheel.setPower(Utils.clamp(power, -1, 1));
         rightFlywheel.setPower(Utils.clamp(power, -1, 1));
     }

@@ -25,9 +25,9 @@ public class PedroTestAuto extends AutoBase {
         POS3_X, POS3_Y, POS3_H;
 
     static {
-        POS1_X = 48.5; POS1_Y = 52.4;  POS1_H = Math.PI/2;
-        POS2_X = 65.8; POS2_Y = -22.7; POS2_H = -Math.PI/2;
-        POS3_X = 2.1;  POS3_Y = 1.1;   POS3_H = -Math.PI/2;
+        POS1_X = 49.0; POS1_Y = 56.0;  POS1_H = Math.PI/2;
+        POS2_X = 62.2; POS2_Y = -22.8; POS2_H = -Math.PI/2;
+        POS3_X = 0.2;  POS3_Y = 2.1;   POS3_H = -Math.PI/2;
     }
 
     @Override

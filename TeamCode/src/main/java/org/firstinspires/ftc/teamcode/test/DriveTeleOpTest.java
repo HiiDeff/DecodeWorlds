@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
@@ -8,6 +10,7 @@ import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
 import com.pedropathing.geometry.BezierPoint;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,6 +21,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
+import org.firstinspires.ftc.teamcode.task.ParkTask;
+import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 
 @Config
@@ -66,7 +72,7 @@ public class DriveTeleOpTest extends LinearOpMode {
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.0008,0.6,0.045))
             .centripetalScaling(0.003);
 
-    MecanumDrive robot;
+    private MecanumDrive robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -74,8 +80,12 @@ public class DriveTeleOpTest extends LinearOpMode {
                 new PinpointLocalizer(hardwareMap, PINPOINT_CONSTANTS),
                 getPathConstraints()) {
         };
+        robot.setStartingPose(new Pose(100, 0, Math.PI));
+        robot.setMaxPower(1.0);
+
 
         robot.startTeleopDrive();
+
 
         gp1 = new GamePad(gamepad1);
         gp2 = new GamePad(gamepad2);
@@ -83,6 +93,8 @@ public class DriveTeleOpTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
+            robot.update();
+            gp1.update();
             drive();
         }
     }
@@ -100,6 +112,10 @@ public class DriveTeleOpTest extends LinearOpMode {
             y = -gp1.leftStickX();
             a = -gp1.rightStickX() * 0.5;
         }
+
+        Log.e("adbug drive", gp1.rightStickX() + "");
+
+
         double pow = Math.sqrt(x * x + y * y);
 //        double limPow = driveLim.calculate(pow);
 //        if (pow > MIN_DRIVE_POW) {

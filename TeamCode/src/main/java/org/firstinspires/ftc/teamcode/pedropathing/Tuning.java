@@ -146,7 +146,7 @@ class LocalizationTest extends OpMode {
     public void start() {
         follower.startTeleopDrive();
         follower.update();
-        follower.setStartingPose(new Pose(0, 0, Math.PI));
+        follower.setStartingPose(new Pose(0, 0, 0));
     }
 
     /**
@@ -530,9 +530,11 @@ class LateralVelocityTuner extends OpMode {
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/13/2024
  */
+
+@Config
 class ForwardZeroPowerAccelerationTuner extends OpMode {
     private final ArrayList<Double> accelerations = new ArrayList<>();
-    public static double VELOCITY = 60;
+    public static double VELOCITY = 20;
 
     private double previousVelocity;
     private long previousTimeNano;
@@ -634,6 +636,8 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
  * @author Baron Henderson - 20077 The Indubitables
  * @version 1.0, 3/13/2024
  */
+
+@Config
 class LateralZeroPowerAccelerationTuner extends OpMode {
     private final ArrayList<Double> accelerations = new ArrayList<>();
     public static double VELOCITY = 50;
