@@ -8,6 +8,7 @@ import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.Utils;
+import org.firstinspires.ftc.teamcode.util.filter.MovingAverage;
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.PIDModel;
 
@@ -22,9 +23,10 @@ public class Turret extends PIDModel {
     private final double ticksPerRadian;
     private int targetAngle;
     private double prevLimelightHeading = 0.0;
-    private ElapsedTime timer = null;
+    private ElapsedTime headingTimer = null, targetTimer = null;
     public static double THRESHOLD_RAD_PER_SEC = 0.3, THRESHOLD_ROBOT_VELOCITY = 10; //tuned
     private double limelightHeading = 0.0;
+    private MovingAverage dTarget_dT;
     private Pose turretCenter = new Pose(0, 0);
 
     public Turret(RobotBase robot, PIDCoefficients pidCoefficients, double ticksPerRadian) {
@@ -37,16 +39,17 @@ public class Turret extends PIDModel {
         double turretAngleRad = robot.getTurretAngleTicks()/ticksPerRadian;
         double robotHeading = robot.getHeading();
         limelightHeading = Utils.normalize(robotHeading+turretAngleRad);
+        Log.i("limelightPose", limelightPose+"");
 
-        if(timer == null || timer.seconds() >= 1) { //haven't used calcRobotPose in a while
-            timer = new ElapsedTime();
+        if(headingTimer == null || headingTimer.seconds() >= 1) { //haven't used calcRobotPose in a while
+            headingTimer = new ElapsedTime();
             prevLimelightHeading = limelightHeading;
             return null;
         } else {
-            double dTheta_dT = Utils.normalize(limelightHeading-prevLimelightHeading)/timer.seconds(); //TODO: check jumps between -PI <-> PI
+            double dTheta_dT = Utils.normalize(limelightHeading-prevLimelightHeading)/ headingTimer.seconds(); //TODO: check jumps between -PI <-> PI
             Log.i("edbug turret dTheta_dT", dTheta_dT+"");
             prevLimelightHeading = limelightHeading;
-            timer.reset();
+            headingTimer.reset();
             if(Math.abs(dTheta_dT)>THRESHOLD_RAD_PER_SEC) return null;
         }
         Log.i("edbug robot velocity", robot.getVelocity().getMagnitude()+"");
@@ -74,9 +77,16 @@ public class Turret extends PIDModel {
         return turretCenter;
     }
 
-
     // PID Control
     public void setTargetAngle(int targetAngleTicks) {
+        Log.i("targetAngle", targetAngleTicks+"");
+        if(targetTimer == null || targetTimer.seconds() >= 1) {
+            dTarget_dT = new MovingAverage(5);
+            targetTimer = new ElapsedTime();
+        } else {
+            dTarget_dT.add((double)(targetAngleTicks-targetAngle)/(targetTimer.milliseconds()));
+            targetTimer.reset();
+        }
         targetAngle = targetAngleTicks;
     }
 
@@ -101,6 +111,12 @@ public class Turret extends PIDModel {
         Log.i("edbug tau_ff", tau_ff+"");
 
         return tau_ff;
+    }
+
+    @Override
+    public double getFeedForward2() {
+        if(dTarget_dT==null) return 0;
+        return dTarget_dT.get();
     }
 
     @Override

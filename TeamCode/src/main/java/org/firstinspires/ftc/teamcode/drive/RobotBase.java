@@ -53,7 +53,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final DcMotorEx turretMotor;
     public final Turret turret;
     private boolean turretOn;
-    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.006, 0.0, 0.0, 0.0001);
+    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.006, 0.0, 0.0, 0.0001, 0.0);
     public final DcMotorEx intake;
     private boolean intakeOn;
 
@@ -79,7 +79,7 @@ public abstract class RobotBase extends MecanumDrive {
             Math.toRadians(10), 54.371,42.318,
             0,0,12.5);
     public static int ARTIFACT_PIPELINE = 0;
-    public static int APRIL_TAG_PIPELINE = 2;
+    public static int APRIL_TAG_PIPELINE = 1;
 
     // States
     public final ArtifactState artifactState;

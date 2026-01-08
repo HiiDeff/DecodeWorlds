@@ -8,11 +8,7 @@ public class PIDCoefficients {
     public double kI;
     public double kD;
     public double feedForward;
-
-    public PIDCoefficients(double minPower, double maxPower, double kP, double kI, double kD, double feedForward) {
-        this(minPower, maxPower, kP, kI, kD);
-        this.feedForward = feedForward;
-    }
+    public double feedForward2;
 
     public PIDCoefficients(double minPower, double maxPower, double kP, double kI, double kD) {
         this.minPower = minPower;
@@ -20,5 +16,16 @@ public class PIDCoefficients {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
+    }
+
+    public PIDCoefficients(double minPower, double maxPower, double kP, double kI, double kD, double feedForward) {
+        this(minPower, maxPower, kP, kI, kD);
+        this.feedForward = feedForward;
+    }
+
+    public PIDCoefficients(double minPower, double maxPower, double kP, double kI, double kD, double feedForward, double feedForward2) {
+        this(minPower, maxPower, kP, kI, kD);
+        this.feedForward = feedForward;
+        this.feedForward2 = feedForward2;
     }
 }

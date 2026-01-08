@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.task.Task;
 
 @Config
 @Autonomous(name = "PedroTestAuto", group = "autoTest")
-public class PedroTestAuto extends AutoBase {
+public class PedroTestAuto extends PedroTestAutoBase {
 
     public static double
         POS1_X, POS1_Y, POS1_H,
