@@ -42,6 +42,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auto.defaultauto.far.FarAuto;
 import org.firstinspires.ftc.teamcode.util.objectdetector.HSV;
@@ -52,11 +53,15 @@ public class ArtifactState {
     public static double BACK_MIN_DETECTION_DIST = 1.5;
     public static double FRONT_MIN_DETECTION_DIST = 1.52;
 
+    public static int CURRENT_2_BALL_THRESHOLD = 1000;
+
     private RobotBase robot;
 
+    private double intakeCurrent = 0.0;
     private boolean hasArtifact = false;
     private boolean detectedIntake = false;
     private boolean flashingViolet = false;
+    private int ballCount = 0;
     private ElapsedTime timer = null;
 
     public ArtifactState(RobotBase robot){
@@ -74,20 +79,28 @@ public class ArtifactState {
 
         hasArtifact = (back1DetectedDistance || back2DetectedDistance || back1DetectedColor || back2DetectedColor);
 
+        detectedIntake = !robot.breakBeamReceiver.getState();
 
-        double frontDist1 = robot.frontColor1.getDistance(DistanceUnit.INCH);
-        double frontDist2 = robot.frontColor2.getDistance(DistanceUnit.INCH);
+        intakeCurrent = robot.intake.getCurrent(CurrentUnit.MILLIAMPS);
 
-        boolean front1DetectedDistance = (frontDist1 <= FRONT_MIN_DETECTION_DIST);
-        boolean front2DetectedDistance = (frontDist2 <= FRONT_MIN_DETECTION_DIST);
-        boolean front1DetectedColor = checkColor(robot.frontColor1.getNormalizedColors());
-        boolean front2DetectedColor = checkColor(robot.frontColor2.getNormalizedColors());
+        if(detectedIntake && hasArtifact){
+            ballCount = 3;
+        }
+        else if(hasArtifact){
+            if(intakeCurrent >= CURRENT_2_BALL_THRESHOLD){
+                ballCount = 2;
+            }
+            else{
+                ballCount = 1;
+            }
+        }
+        else{
+            ballCount = 0;
+        }
 
-        detectedIntake = (front1DetectedColor || front2DetectedColor || front1DetectedDistance || front2DetectedDistance);
-
-        Log.e("adbug front sensors", frontDist1 + " " + frontDist2 + " " + front1DetectedColor + " " + front2DetectedColor + " " + detectedIntake);
+        Log.e("adbug break beam", detectedIntake + "");
         Log.e("adbug back sensors", backDist1 + " " + backDist2 + " " + back1DetectedColor + " " + back2DetectedColor + " " + hasArtifact);
-
+        Log.i("ndbug ball count", ballCount + "");
 //        HSV hsv1 = ImageProcessor.ColorToHsv(robot.frontColor1.getNormalizedColors());
 //        HSV hsv2 = ImageProcessor.ColorToHsv(robot.frontColor2.getNormalizedColors());
 //
@@ -135,5 +148,9 @@ public class ArtifactState {
 
     public boolean getArtifactState(){
         return hasArtifact;
+    }
+
+    public int getBallCount(){
+        return ballCount;
     }
 }

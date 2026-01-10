@@ -30,12 +30,12 @@ public class TeleopTest extends LinearOpMode {
 
     dist (inch) ||  RPM   ||  angle (shooter)
    <------------------------------>
-        150     ||  4050  ||     0.48 DONE
-        140     ||  3950  ||     0.47 DONE
-        130     ||  3800  ||     0.45 DONE
-        120     ||  3650  ||     0.44 DONE
-        110     ||  3600  ||     0.41 DONE
-        100     ||  3400  ||     0.38 DONE
+        150     ||  4050  ||     0.48
+        140     ||  3950  ||     0.47
+        130     ||  3800  ||     0.45
+        120     ||  3900  ||     0.44 DONE
+        110     ||  3550  ||     0.41 DONE
+        100     ||  3300  ||     0.38 DONE
          90     ||  3200  ||     0.35 DONE
          80     ||  3100  ||     0.33 DONE
                <----------->
@@ -55,7 +55,7 @@ public class TeleopTest extends LinearOpMode {
 
     // Pivot DOWN: 0.57
     // Pivot FULL EXTENSION: 1
-    public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 1.0;
+    public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.8;
     public static double TURRET_TICKS_PER_RADIANS = 103.8*2.0, TURRET_TARGET_RAD = 0.0;
     public static boolean isRed = false;
     public static boolean rampUp, flywheelActive, aiming, autoaim = true, turretActive = false, turretAutoAim = true, updateLimelight = true;
@@ -83,7 +83,8 @@ public class TeleopTest extends LinearOpMode {
 
         robot.startTeleopDrive();
         robot.startLimelight();
-        robot.startArtifactPipeline();
+        //robot.startArtifactPipeline();
+        robot.startAprilTagPipeline();
 
         robot.setLimelightAllianceColor(isRed);
 
@@ -140,7 +141,7 @@ public class TeleopTest extends LinearOpMode {
                 robot.runIntakeWithPower(INTAKE_POWER);
             } else if(gp1.leftTrigger()>0.3) {
                 robot.runIntakeReversed();
-            } else robot.stopIntake();
+            } else robot.runIntakeWithPower(0.3);
 
 //            if(gp1.rightBumper()) {
 //                robot.runPusher();
@@ -176,6 +177,8 @@ public class TeleopTest extends LinearOpMode {
             multipleTelemetry.addData("current rpm", robot.getFlywheelVelocityRpm());
             multipleTelemetry.addData("target rpm", FLYWHEEL_RPM);
             multipleTelemetry.addData("turret pos", robot.getTurretAngleTicks());
+            Pose limelightPose = robot.getLimelightRobotPose();
+            multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
             multipleTelemetry.addData("distance to goal", robot.getVectorToGoal().getMagnitude());
             multipleTelemetry.update();
         }

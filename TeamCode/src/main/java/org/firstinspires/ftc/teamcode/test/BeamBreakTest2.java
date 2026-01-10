@@ -15,7 +15,7 @@ public class BeamBreakTest2 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        sensor = hardwareMap.get(DigitalChannel.class, "beambreakoutput");
+        sensor = hardwareMap.get(DigitalChannel.class, "breakbeamoutput");
         sensor.setMode(DigitalChannel.Mode.OUTPUT);
 
         waitForStart();

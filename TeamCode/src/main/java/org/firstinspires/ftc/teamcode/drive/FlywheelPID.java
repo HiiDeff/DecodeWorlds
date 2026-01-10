@@ -8,6 +8,7 @@ public class FlywheelPID extends VelocityPIDModel {
 
     private final RobotBase robot;
     private double targetVelocity;
+    public static int pow = 3;
 
     public FlywheelPID(RobotBase robot, VelocityPIDCoefficients pidCoefficients) {
         super(pidCoefficients);
@@ -26,7 +27,10 @@ public class FlywheelPID extends VelocityPIDModel {
     @Override
     public double getError() {
         double error = targetVelocity - getVelocity();
-        return error*Math.abs(error);
+        if(error>0) {
+            return Math.pow(error, pow);
+        }
+        return error;
     }
 
     @Override

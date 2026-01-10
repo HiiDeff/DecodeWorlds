@@ -15,6 +15,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -70,6 +71,8 @@ public abstract class RobotBase extends MecanumDrive {
     public final RevColorSensorV3 backColor2;
     public final RevColorSensorV3 frontColor1;
     public final RevColorSensorV3 frontColor2;
+    public final DigitalChannel breakBeamReceiver;
+    public final DigitalChannel breakBeamEmitter;
 
     // Camera
     public final Limelight3A limelight;
@@ -83,6 +86,7 @@ public abstract class RobotBase extends MecanumDrive {
 
     // States
     public final ArtifactState artifactState;
+    public final ArtifactInventory artifactInventory;
     public Pose limelightRobotPose; // estimated robot pose if limelight sees ATag, otherwise null
     public Pose limelightTransOffset = new Pose(0, 0); //offset values based on last seen ATag values
     private boolean detectingAprilTags = true;
@@ -128,6 +132,11 @@ public abstract class RobotBase extends MecanumDrive {
         frontColor2 = hardwareMap.get(RevColorSensorV3.class, "frontColor2");
         backColor1 = hardwareMap.get(RevColorSensorV3.class, "backColor1");
         backColor2 = hardwareMap.get(RevColorSensorV3.class, "backColor2");
+        breakBeamEmitter = hardwareMap.get(DigitalChannel.class, "breakbeamoutput");
+        breakBeamReceiver = hardwareMap.get(DigitalChannel.class, "breakbeamreceiver");
+        breakBeamEmitter.setMode(DigitalChannel.Mode.OUTPUT);
+        breakBeamReceiver.setMode(DigitalChannel.Mode.INPUT);
+        breakBeamEmitter.setState(true);
         // Limelight:
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
@@ -136,6 +145,7 @@ public abstract class RobotBase extends MecanumDrive {
         flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
         turret = new Turret(this, TURRET_PID_COEFFICIENTS, TURRET_TICKS_PER_RAD);
         artifactState = new ArtifactState(this);
+        artifactInventory = new ArtifactInventory(this);
         // Lights:
         light = hardwareMap.get(RevBlinkinLedDriver.class, "light");
     }
@@ -165,6 +175,7 @@ public abstract class RobotBase extends MecanumDrive {
         updateEncoders();
         updateProfilers();
         updatePIDs();
+        artifactInventory.updateArtifactCount();
 //        updateLimelight();
 //        updateSensors(); //handled by thread
     }
