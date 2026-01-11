@@ -8,7 +8,8 @@ import org.firstinspires.ftc.teamcode.util.Utils;
 @Config
 public class Presets {
     public static int KICKER_SLEEP = 300;
-    public static int SHOOT_TIME = 2000;
+    public static int SHOOT_TIME = 1000;
+    public static double SHOOT_INTAKE_POWER = 0.45;
     public static double ANGLE = 0.0;
 
     //assume velocity and pivot position are already set
@@ -18,11 +19,11 @@ public class Presets {
                 new ParallelTask(
                         new PivotTask(robot, PivotTask.WhichPivot.LEFT,pivotPos),
                         new PivotTask(robot, PivotTask.WhichPivot.RIGHT, pivotPos),
-                        new FlywheelTask(robot, targetRPM, 2000)
+                        new FlywheelTask(robot, targetRPM, 1000)
 //                        new TurretTask(robot, ANGLE, 2000)
                 ),
                 new ParallelTask(
-                        new UnboundedIntakeTask(robot, 1.0, false),
+                        new UnboundedIntakeTask(robot, SHOOT_INTAKE_POWER, false),
                         new BlockerTask(robot, BlockerTask.Position.OPEN),
                         new RampTask(robot, RampTask.Position.UP),
                         new SleepTask(SHOOT_TIME)

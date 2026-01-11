@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class FarAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 3850;
+    public static int FLYWHEEL_VELOCITY = 4050;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     @Override
     protected Location getFirstLocation() {
@@ -188,6 +188,9 @@ public abstract class FarAuto extends AutoBase {
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new RampTask(robot, RampTask.Position.DOWN)
         ));
+        if(cycleNumber==3) {
+            task.add(new SleepTask(10000));
+        }
         return task;
     }
 

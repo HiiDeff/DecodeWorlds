@@ -32,7 +32,7 @@ public class Robot3 extends RobotBase {
     // Constants
     public static double RAMP_UP = 0.54, RAMP_DOWN = 0.49;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0006, 0.0, 0.0,0.0004);
-    public static double PIVOT_CLOSE = 0.2, PIVOT_MID = 0.29, PIVOT_FAR = 0.47; //all the way down is 0.07, all the way up is 0.5
+    public static double PIVOT_CLOSE = 0.17, PIVOT_MID = 0.43, PIVOT_FAR = 0.55; //all the way down is 0.07, all the way up is 0.5
     public static double PARK_DOWN = 0.96, PARK_UP = 0.42;
 
     //CLOSE is 20 inches
@@ -71,14 +71,14 @@ public class Robot3 extends RobotBase {
             .mass(12.6)
             .forwardZeroPowerAcceleration(-35.618068367118305)
             .lateralZeroPowerAcceleration(-68)
-            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryTranslationalPIDF(false)
             .useSecondaryDrivePIDF(false)/*true for 2 PIDs*/
             .useSecondaryHeadingPIDF(false)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0, 0.5, 0.02))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.5, 0.0, 0.0, 0.003))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0.0, 0.02, 0.02))
+//            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.5, 0.0, 0.0, 0.003))
             .headingPIDFCoefficients(new PIDFCoefficients(1.4, 0.0, 0.04, 0.020))
 //            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.4, 0.0, 0.04, 0.025))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.04,0.0,0.011,0.6,0.04))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.02,0.0,0.0008,0.6,0.04))
 //            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.00008,0.6,0.04))
             .centripetalScaling(0.003);
 

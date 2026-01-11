@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class CloseCycleAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 2850;
+    public static int FLYWHEEL_VELOCITY = 3200;
     public static double INTAKE_HOLD_SPEED = 0.6;
 
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.4;
@@ -151,6 +151,9 @@ public abstract class CloseCycleAuto extends AutoBase {
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new RampTask(robot, RampTask.Position.DOWN)
         ));
+        if(cycleNumber==3) {
+            task.add(new SleepTask(10000));
+        }
         return task;
     }
 
