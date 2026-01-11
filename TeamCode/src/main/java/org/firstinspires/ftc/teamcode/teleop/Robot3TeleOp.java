@@ -25,8 +25,10 @@ import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 public abstract class Robot3TeleOp extends LinearOpMode {
     public static int FLYWHEEL_TARGET_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
-    public static double PIVOT_TARGET_POS = 0.07, MANUAL_OVERRIDE_PIVOT_POS = 0.07;
-    public static double FLYWHEEL_ON_INTAKE_POWER = 1, INTAKE_IDLE_POWER = 0.3;
+    public static double PIVOT_TARGET_POS = 0.17, MANUAL_OVERRIDE_PIVOT_POS = 0.17;
+    public static double FLYWHEEL_ON_INTAKE_POWER = 1.0, FLYWHEEL_WAIT_INTAKE_POWER = -0.2, INTAKE_IDLE_POWER = 0.0;
+    public static int SHOOT_TIME = 150, SHOOT_WAIT_TIME = 200;
+    public static int RAPID_FIRE_THRESHOLD = 100;
     private TeleOpState state;
     private boolean parking = false;
     private double drivePow = 0.0;
@@ -123,8 +125,8 @@ public abstract class Robot3TeleOp extends LinearOpMode {
                     new ParallelTask(
                             new RampTask(robot, RampTask.Position.UP),
                             new BlockerTask(robot, BlockerTask.Position.OPEN),
-                            new UnboundedIntakeTask(robot, 1.0, false),
-                            new SleepTask(2000)
+                            new UnboundedIntakeTask(robot, 0.8, false),
+                            new SleepTask(1000)
                     ),
                     new ParallelTask(
                             new RampTask(robot, RampTask.Position.DOWN),
@@ -162,7 +164,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
     private void shoot(){
         FLYWHEEL_TARGET_RPM = robot.calcFlywheelRpm();
         PIVOT_TARGET_POS = robot.calcPivotPosition();
-        if(robot.hasArtifact()||task!=null){
+        if(robot.artifactState.getBallCount()>=1||task!=null){
             robot.setFlywheelTargetVelocity(FLYWHEEL_TARGET_RPM);
         }else{
             robot.setFlywheelTargetVelocity(0);
@@ -173,18 +175,36 @@ public abstract class Robot3TeleOp extends LinearOpMode {
 
         if(!gp1.back() && gp1.onceA() && (robot.flywheelAtTarget()||!robot.hasArtifact())) {
             if(task!=null) task.cancel();
-            task = new SeriesTask(
-                    new ParallelTask(
-                            new RampTask(robot, RampTask.Position.UP),
-                            new BlockerTask(robot, BlockerTask.Position.OPEN),
-                            new UnboundedIntakeTask(robot, 1.0, false),
-                            new SleepTask(2000)
-                    ),
-                    new ParallelTask(
-                            new RampTask(robot, RampTask.Position.DOWN),
-                            new BlockerTask(robot, BlockerTask.Position.CLOSE)
-                    )
-            );
+            if(robot.getVectorToGoal().getMagnitude()>RAPID_FIRE_THRESHOLD) {
+                task = new SeriesTask(
+                        new ParallelTask(
+                                new RampTask(robot, RampTask.Position.UP),
+                                new BlockerTask(robot, BlockerTask.Position.OPEN)
+                        ),
+                        new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_TIME),
+                        new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_WAIT_TIME),
+                        new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_TIME),
+                        new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_WAIT_TIME),
+                        new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_TIME),
+                        new ParallelTask(
+                                new RampTask(robot, RampTask.Position.DOWN),
+                                new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                        )
+                );
+            } else {
+                task = new SeriesTask(
+                        new ParallelTask(
+                                new RampTask(robot, RampTask.Position.UP),
+                                new BlockerTask(robot, BlockerTask.Position.OPEN),
+                                new UnboundedIntakeTask(robot, 0.8, false),
+                                new SleepTask(1000)
+                        ),
+                        new ParallelTask(
+                                new RampTask(robot, RampTask.Position.DOWN),
+                                new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                        )
+                );
+            }
         }
 
 //        if (shooting){

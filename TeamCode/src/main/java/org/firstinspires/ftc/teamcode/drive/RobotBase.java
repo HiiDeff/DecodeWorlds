@@ -185,7 +185,7 @@ public abstract class RobotBase extends MecanumDrive {
     }
 
     private void updateEncoders() {
-        flywheelVelocityTicksPerSecond = leftFlywheel.getVelocity();
+        flywheelVelocityTicksPerSecond = rightFlywheel.getVelocity();
         turretAngleTicks = turretMotor.getCurrentPosition();
     }
 
@@ -283,6 +283,14 @@ public abstract class RobotBase extends MecanumDrive {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void setTurretPower(double power){
+        Log.e("adbug turret power", "raw " + turret.getPower() + " clamped" + Utils.clamp(power, -1, 1) );
+        power = Utils.clamp(power, -1, 1);
+        double angle = turret.getTurretAngle();
+        if(angle>=Math.PI/2) {
+            Utils.clamp(power, -1, 0);
+        } else if(angle<=-Math.PI/2) {
+            Utils.clamp(power, 0, 1);
+        }
         turretMotor.setPower(Utils.clamp(power, -1, 1));
     }
     public void setTurretTargetPosition(double angleRad){

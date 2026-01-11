@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDModel;
@@ -28,8 +30,10 @@ public class FlywheelPID extends VelocityPIDModel {
     public double getError() {
         double error = targetVelocity - getVelocity();
         if(error>0) {
-            return Math.pow(error, pow);
+            error = Math.pow(error, pow);
         }
+        if(error<0 && error>-100) error = 0;
+        Log.i("flywheel error", error+"");
         return error;
     }
 

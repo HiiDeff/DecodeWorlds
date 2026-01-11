@@ -26,6 +26,7 @@ public class Turret extends PIDModel {
     private ElapsedTime headingTimer = null, targetTimer = null;
     public static double THRESHOLD_RAD_PER_SEC = 0.3, THRESHOLD_ROBOT_VELOCITY = 10; //tuned
     private double limelightHeading = 0.0;
+    private double prevRobotAngleToGoal = 0.0;
     private MovingAverage dTarget_dT;
     private Pose turretCenter = new Pose(0, 0);
 
@@ -79,15 +80,24 @@ public class Turret extends PIDModel {
 
     // PID Control
     public void setTargetAngle(int targetAngleTicks) {
+        double currRobotAngleToGoal = 0;
+        if (robot.getVectorToGoal() != null){
+            currRobotAngleToGoal= robot.getVectorToGoal().getTheta();
+        }
+        prevRobotAngleToGoal = currRobotAngleToGoal;
         Log.i("targetAngle", targetAngleTicks+"");
         if(targetTimer == null || targetTimer.seconds() >= 1) {
-            dTarget_dT = new MovingAverage(5);
+            dTarget_dT = new MovingAverage(3);
             targetTimer = new ElapsedTime();
         } else {
-            dTarget_dT.add((double)(targetAngleTicks-targetAngle)/(targetTimer.milliseconds()));
+            dTarget_dT.add((currRobotAngleToGoal-prevRobotAngleToGoal)/(targetTimer.milliseconds()));
             targetTimer.reset();
         }
         targetAngle = targetAngleTicks;
+    }
+
+    public double getTurretAngle() {
+        return robot.getTurretAngleTicks()/ticksPerRadian;
     }
 
     @Override

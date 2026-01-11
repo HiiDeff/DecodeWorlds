@@ -79,7 +79,9 @@ public abstract class VelocityPIDModel {
 
     public boolean isDone() {
         Log.i("ndbug lastError", lastError+"");
-        return Math.abs(lastError) < getStopError();
+        double error = lastError;
+        if(lastError>0) error = Math.pow(error, 1.0/3);
+        return Math.abs(error) < getStopError();
     }
 
     public abstract void cancel();
