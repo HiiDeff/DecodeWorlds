@@ -31,7 +31,7 @@ public class Robot3 extends RobotBase {
 
     // Constants
     public static double RAMP_UP = 0.54, RAMP_DOWN = 0.49;
-    public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0003, 0.0, 0.0,0.00043);
+    public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.00001, 0.0, 0.0,0);
     public static double PIVOT_CLOSE = 0.2, PIVOT_MID = 0.29, PIVOT_FAR = 0.47; //all the way down is 0.07, all the way up is 0.5
     public static double PARK_DOWN = 0.96, PARK_UP = 0.42;
 
@@ -43,27 +43,27 @@ public class Robot3 extends RobotBase {
 
     // Flywheel Tuning Vals
     public static double pivotCoef[] = {
-            -6.653177,
-            0.7294976,
-            -0.03392037,
-            0.0008750063,
-            -0.00001355061,
-            1.290464 * Math.pow(10.0, -7.0),
-            -7.400309 * Math.pow(10.0, -10.0),
-            2.344162 * Math.pow(10.0, -12.0),
-            -3.150742 * Math.pow(10.0, -15.0)
+            1.1525,
+            -0.100701,
+            0.0039865,
+            -0.0000834899,
+            0.00000113928,
+            -1.08136* Math.pow(10.0, -8.0),
+            6.86432 * Math.pow(10.0, -11.0),
+            -2.5508 * Math.pow(10.0, -13.0),
+            4.09469 * Math.pow(10.0, -16.0)
     };
     public static double rpmCoef[] = {
-            -144032.529,
-            17312.5221,
-            -880.32487,
-            25.271665,
-            -0.45127892,
-            0.0052033398,
-            -0.00003878999,
-            1.8057785 * Math.pow(10.0, -7.0),
-            -4.7719158 * Math.pow(10.0, -10.0),
-            5.4638853 * Math.pow(10.0, -13.0)
+            -36728.6253,
+            5020.70529,
+            -277.62134,
+            8.6969233,
+            -0.17003434,
+            0.0021556971,
+            -0.000017750227,
+            9.164225 * Math.pow(10.0, -8.0),
+            -2.6939193 * Math.pow(10.0, -10.0),
+            3.4370523 * Math.pow(10.0, -13.0)
     };
 
     // Pedro Constants
