@@ -55,7 +55,7 @@ public class TeleopTest extends LinearOpMode {
 
     // Pivot DOWN: 0.57
     // Pivot FULL EXTENSION: 1
-    public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.8;
+    public static double PIVOT_POS = 0.4, SERVO_SKIP_CORRECTION = 0.01, INTAKE_POWER = 0.8, INTAKE_IDLE_POWER = 0.0;
     public static double TURRET_TICKS_PER_RADIANS = 103.8*2.0, TURRET_TARGET_RAD = 0.0;
     public static boolean isRed = false;
     public static boolean rampUp, flywheelActive, aiming, autoaim = true, turretActive = false, turretAutoAim = true, updateLimelight = true;
@@ -141,7 +141,7 @@ public class TeleopTest extends LinearOpMode {
                 robot.runIntakeWithPower(INTAKE_POWER);
             } else if(gp1.leftTrigger()>0.3) {
                 robot.runIntakeReversed();
-            } else robot.runIntakeWithPower(0.3);
+            } else robot.runIntakeWithPower(INTAKE_IDLE_POWER);
 
 //            if(gp1.rightBumper()) {
 //                robot.runPusher();
