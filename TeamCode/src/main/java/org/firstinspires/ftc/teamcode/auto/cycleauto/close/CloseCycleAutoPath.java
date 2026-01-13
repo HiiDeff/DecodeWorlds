@@ -29,7 +29,7 @@ public abstract class CloseCycleAutoPath extends CloseCycleAuto {
 
         INTAKE_1_X = 51.835; INTAKE_1_Y = 15; INTAKE_1_H = -Math.PI/2;
         INTAKE_FORWARD_1_X = 51.835; INTAKE_FORWARD_1_Y = -4; INTAKE_FORWARD_1_H = -Math.PI/2;
-        GATE_1_X = 60.933; GATE_1_Y = -18; GATE_1_H = 3.0;
+        GATE_1_X = 58.933; GATE_1_Y = -18; GATE_1_H = 3.0;
         SHOOT_2_X = 47.913; SHOOT_2_Y = 22.202; SHOOT_2_H = -2.39;
 
         INTAKE_2_X = 71; INTAKE_2_Y = 10.706; INTAKE_2_H = -Math.PI/2;
@@ -52,7 +52,7 @@ public abstract class CloseCycleAutoPath extends CloseCycleAuto {
 
     @Override
     protected Pose getStartingPose() {
-        return new Pose(0,0,-Math.PI/2);
+        return new Pose(3,-3*getSign(),-Math.PI/2*getSign());
     }
 
     @Override

@@ -19,13 +19,13 @@ public class RuntimeDrivingTask extends TimedTask {
     public RuntimeDrivingTask(Follower robot, PathActioner actioner){
         this.robot = robot;
         this.actioner = actioner;
-        setFinishTimeMillis(30000);
+        setFinishTimeMillis(8000);
     }
     public RuntimeDrivingTask(Follower robot, PathActioner actioner, double maxPower) {
         this.robot = robot;
         this.actioner = actioner;
         this.maxPower  = maxPower;
-        setFinishTimeMillis(30000);
+        setFinishTimeMillis(8000);
     }
     public RuntimeDrivingTask(Follower robot, PathActioner actioner, double maxPower, int timeoutMs){
         this.robot = robot;
