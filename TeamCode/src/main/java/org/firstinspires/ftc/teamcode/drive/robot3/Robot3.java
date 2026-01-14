@@ -39,31 +39,31 @@ public class Robot3 extends RobotBase {
     //MID is 53 inches
     //FAR is 115 inches
     public static double BLOCKER_BLOCKING = 0.39, BLOCKER_NONBLOCKING = 0.539;
-    public static double DIST_OFFSET = 13.0;
+    public static double DIST_OFFSET = 0.0;
 
     // Flywheel Tuning Vals
     public static double pivotCoef[] = {
-            -6.553177,
-            0.7294976,
-            -0.03392037,
-            0.0008750063,
-            -0.00001355061,
-            1.290464 * Math.pow(10.0, -7.0),
-            -7.400309 * Math.pow(10.0, -10.0),
-            2.344162 * Math.pow(10.0, -12.0),
-            -3.150742 * Math.pow(10.0, -15.0)
+            141.80254,
+            -18.080509,
+            0.98758525,
+            -0.03035731,
+            0.00058024319,
+            -0.0000071683979,
+            5.7370387* Math.pow(10.0, -8.0),
+            -2.8745632 * Math.pow(10.0, -10.0),
+            8.1995853 * Math.pow(10.0, -13.0),
+            -1.0164994 * Math.pow(10.0, -15.0)
     };
     public static double rpmCoef[] = {
-            -144032.529,
-            17312.5221,
-            -880.32487,
-            25.271665,
-            -0.45127892,
-            0.0052033398,
-            -0.00003878999,
-            1.8057785 * Math.pow(10.0, -7.0),
-            -4.7719158 * Math.pow(10.0, -10.0),
-            5.4638853 * Math.pow(10.0, -13.0)
+            40664.9875,
+            -4763.31453,
+            246.33801,
+            -6.9280887,
+            0.11648275,
+            -0.0012014148,
+            0.0000074416616,
+            -2.5380797* Math.pow(10.0, -8.0),
+            3.6605427 * Math.pow(10.0, -11.0)
     };
 
     // Pedro Constants
@@ -178,7 +178,7 @@ public class Robot3 extends RobotBase {
 
     @Override
     public double calcPivotPosition() {
-        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()+DIST_OFFSET), 35, 150);
+        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()+DIST_OFFSET), 35, 140);
         double pos = 0;
         double pow = 1;
         for (double v : pivotCoef) {
@@ -190,7 +190,7 @@ public class Robot3 extends RobotBase {
 
     @Override
     public int calcFlywheelRpm() {
-        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()+DIST_OFFSET), 35, 150);
+        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()+DIST_OFFSET), 35, 140);
         double rpm = 0;
         double pow = 1;
         for(double v: rpmCoef) {
