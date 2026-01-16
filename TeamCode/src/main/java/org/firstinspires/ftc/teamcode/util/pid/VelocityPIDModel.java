@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public abstract class VelocityPIDModel {
+
+    public static int pow = 3;
+
     private double minPower;
     private double maxPower;
     private double kP;
@@ -62,7 +65,7 @@ public abstract class VelocityPIDModel {
 
         double feedForward = kV * target;
 
-        double power = kP * error + kI * integral + kD * dError + feedForward;
+        double power = kP * Math.abs(Math.pow(error, pow))*Math.copySign(1.0, error) + kI * integral + kD * dError + feedForward;
 
         if(power>maxPower) power = maxPower;
         if(power<-maxPower) power = -maxPower;
@@ -79,9 +82,7 @@ public abstract class VelocityPIDModel {
 
     public boolean isDone() {
         Log.i("ndbug lastError", lastError+"");
-        double error = lastError;
-        if(lastError>0) error = Math.pow(error, 1.0/3);
-        return Math.abs(error) < getStopError();
+        return Math.abs(lastError) < getStopError();
     }
 
     public abstract void cancel();

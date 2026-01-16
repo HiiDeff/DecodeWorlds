@@ -2,15 +2,18 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.util.pid.PIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDModel;
 
+@Config
 public class FlywheelPID extends VelocityPIDModel {
 
     private final RobotBase robot;
     private double targetVelocity;
-    public static int pow = 3;
+    public static double NORMALIZE_DIVISOR = 100.0;
 
     public FlywheelPID(RobotBase robot, VelocityPIDCoefficients pidCoefficients) {
         super(pidCoefficients);
@@ -29,12 +32,9 @@ public class FlywheelPID extends VelocityPIDModel {
     @Override
     public double getError() {
         double error = targetVelocity - getVelocity();
-        if(error>0) {
-            error = Math.pow(error, pow);
-        }
-        if(error<0 && error>-100) error = 0;
+//        if(error<0 && error>-100) error = 0;
         Log.i("flywheel error", error+"");
-        return error;
+        return error/NORMALIZE_DIVISOR;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class FlywheelPID extends VelocityPIDModel {
         // minimum error to stop adjusting, in ticks per second
         // ticks per second for 100 RPM
         double errorBoundRpm = 100;
-        return Math.pow(errorBoundRpm*28/60, 2);
+        return errorBoundRpm*28/60;
     }
 
     @Override

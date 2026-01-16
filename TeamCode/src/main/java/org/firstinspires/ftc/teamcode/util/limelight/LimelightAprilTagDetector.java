@@ -25,11 +25,11 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
     public static Pose RED_GOAL_POSE = new Pose(-65, 65);
     public static Pose BLUE_GOAL_POSE = new Pose(-65, -65);
-
+    public static boolean shootingWhileMoving = true;
     private boolean isRedAlliance = false;
     private AprilTagType motif = null;
     private Pose limelightPose = null;
-    public static double ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR = 0.7;
+    public static double ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR = 0.0;
     private Vector vectorToGoal;
     private double rawDistToGoal;
     public static int MIN_DIST_DETECTABLE = 60; //don't change this
@@ -72,7 +72,17 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
         Pose goalPose = isRedAlliance ? RED_GOAL_POSE : BLUE_GOAL_POSE;
         Vector toGoal = new Vector(goalPose.minus(pose));
         rawDistToGoal = toGoal.getMagnitude();
-        toGoal = toGoal.minus(velocity.times(ROBOT_VELOCITY_SHOOTING_COMPENSATION_SCALAR));
+        //flight time
+        //60 inch: 1.0 sec
+        //100 inch: 1.2 sec
+        //120 inch: 1.3 sec
+        // y-1 = 0.005(x-60)
+        // y-1 = 0.005x-0.3
+        // y = 0.005x + 0.7
+        if(shootingWhileMoving) {
+            double flightTimeSec = 0.005*toGoal.getMagnitude()+0.4;
+            toGoal = toGoal.minus(velocity.times(flightTimeSec));
+        }
         toGoal.setTheta(Utils.normalize(toGoal.getTheta()));
         vectorToGoal = toGoal;
     }

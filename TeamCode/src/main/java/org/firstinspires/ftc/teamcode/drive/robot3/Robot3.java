@@ -31,7 +31,7 @@ public class Robot3 extends RobotBase {
 
     // Constants
     public static double RAMP_UP = 0.55, RAMP_DOWN = 0.49;
-    public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.0006, 0.0, 0.0,0.0004);
+    public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.150, 0.0, 0.0,0.00038);
     public static double PIVOT_CLOSE = 0.17, PIVOT_MID = 0.43, PIVOT_FAR = 0.55; //all the way down is 0.07, all the way up is 0.5
     public static double PARK_DOWN = 0.96, PARK_UP = 0.42;
 

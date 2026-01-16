@@ -17,10 +17,12 @@ public class Turret extends PIDModel {
 
     // all distances below are extensively tuned & correct
     public static double LIMELIGHT_DIST_TO_TURRET_CENTER_INCH = 5.5;
+    public static double SHOOTER_COM_MAGNITUDE = 10.0; //technically wrong, but well tuned
     public static double TURRET_X_DIST_TO_ROBOT_CENTER_INCH = 3.25; //forwards is positive 4.0?
     public static double TURRET_Y_DIST_TO_ROBOT_CENTER_INCH = -0.75; //left is positive
     private final RobotBase robot;
     private final double ticksPerRadian;
+    public static boolean autoAim = true;
     private int targetAngle;
     private double prevLimelightHeading = 0.0;
     private ElapsedTime headingTimer = null, targetTimer = null;
@@ -80,19 +82,15 @@ public class Turret extends PIDModel {
 
     // PID Control
     public void setTargetAngle(int targetAngleTicks) {
-        double currRobotAngleToGoal = 0;
-        if (robot.getVectorToGoal() != null){
-            currRobotAngleToGoal= robot.getVectorToGoal().getTheta();
-        }
-        prevRobotAngleToGoal = currRobotAngleToGoal;
         Log.i("targetAngle", targetAngleTicks+"");
         if(targetTimer == null || targetTimer.seconds() >= 1) {
             dTarget_dT = new MovingAverage(3);
             targetTimer = new ElapsedTime();
         } else {
-            dTarget_dT.add((currRobotAngleToGoal-prevRobotAngleToGoal)/(targetTimer.milliseconds()));
+            dTarget_dT.add((targetAngleTicks-prevRobotAngleToGoal)/(targetTimer.milliseconds()));
             targetTimer.reset();
         }
+        prevRobotAngleToGoal = targetAngleTicks;
         targetAngle = targetAngleTicks;
     }
 
@@ -109,7 +107,7 @@ public class Turret extends PIDModel {
 
     @Override
     public double getFeedForward() {
-        Vector r = new Vector(4.5, limelightHeading); //shooter COM 2.75 according to clevin
+        Vector r = new Vector(SHOOTER_COM_MAGNITUDE, limelightHeading); //shooter COM 2.75 according to clevin
         Vector a = robot.getTranslationalAcceleration(); //robot translational accel
         double alpha = robot.getAngularAcceleration(); //robot angular accel
 
@@ -125,7 +123,8 @@ public class Turret extends PIDModel {
 
     @Override
     public double getFeedForward2() {
-        if(dTarget_dT==null) return 0;
+        if(dTarget_dT==null || !autoAim) return 0;
+        Log.i("edbug dTarget_dT", dTarget_dT.get()+"");
         return dTarget_dT.get();
     }
 
