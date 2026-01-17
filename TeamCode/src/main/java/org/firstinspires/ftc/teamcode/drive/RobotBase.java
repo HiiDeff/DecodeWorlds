@@ -177,7 +177,7 @@ public abstract class RobotBase extends MecanumDrive {
         updatePIDs();
 //        artifactInventory.updateArtifactCount();
 //        updateLimelight();
-        updateSensors(); //handled by thread
+//        updateSensors(); //handled by thread
     }
 
     private void updatePoseEstimate() {
