@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.pedrotest;
+package org.firstinspires.ftc.teamcode.auto.experimental;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
@@ -6,7 +6,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.auto.AutoBase;
 import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
@@ -17,7 +16,7 @@ import org.firstinspires.ftc.teamcode.task.Task;
 
 @Config
 @Autonomous(name = "PedroTestAuto", group = "autoTest")
-public class PedroTestAuto extends PedroTestAutoBase {
+public class PedroTestAutoPath extends TestAutoBase {
 
     public static double
         POS1_X, POS1_Y, POS1_H,

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.IntakeTask;
 import org.firstinspires.ftc.teamcode.task.ParkTask;
+import org.firstinspires.ftc.teamcode.task.Presets;
 import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
@@ -27,7 +28,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
     public static int FLYWHEEL_TARGET_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
     public static double PIVOT_TARGET_POS = 0.17, MANUAL_OVERRIDE_PIVOT_POS = 0.17;
     public static double FLYWHEEL_ON_INTAKE_POWER = 1.0, FLYWHEEL_WAIT_INTAKE_POWER = -0.2, INTAKE_IDLE_POWER = 0.0;
-    public static int SHOOT_TIME = 150, SHOOT_WAIT_TIME = 200;
+
     public static int RAPID_FIRE_THRESHOLD = 100;
     private TeleOpState state;
     private boolean parking = false;
@@ -97,7 +98,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
                 robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
                 robot.startTeleopDrive();
             }
-        }else{
+        } else {
             if(gp1.back() && gp1.onceY()) {
                 state = TeleOpState.OVERRIDE;
                 if(task != null){
@@ -121,27 +122,8 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         robot.setTurretTargetPosition(0);
         if(!gp1.back() && gp1.onceA() && robot.flywheelAtTarget()) {
             if(task!=null) task.cancel();
-            task = new SeriesTask(
-                    new ParallelTask(
-                            new RampTask(robot, RampTask.Position.UP),
-                            new BlockerTask(robot, BlockerTask.Position.OPEN),
-                            new UnboundedIntakeTask(robot, 0.8, false),
-                            new SleepTask(1000)
-                    ),
-                    new ParallelTask(
-                            new RampTask(robot, RampTask.Position.DOWN),
-                            new BlockerTask(robot, BlockerTask.Position.CLOSE)
-                    )
-            );
+            task = Presets.createRapidShootTask(robot);
         }
-//        else if(drivePow>0.25) {
-//            if(task != null) {
-//                task.cancel();
-//                task = null;
-//            }
-//            robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-//            robot.setRampPosition(RampTask.Position.DOWN);
-//        }
     }
 
     private void runIntake(){
@@ -157,7 +139,6 @@ public abstract class Robot3TeleOp extends LinearOpMode {
             } else {
                 robot.stopIntake();
             }
-//            robot.runIntakeWithPower(INTAKE_IDLE_POWER);
         }
     }
 
@@ -169,53 +150,17 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         }else{
             robot.setFlywheelTargetVelocity(0);
         }
-//        robot.setFlywheelTargetVelocity(FLYWHEEL_TARGET_RPM);
         robot.setPivotPosition(PIVOT_TARGET_POS);
         robot.turretAutoAim();
 
         if(!gp1.back() && gp1.onceA() && (robot.flywheelAtTarget()||!robot.hasArtifact())) {
             if(task!=null) task.cancel();
             if(robot.getVectorToGoal().getMagnitude()>RAPID_FIRE_THRESHOLD) {
-                task = new SeriesTask(
-                        new ParallelTask(
-                                new RampTask(robot, RampTask.Position.UP),
-                                new BlockerTask(robot, BlockerTask.Position.OPEN)
-                        ),
-                        new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_TIME),
-                        new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_WAIT_TIME),
-                        new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_TIME),
-                        new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_WAIT_TIME),
-                        new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_TIME),
-                        new ParallelTask(
-                                new RampTask(robot, RampTask.Position.DOWN),
-                                new BlockerTask(robot, BlockerTask.Position.CLOSE)
-                        )
-                );
+                task = Presets.createSlowShootTask(robot);
             } else {
-                task = new SeriesTask(
-                        new ParallelTask(
-                                new RampTask(robot, RampTask.Position.UP),
-                                new BlockerTask(robot, BlockerTask.Position.OPEN),
-                                new UnboundedIntakeTask(robot, 0.8, false),
-                                new SleepTask(1000)
-                        ),
-                        new ParallelTask(
-                                new RampTask(robot, RampTask.Position.DOWN),
-                                new BlockerTask(robot, BlockerTask.Position.CLOSE)
-                        )
-                );
+                task = Presets.createRapidShootTask(robot);
             }
         }
-
-//        if (shooting){
-//
-//            robot.setRampPosition(RampTask.Position.UP);
-//            robot.setBlockerPosition(BlockerTask.Position.OPEN);
-//            robot.runIntake();
-//        }else{
-//            robot.setRampPosition(RampTask.Position.DOWN);
-//            robot.setBlockerPosition(BlockerTask.Position.CLOSE);
-//        }
     }
 
     private void park(){

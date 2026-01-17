@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.cycleauto.close;
+package org.firstinspires.ftc.teamcode.auto.gatespamauto.close;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
@@ -7,36 +7,41 @@ import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
 import org.firstinspires.ftc.teamcode.auto.Location;
-import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
-import org.firstinspires.ftc.teamcode.task.RampTask;
 import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
+import org.firstinspires.ftc.teamcode.task.TurretTask;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
-public abstract class CloseCycleAuto extends AutoBase {
-    public static int FLYWHEEL_VELOCITY = 3200;
-    public static double INTAKE_HOLD_SPEED = 0.6;
+public abstract class CloseGateSpamAuto extends AutoBase {
 
-    public static double INTAKE_VELOCITY_CONSTRAINT = 0.4;
+    public static int AA_NUM_OF_CYCLES = 3;
+    public static int FLYWHEEL_VELOCITY = 3200;
+    public static double INTAKE_IDLE_POWER = 0.3;
+    public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     @Override
     protected Location getFirstLocation() {
         return Location.CLOSE;
     }
+    @Override
+    protected int getNumOfCycles() { return AA_NUM_OF_CYCLES; }
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
         SeriesTask task = new SeriesTask();
         task.add(
                 new ParallelTask(
+                        new TurretTask(robot, 0, 500),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                        new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false),
+                        new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false),
+                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID),
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
@@ -50,11 +55,8 @@ public abstract class CloseCycleAuto extends AutoBase {
                 )
         );
         task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.MID));
-        task.add(new SeriesTask(
-                new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new RampTask(robot, RampTask.Position.DOWN)
-        ));
+        task.add(Presets.createRapidShootTask(robot));
+
         return task;
     }
 
@@ -120,12 +122,12 @@ public abstract class CloseCycleAuto extends AutoBase {
                                                 .build();
                                     }
                             ),
-                            new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
+                            new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                     )
             );
             task.add(new SleepTask(300));
         }
-        task.add(new SleepTask(70));
+        task.add(new SleepTask(100));
         // Go back to shoot position
         task.add(
                 new ParallelTask(
@@ -142,16 +144,13 @@ public abstract class CloseCycleAuto extends AutoBase {
                                 }
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
-                        new UnboundedIntakeTask(robot, INTAKE_HOLD_SPEED, false)
+                        new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                 )
         );
         task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.MID));
-        task.add(new SeriesTask(
-                new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new RampTask(robot, RampTask.Position.DOWN)
-        ));
-        if(cycleNumber==AutoBase.AA_NUM_OF_CYCLES) {
+        task.add(Presets.createRapidShootTask(robot));
+
+        if(cycleNumber == AA_NUM_OF_CYCLES) {
             task.add(new SleepTask(10000));
         }
         return task;

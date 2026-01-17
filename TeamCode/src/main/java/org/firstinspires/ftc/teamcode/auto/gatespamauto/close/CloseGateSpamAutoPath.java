@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.cycleauto.close;
+package org.firstinspires.ftc.teamcode.auto.gatespamauto.close;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 
 @Config
-public abstract class CloseCycleAutoPath extends CloseCycleAuto {
+public abstract class CloseGateSpamAutoPath extends CloseGateSpamAuto {
     public static double
             SHOOT_1_X, SHOOT_1_Y, SHOOT_1_H,
             INTAKE_1_X, INTAKE_1_Y, INTAKE_1_H,

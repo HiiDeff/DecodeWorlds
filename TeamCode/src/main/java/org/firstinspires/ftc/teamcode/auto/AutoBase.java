@@ -16,19 +16,16 @@ import org.firstinspires.ftc.teamcode.task.Task;
 @Config
 public abstract class AutoBase extends LinearOpMode {
 
-    public static Location firstLocation = Location.MID;
     public static int AA_TOTAL_TIME_MILLIS = 30000;
-
-    public static int AA_NUM_OF_CYCLES = 3; // 2 for far
-
-    public static int INIT_DELAY_TIME = 0;
-    public static int AA_TIME_FOR_A_CYCLE = 2000;
+    public static int AA_TIME_FOR_A_CYCLE = 4000;
     public static int AA_TIME_FOR_PARK = 1500;
+
+    public static Location firstLocation = Location.MID;
 
     protected final ElapsedTime timer = new ElapsedTime();
     protected RobotBase robot;
-
-    protected AutoState state = AutoState.START;
+    protected AutoState state;
+    protected Task globalTask;
     protected AutoStates autoStates = new AutoStates();
     protected SensorUpdateThread sensorUpdateThread;
 
@@ -36,32 +33,33 @@ public abstract class AutoBase extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = createRobot(hardwareMap);
         resetRobot();
-
+        sensorUpdateThread = new SensorUpdateThread(robot);
         state = AutoState.START;
-        Task task = createStartTask();
+        globalTask = createStartTask();
         firstLocation = getFirstLocation();
-        telemetry.addData("FIRST INTAKE LOCATION (only for far auton)",firstLocation);
+
+        telemetry.addData("FIRST INTAKE LOCATION (far auton)", firstLocation);
+        telemetry.addData("CYCLE COUNT", getNumOfCycles());
         telemetry.update();
 
         waitForStart();
 
-        sensorUpdateThread = new SensorUpdateThread(robot);
         sensorUpdateThread.start();
-
         timer.reset();
         ElapsedTime cycleTimer = new ElapsedTime();
+
         boolean done = false;
-        while (opModeIsActive() && !done && task != null) {
+        while (opModeIsActive() && !done && globalTask != null) {
             robot.updateEverything();
             if(timeToFinish() && state!=AutoState.FINISH) {
-                task.cancel();
-                task = createFinishTask();
-            }else if(task.perform()) {
+                globalTask.cancel();
+                globalTask = createFinishTask();
+            }else if(globalTask.perform()) {
                 if(hasTimeForOneMoreCycle()){
                     autoStates.setCycleNumber(autoStates.getCycleNumber()+1);
-                    task = createCycleTask();
+                    globalTask = createCycleTask();
                 } else {
-                    task = createFinishTask();
+                    globalTask = createFinishTask();
                 }
             }
             telemetry.addData("position", robot.getPose().getX()+", "+robot.getPose().getY());
@@ -79,18 +77,20 @@ public abstract class AutoBase extends LinearOpMode {
     }
 
     private boolean hasTimeForOneMoreCycle() {
-        return autoStates.getCycleNumber() < AA_NUM_OF_CYCLES &&
+        return autoStates.getCycleNumber() < getNumOfCycles() &&
                 timer.milliseconds() < AA_TOTAL_TIME_MILLIS - AA_TIME_FOR_A_CYCLE;
     }
 
     private void resetRobot() {
         robot.autoInit();
+        //TODO: this works, but not all 3 lines are necessary
         robot.setStartingPose(getStartingPose());
         robot.setPose(getStartingPose());
-        robot.updateHeading(Math.PI); //cheese
+        robot.updateHeading(getStartingPose().getHeading());
     }
 
     protected abstract RobotBase createRobot(HardwareMap hardwareMap);
+    protected abstract int getNumOfCycles();
     protected abstract Location getFirstLocation();
     protected abstract Task createStartTask();
     protected abstract Task createCycleTask();

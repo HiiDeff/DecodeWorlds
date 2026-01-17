@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.pedrotest;//package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.auto.experimental;//package org.firstinspires.ftc.teamcode.auto;
 
 import android.util.Log;
 
@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.task.Task;
 
 @Config
-public abstract class PedroTestAutoBase extends LinearOpMode {
+public abstract class TestAutoBase extends LinearOpMode {
 
     public static Location firstLocation = Location.MID;
     public static int AA_TOTAL_TIME_MILLIS = 30000;
 
-    public static int AA_NUM_OF_CYCLES = 3; // 2 for far
+    public static int AA_NUM_OF_CYCLES = 3;
 
     public static int INIT_DELAY_TIME = 0;
     public static int AA_TIME_FOR_A_CYCLE = 2000;
