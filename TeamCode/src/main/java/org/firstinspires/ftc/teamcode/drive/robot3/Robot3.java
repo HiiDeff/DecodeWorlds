@@ -107,7 +107,7 @@ public class Robot3 extends RobotBase {
 
     public static double T_VALUE_CONSTRAINT = 0.99;
     public static double TIMEOUT_CONSTRAINT = 100;
-    public static double BRAKING_STRENGTH = 0.35;
+    public static double BRAKING_STRENGTH = 0.45;
     public static double BRAKING_START = 1;
 
     public Robot3(HardwareMap hardwareMap) {

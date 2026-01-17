@@ -108,7 +108,7 @@ public abstract class CloseAuto extends AutoBase {
                                     builder -> {
                                         Pose pose = getGatePose();
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), pose))
+                                                .addPath(new BezierCurve(robot.getPose(), new Pose(38, 10*getSign()), pose))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }

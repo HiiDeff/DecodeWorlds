@@ -24,26 +24,23 @@ public abstract class CloseAutoPath extends CloseAuto {
             GATE_1_X, GATE_1_Y, GATE_1_H,
             PARK_X, PARK_Y, PARK_H;
 
-    //meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow
-    //meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow
     static {
-        SHOOT_1_X = 47.913; SHOOT_1_Y = 22.202; SHOOT_1_H = -2.39;
+        SHOOT_1_X = 27.631; SHOOT_1_Y = 40.047; SHOOT_1_H = -2.26;
 
-        INTAKE_1_X = 51.835; INTAKE_1_Y = 15; INTAKE_1_H = -Math.PI/2;
-        INTAKE_FORWARD_1_X = 51.835; INTAKE_FORWARD_1_Y = -4; INTAKE_FORWARD_1_H = -Math.PI/2;
-        GATE_1_X = 58.933; GATE_1_Y = -18; GATE_1_H = 3.0;
-        SHOOT_2_X = 47.913; SHOOT_2_Y = 22.202; SHOOT_2_H = -2.39;
+        INTAKE_1_X = 30.652; INTAKE_1_Y = 27.387; INTAKE_1_H = -Math.PI/2;
+        INTAKE_FORWARD_1_X = 31.126; INTAKE_FORWARD_1_Y = 10.867; INTAKE_FORWARD_1_H = -Math.PI/2;
+        GATE_1_X = 38.279; GATE_1_Y = -1.472; GATE_1_H = Math.PI;
+        SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.26;
 
-        INTAKE_2_X = 71; INTAKE_2_Y = 10.706; INTAKE_2_H = -Math.PI/2;
-        INTAKE_FORWARD_2_X = 75.191; INTAKE_FORWARD_2_Y = -12.704; INTAKE_FORWARD_2_H = -Math.PI/2;
+        INTAKE_2_X = 55.142; INTAKE_2_Y = 27.694; INTAKE_2_H = -Math.PI/2;
+        INTAKE_FORWARD_2_X = 54.370; INTAKE_FORWARD_2_Y = 9.728; INTAKE_FORWARD_2_H = -Math.PI/2;
+        SHOOT_3_X = 27.631; SHOOT_3_Y = 40.047; SHOOT_3_H = -2.26;
 
-        SHOOT_3_X = 47.913; SHOOT_3_Y = 22.202; SHOOT_3_H = -2.39;
+        INTAKE_3_X = 80.833; INTAKE_3_Y = 27.553; INTAKE_3_H = -Math.PI/2;
+        INTAKE_FORWARD_3_X = 80.277; INTAKE_FORWARD_3_Y = 8.560; INTAKE_FORWARD_3_H = -Math.PI/2;
+        SHOOT_4_X = 27.631; SHOOT_4_Y = 40.047; SHOOT_4_H = -2.26;
 
-        INTAKE_3_X = 93; INTAKE_3_Y = 10.156; INTAKE_3_H = -Math.PI/2;
-        INTAKE_FORWARD_3_X = 99.863; INTAKE_FORWARD_3_Y = -6; INTAKE_FORWARD_3_H = -Math.PI/2;
-        SHOOT_4_X = 47.913; SHOOT_4_Y = 22.202; SHOOT_4_H = -2.39;
-
-        PARK_X = 67.913; PARK_Y = 2.202; PARK_H = -2.39;
+        PARK_X = 47.631; PARK_Y = 20.047; PARK_H = -2.26;
     }
 
     @Override
@@ -53,7 +50,7 @@ public abstract class CloseAutoPath extends CloseAuto {
 
     @Override
     protected Pose getStartingPose() {
-        return new Pose(3,-3*getSign(),-Math.PI/2*getSign());
+        return new Pose(0,0*getSign(),-Math.PI*getSign());
     }
 
     @Override
