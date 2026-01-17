@@ -144,7 +144,7 @@ public abstract class CloseAuto extends AutoBase {
                 new BlockerTask(robot, BlockerTask.Position.CLOSE),
                 new RampTask(robot, RampTask.Position.DOWN)
         ));
-        if(cycleNumber==AutoBase.AA_NUM_OF_CYCLES) {
+        if(cycleNumber==3) {
             task.add(new SleepTask(10000));
         }
         return task;

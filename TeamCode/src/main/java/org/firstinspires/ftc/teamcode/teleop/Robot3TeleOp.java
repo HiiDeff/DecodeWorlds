@@ -164,7 +164,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
     private void shoot(){
         FLYWHEEL_TARGET_RPM = robot.calcFlywheelRpm();
         PIVOT_TARGET_POS = robot.calcPivotPosition();
-        if(robot.artifactState.getBallCount()>=1||task!=null){
+        if(robot.artifactState.getArtifactState()||task!=null){
             robot.setFlywheelTargetVelocity(FLYWHEEL_TARGET_RPM);
         }else{
             robot.setFlywheelTargetVelocity(0);

@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.util.objectdetector.ImageProcessor;
 
 @Config
 public class ArtifactState {
-    public static double BACK_MIN_DETECTION_DIST = 1.5;
+    public static double BACK_MIN_DETECTION_DIST = 1.0;
     public static double FRONT_MIN_DETECTION_DIST = 1.52;
 
     public static int CURRENT_2_BALL_THRESHOLD = 1000;
@@ -116,24 +116,11 @@ public class ArtifactState {
 
         boolean ready = robot.flywheelAtTarget() && robot.turretAtTarget();
 
-        if(timer==null) timer = new ElapsedTime();
-
-        boolean flash = (timer.milliseconds() % 500 <= 250); // one every 500 ms
-
-
-//        if (ready){
-//            if (detectedIntake){
-//                pattern = RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD;
-//            } else{
-//                pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-//            }
-//        }else{
-        if (detectedIntake){
-            pattern = RevBlinkinLedDriver.BlinkinPattern.STROBE_WHITE;
+        if (ready){
+            pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
         }else{
-            pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
         }
-//        }
 
 
         Log.e("adbug colorled",  pattern.toString());
