@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 
-@Autonomous(name = "Blue \uD83D\uDD35 Far Auto", group = "Competition")
+@Autonomous(name = "Blue \uD83D\uDD35 Far Auto", group = "Auto AA_Default")
 public class BlueFarAuto extends FarAutoPath {
     @Override
     protected boolean isRed() {
