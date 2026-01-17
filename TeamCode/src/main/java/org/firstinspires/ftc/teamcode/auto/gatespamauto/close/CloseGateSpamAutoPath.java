@@ -25,23 +25,23 @@ public abstract class CloseGateSpamAutoPath extends CloseGateSpamAuto {
             PARK_X, PARK_Y, PARK_H;
 
     static {
-        SHOOT_1_X = 27.631; SHOOT_1_Y = 40.047; SHOOT_1_H = -2.31;
+        SHOOT_1_X = 27.631; SHOOT_1_Y = 40.047; SHOOT_1_H = -2.27;
 
         INTAKE_1_X = 30.652; INTAKE_1_Y = 27.387; INTAKE_1_H = -Math.PI/2;
         INTAKE_FORWARD_1_X = 31.126; INTAKE_FORWARD_1_Y = 10.867; INTAKE_FORWARD_1_H = -Math.PI/2;
         GATE_1_X = 38.279; GATE_1_Y = -1.472; GATE_1_H = Math.PI;
-        SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.31;
+        SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.27;
 
         INTAKE_2_X = 55.142; INTAKE_2_Y = 27.694; INTAKE_2_H = -Math.PI/2;
         INTAKE_FORWARD_2_X = 54.370; INTAKE_FORWARD_2_Y = 9.728; INTAKE_FORWARD_2_H = -Math.PI/2;
-        GATE_2_X = 47.186; GATE_2_Y = -1.410; GATE_2_H = 0;
-        SHOOT_3_X = 27.631; SHOOT_3_Y = 40.047; SHOOT_3_H = -2.31;
+        GATE_2_X = 45.186; GATE_2_Y = -1.410; GATE_2_H = 0;
+        SHOOT_3_X = 27.631; SHOOT_3_Y = 40.047; SHOOT_3_H = -2.28;
 
-        INTAKE_3_X = 60; INTAKE_3_Y = -5; INTAKE_3_H = -0.79;
-        INTAKE_FORWARD_3_X = 85; INTAKE_FORWARD_3_Y = -5; INTAKE_FORWARD_3_H = -1.25;
-        SHOOT_4_X = 27.631; SHOOT_4_Y = 40.047; SHOOT_4_H = -2.31;
+        INTAKE_3_X = 60; INTAKE_3_Y = -3; INTAKE_3_H = -0.79;
+        INTAKE_FORWARD_3_X = 85; INTAKE_FORWARD_3_Y = -3; INTAKE_FORWARD_3_H = -1.00;
+        SHOOT_4_X = 27.631; SHOOT_4_Y = 40.047; SHOOT_4_H = -2.28;
 
-        PARK_X = 47.631; PARK_Y = 20.047; PARK_H = -2.31;
+        PARK_X = 47.631; PARK_Y = 20.047; PARK_H = -2.28;
     }
 
     @Override

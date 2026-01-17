@@ -117,7 +117,7 @@ public abstract class CloseGateSpamAuto extends AutoBase {
                                         Pose pose = getGate1Pose();
                                         if (cycleNumber == 2) pose = getGate2Pose();
                                         return builder
-                                                .addPath(new BezierCurve(robot.getPose(), pose))
+                                                .addPath((cycleNumber==1) ? new BezierCurve(robot.getPose(), new Pose(38, 10*getSign()), pose) : new BezierCurve(robot.getPose(), pose))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
                                     }
