@@ -7,56 +7,40 @@ import org.firstinspires.ftc.teamcode.util.Utils;
 
 @Config
 public class Presets {
-    public static int KICKER_SLEEP = 300;
-    public static int SHOOT_TIME = 1000;
-    public static double SHOOT_INTAKE_POWER = 0.45;
-    public static double ANGLE = 0.0;
+    public static int SHOOT_THREE_TIME = 1000;
+    public static double FLYWHEEL_ON_INTAKE_POWER = 0.8, FLYWHEEL_WAIT_INTAKE_POWER = -0.2;
+    public static int SHOOT_ONE_TIME = 150, SHOOT_ONE_WAIT_TIME = 200;
 
-    //assume velocity and pivot position are already set
-    public static SeriesTask createShootTask(RobotBase robot, int targetRPM, int ballCnt, PivotTask.Position pivotPos){
-
+    public static Task createRapidShootTask(RobotBase robot){
         return new SeriesTask(
                 new ParallelTask(
-                        new PivotTask(robot, PivotTask.WhichPivot.LEFT,pivotPos),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, pivotPos),
-                        new FlywheelTask(robot, targetRPM, 1000)
-//                        new TurretTask(robot, ANGLE, 2000)
+                        new RampTask(robot, RampTask.Position.UP),
+                        new BlockerTask(robot, BlockerTask.Position.OPEN),
+                        new UnboundedIntakeTask(robot, 0.8, false),
+                        new SleepTask(SHOOT_THREE_TIME)
                 ),
                 new ParallelTask(
-                        new UnboundedIntakeTask(robot, SHOOT_INTAKE_POWER, false),
-                        new BlockerTask(robot, BlockerTask.Position.OPEN),
-                        new RampTask(robot, RampTask.Position.UP),
-                        new SleepTask(SHOOT_TIME)
+                        new RampTask(robot, RampTask.Position.DOWN),
+                        new BlockerTask(robot, BlockerTask.Position.CLOSE)
                 )
         );
-
-//        SeriesTask task = new SeriesTask();
-//        while(--ballCnt>=0) {
-//            FarAuto.ballnum += 1;
-//            if(ballCnt>0) {
-//                task.add(
-//                        new ParallelTask(
-//                                new FlywheelTask(robot, targetRPM, 3000),
-//                                new SeriesTask( //only works in series task
-//                                        new TimedConditionalTask(new ArtifactReadyCondition(robot), 3000)
-//                                )
-//                        )
-//                );
-//            }
-//        }
-//
-//        SeriesTask finalTask = new SeriesTask(
-//                new ParallelTask(
-//                        new UnboundedKickerTask(robot, KickerTask.Direction.STANDARD),
-//                        new UnboundedIntakeTask(robot, 0.7, false),
-//                        task
-//
-//                ));
-//        return finalTask;
     }
-
-    public static SeriesTask createShootTask(RobotBase robot, int targetRPM, PivotTask.Position pivotPos){
-        return createShootTask(robot, targetRPM, 1, pivotPos);
+    public static Task createSlowShootTask(RobotBase robot) {
+        return new SeriesTask(
+                new ParallelTask(
+                        new RampTask(robot, RampTask.Position.UP),
+                        new BlockerTask(robot, BlockerTask.Position.OPEN)
+                ),
+                new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_ONE_TIME),
+                new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_ONE_WAIT_TIME),
+                new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_ONE_TIME),
+                new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_ONE_WAIT_TIME),
+                new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_ONE_TIME),
+                new ParallelTask(
+                        new RampTask(robot, RampTask.Position.DOWN),
+                        new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                )
+        );
     }
 
     public static Task createUnjammingTask(RobotBase robot) {

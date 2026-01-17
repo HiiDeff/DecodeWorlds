@@ -17,23 +17,31 @@ import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
 import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
+import org.firstinspires.ftc.teamcode.task.TurretTask;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 
 @Config
 public abstract class FarAuto extends AutoBase {
+
+    public static int AA_NUM_OF_CYCLES = 3;
     public static int FLYWHEEL_VELOCITY = 4050;
+    public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     @Override
-    protected Location getFirstLocation() {
-        return Location.MID;
-    }
+    protected Location getFirstLocation() { return Location.MID; }
+    @Override
+    protected int getNumOfCycles() { return AA_NUM_OF_CYCLES; }
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
         SeriesTask task = new SeriesTask();
         task.add(
                 new ParallelTask(
-                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
+                        new TurretTask(robot, 0, 500),
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 4000),
+                        new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false),
+                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.FAR),
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.FAR),
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
@@ -46,56 +54,9 @@ public abstract class FarAuto extends AutoBase {
                         )
                 )
         );
-        //task.add(new SleepTask(5000));
-        /*task.add(
-                new RuntimeDrivingTask(
-                        robot,
-                        builder -> {
-                            Pose pose = getShoot2Pose();
-                            return builder
-                                    .addPath(new BezierCurve(robot.getPose(),pose))
-                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                    .build();
-                        }
-                )
-        );
-        task.add(new SleepTask(5000));
-        task.add(
-                new RuntimeDrivingTask(
-                        robot,
-                        builder -> {
-                            Pose pose = getShoot3Pose();
-                            return builder
-                                    .addPath(new BezierCurve(robot.getPose(),pose))
-                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                    .build();
-                        }
-                )
-        );
-        task.add(new SleepTask(500000));
-        task.add(
-                new ParallelTask(
-                        new RuntimeDrivingTask(
-                                robot,
-                                builder -> {
-                                    Pose pose = getShoot1Pose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(),pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                }
-                        ),
-                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 3000),
-                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
-                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID)
-                )
-        );*/
         task.add(new SleepTask(100));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
-        task.add(new SeriesTask(
-                new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new RampTask(robot, RampTask.Position.DOWN)
-        ));
+        task.add(Presets.createSlowShootTask(robot));
+
         return task;
     }
 
@@ -110,7 +71,7 @@ public abstract class FarAuto extends AutoBase {
                                 builder -> {
                                     Pose pose = getIntakePose();
                                     return builder
-                                            .addPath(getLocation()==Location.LOADING_ZONE? new BezierCurve(robot.getPose(), new Pose(5, -50*getSign()), pose):new BezierCurve(robot.getPose(),pose))
+                                            .addPath(getLocation()==Location.LOADING_ZONE? new BezierCurve(robot.getPose(), new Pose(5, -50*getSign()), pose):new BezierCurve(robot.getPose(), pose))
                                             .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
                                 },
@@ -151,7 +112,7 @@ public abstract class FarAuto extends AutoBase {
                                                 .build();
                                     }
                             ),
-                            new UnboundedIntakeTask(robot, 0.4, false)
+                            new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                     )
             );
             task.add(new SleepTask(300));
@@ -162,9 +123,6 @@ public abstract class FarAuto extends AutoBase {
                         new RuntimeDrivingTask(
                                 robot,
                                 builder -> {
-//                                    Pose pose = getShoot2Pose();
-//                                    if(cycleNumber==2) pose = getShoot3Pose();
-//                                    else if(cycleNumber==3) pose = getShoot4Pose();
                                     Pose pose = getShootPose();
                                     if(firstLocation == Location.MID && autoStates.getCycleNumber()==1){
                                         return builder
@@ -178,17 +136,14 @@ public abstract class FarAuto extends AutoBase {
                                             .build();
                                 }
                         ),
-                        new UnboundedIntakeTask(robot, 0.4, false),
-                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2000)
+                        new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false),
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 4000)
                 )
         );
-        task.add(new SleepTask(200));
-        task.add(Presets.createShootTask(robot, FLYWHEEL_VELOCITY, 3, PivotTask.Position.FAR));
-        task.add(new SeriesTask(
-                new BlockerTask(robot, BlockerTask.Position.CLOSE),
-                new RampTask(robot, RampTask.Position.DOWN)
-        ));
-        if(cycleNumber==3) {
+        task.add(new SleepTask(100));
+        task.add(Presets.createSlowShootTask(robot));
+
+        if(cycleNumber==AA_NUM_OF_CYCLES) {
             task.add(new SleepTask(10000));
         }
         return task;

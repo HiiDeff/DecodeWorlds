@@ -1,103 +1,258 @@
-package org.firstinspires.ftc.teamcode.auto.experimental;
+package org.firstinspires.ftc.teamcode.auto.experimental;//package org.firstinspires.ftc.teamcode.auto.experimental;
+
+import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.geometry.BezierCurve;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.auto.experimental.TestAutoPath;
-import org.firstinspires.ftc.teamcode.drive.RobotBase;
-import org.firstinspires.ftc.teamcode.drive.RobotFactory;
+import org.firstinspires.ftc.teamcode.auto.AutoBase;
+import org.firstinspires.ftc.teamcode.auto.Location;
+import org.firstinspires.ftc.teamcode.task.BlockerTask;
+import org.firstinspires.ftc.teamcode.task.FlywheelTask;
+import org.firstinspires.ftc.teamcode.task.RampTask;
+import org.firstinspires.ftc.teamcode.task.ParallelTask;
+import org.firstinspires.ftc.teamcode.task.PivotTask;
+import org.firstinspires.ftc.teamcode.task.Presets;
+import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
+import org.firstinspires.ftc.teamcode.task.SeriesTask;
+import org.firstinspires.ftc.teamcode.task.SleepTask;
+import org.firstinspires.ftc.teamcode.task.Task;
+import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Config
-@Autonomous(name="Test auto", group="Test")
-public class TestAuto extends TestAutoPath {
-    public static double
-            SHOOT_MID_X, SHOOT_MID_Y, SHOOT_MID_H,
-            INTAKE_MID_X, INTAKE_MID_Y, INTAKE_1_H,
-            INTAKE_MID_FORWARD_X, INTAKE_MID_FORWARD_Y, INTAKE_MID_FORWARD_H,
-            SHOOT_FAR_X, SHOOT_FAR_Y, SHOOT_FAR_H,
-            INTAKE_FAR_X, INTAKE_FAR_Y, INTAKE_FAR_H,
-            INTAKE_FAR_FORWARD_X, INTAKE_FAR_FORWARD_Y, INTAKE_FAR_FORWARD_H,
-            SHOOT_LOADING_X, SHOOT_LOADING_Y, SHOOT_LOADING_H,
-            INTAKE_LOADING_X, INTAKE_LOADING_Y, INTAKE_LOADING_H,
-            INTAKE_LOADING_FORWARD_X, INTAKE_LOADING_FORWARD_Y, INTAKE_LOADING_FORWARD_H,
-            SHOOT_START_X, SHOOT_START_Y, SHOOT_START_H,
-            GATE_X, GATE_Y, GATE_H,
-            PARK_X, PARK_Y, PARK_H;
+public abstract class TestAuto extends TestAutoBase {
+    public static int FLYWHEEL_VELOCITY = 4000;
 
-    static {
-        SHOOT_START_X = -8.493; SHOOT_START_Y = -0.686; SHOOT_START_H = -2.76;
-        SHOOT_MID_X = -8.493; SHOOT_MID_Y = -0.686; SHOOT_MID_H = -2.76;
-        SHOOT_FAR_X = -8.493; SHOOT_FAR_Y = -0.686; SHOOT_FAR_H = -2.75;
-        SHOOT_LOADING_X = -8.493; SHOOT_LOADING_Y = -0.686; SHOOT_LOADING_H = -2.76;
+    public static double INTAKE_OFFSET_X = 0, INTAKE_OFFSET_Y = -15;
+    public static double INTAKE_FORWARD_OFFSET_X = 0, INTAKE_FORWARD_OFFSET_Y = 0;
+    public static double INTAKE_BACK_OFFSET_X = 0, INTAKE_BACK_OFFSET_Y = -20;
 
-        INTAKE_MID_X = -47.394; INTAKE_MID_Y = -15; INTAKE_1_H = -Math.PI/2;
-        INTAKE_MID_FORWARD_X = -49.394; INTAKE_MID_FORWARD_Y = -36; INTAKE_MID_FORWARD_H = -Math.PI/2;
+    public static boolean takeFarBalls = true;
 
-        INTAKE_FAR_X = -24; INTAKE_FAR_Y = -14; INTAKE_FAR_H = -Math.PI/2;
-        INTAKE_FAR_FORWARD_X = -27; INTAKE_FAR_FORWARD_Y = -36; INTAKE_FAR_FORWARD_H = -Math.PI/2;
+    @Override
+    protected Location getFirstLocation() {
+        return Location.MID;
+    }
+    @Override
+    protected Task createStartTask() {
+        state = AutoState.START;
+        SeriesTask task = new SeriesTask();
+        task.add(
+                new ParallelTask(
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
+                        new UnboundedIntakeTask(robot, 0.3, false),
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = new Pose(-8.493, -0.686, -Math.PI/2);
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        )
+                )
+        );
 
-//        INTAKE_LOADING_X = -6.206; INTAKE_LOADING_Y = -14.586; INTAKE_LOADING_H = -1.145;
-        INTAKE_LOADING_X = -11.510; INTAKE_LOADING_Y = -43.842; INTAKE_LOADING_H = -1.372;
-        INTAKE_LOADING_FORWARD_X = -8.052; INTAKE_LOADING_FORWARD_Y = -44.875; INTAKE_LOADING_FORWARD_H = -1.459;
+        robot.limelight.start();
+        robot.limelight.pipelineSwitch(0);
+        robot.startArtifactPipeline();
+        robot.updateLimelight();
+        return new SeriesTask();
+    }
 
-        GATE_X = -56.620; GATE_Y = -39.834; GATE_H = 0;
-        PARK_X = -8.493; PARK_Y = -15; PARK_H = -2.76;
+    Pose getNewPose(Pose start, Pose end, Pose offset){
+        double heading = Math.atan2(end.getY() - start.getY(), end.getX() - start.getX());
+
+        double x = end.getX() + offset.getY() * Math.cos(heading) - offset.getX() * Math.sin(heading);
+        double y = end.getY() + (offset.getY() * Math.sin(heading) + offset.getX() * Math.cos(heading));
+
+        return new Pose(x, y);
+    }
+
+    Pose getNewPose(Pose start, Pose end, Pose offset, double heading){
+        double x = end.getX() + offset.getY() * Math.cos(heading) - offset.getX() * Math.sin(heading);
+        double y = end.getY() + (offset.getY() * Math.sin(heading) + offset.getX() * Math.cos(heading));
+
+        return new Pose(x, y);
+    }
+
+    BezierLine getBezierLine(Pose start, Pose end, Pose offset) {
+        return new BezierLine(start, getNewPose(start, end, offset));
+    }
+
+    BezierLine getBezierLine(Pose start, Pose end, Pose offset, double heading) {
+        return new BezierLine(start, getNewPose(start, end, offset, heading));
+    }
+
+    @Override
+    protected Task createCycleTask() {
+        state = AutoState.CYCLE;
+        int cycleNumber = autoStates.getCycleNumber();
+        SeriesTask task = new SeriesTask();
+        robot.updateLimelight();
+//        task.add(
+//                new ParallelTask(
+//                        new RuntimeDrivingTask(robot,
+//                                builder -> {
+//                                    Pose pose = robot.getLargestArtifactClusterPose();
+//                                    return builder
+//                                            .addPath(new BezierCurve(robot.getPose(),pose))
+//                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                            .build();
+//                                }
+//                        ),
+//                        new FlywheelTask(robot, 0, 500)
+//                )
+//        );
+
+        task.add(
+                new ParallelTask(
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = new Pose(-8.493,  -0.686, -Math.PI);
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        )
+                )
+        );
+
+        task.add(new SleepTask(100));
+
+        List<Pose> poses = robot.getTopThreeTargetPositions();
+
+        for (int i = 0; i < 3; i++){
+            Pose currentPose = poses.get(i);
+
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot,
+                                    builder -> {
+                                        Log.e("adbug test auto pose", currentPose.toString());
+                                        return builder
+                                                .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_OFFSET_X, INTAKE_OFFSET_Y)))
+                                                .setTangentHeadingInterpolation()
+                                                .build();
+                                    },
+                                    1.0,
+                                    3000
+                            ),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(new SleepTask(100));
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot,
+                                    builder -> {
+                                        Log.e("adbug test auto moving forward", currentPose.toString());
+                                        return builder
+                                                .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_FORWARD_OFFSET_X, INTAKE_FORWARD_OFFSET_Y)))
+                                                .setTangentHeadingInterpolation()
+                                                .build();
+                                    },
+                                    0.7,
+                                    2000
+                            ),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(
+                    new ParallelTask(
+                            new RuntimeDrivingTask(robot,
+                                    builder -> {
+                                        Log.e("adbug test auto moving back", currentPose.toString());
+                                        return builder
+                                                .addPath(getBezierLine(robot.getPose(), currentPose.getPose(), new Pose(INTAKE_BACK_OFFSET_X, INTAKE_BACK_OFFSET_Y), robot.getHeading()))
+                                                .setLinearHeadingInterpolation(robot.getHeading(), robot.getHeading())
+                                                .build();
+                                    },
+                                    1.0,
+                                    2000
+                            ),
+                            new UnboundedIntakeTask(robot, 1.0, false)
+                    )
+            );
+            task.add(new SleepTask(100));
+        }
+
+        /*if(cycleNumber==1){
+        task.add(
+                new SeriesTask(
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = getGatePose();
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        )
+                )
+        );}*/
+        Log.e("adbug test auto", "Moving back");
+        task.add(
+                new ParallelTask(
+                        new RuntimeDrivingTask(
+                                robot,
+                                builder -> {
+                                    Pose pose = new Pose(-8.493,  -0.686, -2.75);
+                                    return builder
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                            .build();
+                                }
+                        ),
+                        new FlywheelTask(robot, FLYWHEEL_VELOCITY, 2000)
+                )
+        );
+        task.add(new SleepTask(200));
+        task.add(Presets.createRapidShootTask(robot));
+        task.add(new SeriesTask(
+                new BlockerTask(robot, BlockerTask.Position.CLOSE),
+                new RampTask(robot, RampTask.Position.DOWN)
+        ));
+        return task;
+    }
+
+    @Override
+    protected Task createFinishTask() {
+//        state = AutoState.FINISH;
+//        SeriesTask task = new SeriesTask();
+//        task.add(
+//                new ParallelTask(
+//                        new FlywheelTask(robot, 0,1000),
+//                        new RuntimeDrivingTask(
+//                                robot,
+//                                builder -> {
+//                                    Pose pose = getParkPose();
+//                                    return builder
+//                                            .addPath(new BezierCurve(robot.getPose(), pose))
+//                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+//                                            .build();
+//                                }
+//                        )
+//                )
+//        );
+        return new SeriesTask();
     }
 
 
-    protected RobotBase createRobot(HardwareMap hardwareMap) {
-        return (RobotBase) RobotFactory.createRobot(hardwareMap);
-    }
+}
 
-
-    protected Pose getStartingPose() {
-        return new Pose(0,0,Math.PI);
-    }
-
-
-    protected boolean isFar() {
-        return false;
-    }
-
-
-    protected Pose getShootStartPose() {
-        return new Pose(SHOOT_START_X, SHOOT_START_Y*getSign(), SHOOT_START_H*getSign());
-    }
-
-
-    protected Pose getIntakeMidPose() {
-        return new Pose(INTAKE_MID_X, INTAKE_MID_Y*getSign(), INTAKE_1_H*getSign());
-    }
-
-
-    protected Pose getShootMidPose() {
-        return new Pose(SHOOT_MID_X, SHOOT_MID_Y*getSign(), SHOOT_MID_H*getSign());
-    }
-
-
-    protected Pose getIntakeFarPose() {
-        return new Pose(INTAKE_FAR_X, INTAKE_FAR_Y *getSign(), INTAKE_FAR_H *getSign());
-    }
-
-
-    protected Pose getShootFarPose() {
-        return new Pose(SHOOT_FAR_X, SHOOT_FAR_Y*getSign(), SHOOT_FAR_H*getSign());
-    }
-
-    protected Pose getParkPose() {
-        return new Pose(PARK_X, PARK_Y*getSign(), PARK_H*getSign());
-    }
-
-    protected Pose getIntakeMidForwardPose() {return new Pose(INTAKE_MID_FORWARD_X,  INTAKE_MID_FORWARD_Y *getSign(), INTAKE_MID_FORWARD_H *getSign());}
-
-
-    protected Pose getGatePose() {
-        return new Pose(GATE_X, GATE_Y*getSign(), GATE_H*getSign());
-    }
-
-    protected boolean isRed(){
-        return false;
+class Compare implements Comparator<Pose>{
+    @Override
+    public int compare(Pose a, Pose b){
+        return (int)(a.getX() - b.getX());
     }
 }
