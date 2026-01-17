@@ -24,23 +24,22 @@ public abstract class FarAutoPath extends FarAuto {
             PARK_X, PARK_Y, PARK_H;
 
     static {
-        SHOOT_START_X = -8.493; SHOOT_START_Y = -0.686; SHOOT_START_H = -2.76;
-        SHOOT_MID_X = -8.493; SHOOT_MID_Y = -0.686; SHOOT_MID_H = -2.76;
-        SHOOT_FAR_X = -8.493; SHOOT_FAR_Y = -0.686; SHOOT_FAR_H = -2.75;
-        SHOOT_LOADING_X = -8.493; SHOOT_LOADING_Y = -0.686; SHOOT_LOADING_H = -2.76;
+        SHOOT_START_X = -11.778; SHOOT_START_Y = 4; SHOOT_START_H = -2.75;
+        SHOOT_MID_X = -11.778; SHOOT_MID_Y = 4; SHOOT_MID_H = -2.75;
+        SHOOT_FAR_X = -11.778; SHOOT_FAR_Y = 4; SHOOT_FAR_H = -2.75;
+        SHOOT_LOADING_X = -11.778; SHOOT_LOADING_Y = 4; SHOOT_LOADING_H = -2.75;
 
-        INTAKE_MID_X = -47.394; INTAKE_MID_Y = -15; INTAKE_1_H = -Math.PI/2;
-        INTAKE_MID_FORWARD_X = -49.394; INTAKE_MID_FORWARD_Y = -36; INTAKE_MID_FORWARD_H = -Math.PI/2;
+        INTAKE_MID_X = -51.574; INTAKE_MID_Y = -10.916; INTAKE_1_H = -Math.PI/2;
+        INTAKE_MID_FORWARD_X = -51.574; INTAKE_MID_FORWARD_Y = -29.444; INTAKE_MID_FORWARD_H = -Math.PI/2;
 
-        INTAKE_FAR_X = -24; INTAKE_FAR_Y = -14; INTAKE_FAR_H = -Math.PI/2;
-        INTAKE_FAR_FORWARD_X = -27; INTAKE_FAR_FORWARD_Y = -36; INTAKE_FAR_FORWARD_H = -Math.PI/2;
+        INTAKE_FAR_X = -27.974; INTAKE_FAR_Y = -9.309; INTAKE_FAR_H = -Math.PI/2;
+        INTAKE_FAR_FORWARD_X = -27.974; INTAKE_FAR_FORWARD_Y = -28.526; INTAKE_FAR_FORWARD_H = -Math.PI/2;
 
-//        INTAKE_LOADING_X = -6.206; INTAKE_LOADING_Y = -14.586; INTAKE_LOADING_H = -1.145;
-        INTAKE_LOADING_X = -11.510; INTAKE_LOADING_Y = -43.842; INTAKE_LOADING_H = -1.372;
-        INTAKE_LOADING_FORWARD_X = -8.052; INTAKE_LOADING_FORWARD_Y = -44.875; INTAKE_LOADING_FORWARD_H = -1.459;
+        INTAKE_LOADING_X = -17.107; INTAKE_LOADING_Y = -43.627; INTAKE_LOADING_H = -0.547;
+        INTAKE_LOADING_FORWARD_X = -4.334; INTAKE_LOADING_FORWARD_Y = -42.949; INTAKE_LOADING_FORWARD_H = -1.260;
 
-        GATE_X = -56.620; GATE_Y = -39.834; GATE_H = 0;
-        PARK_X = -8.493; PARK_Y = -15; PARK_H = -2.76;
+        GATE_X = -63.975; GATE_Y = -40.256; GATE_H = 0;
+        PARK_X = -11.778; PARK_Y = -15; PARK_H = -2.75;
     }
 
     @Override
@@ -50,7 +49,7 @@ public abstract class FarAutoPath extends FarAuto {
 
     @Override
     protected Pose getStartingPose() {
-        return new Pose(0,0,Math.PI);
+        return new Pose(0,0, Math.PI);
     }
 
     @Override

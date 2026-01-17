@@ -35,7 +35,7 @@ public class Presets {
                 new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_ONE_WAIT_TIME),
                 new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_ONE_TIME),
                 new IntakeTask(robot, FLYWHEEL_WAIT_INTAKE_POWER, false, SHOOT_ONE_WAIT_TIME),
-                new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, SHOOT_ONE_TIME),
+                new IntakeTask(robot, FLYWHEEL_ON_INTAKE_POWER, false, 500),
                 new ParallelTask(
                         new RampTask(robot, RampTask.Position.DOWN),
                         new BlockerTask(robot, BlockerTask.Position.CLOSE)

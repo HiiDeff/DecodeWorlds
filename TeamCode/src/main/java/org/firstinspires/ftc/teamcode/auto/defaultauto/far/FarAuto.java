@@ -71,12 +71,12 @@ public abstract class FarAuto extends AutoBase {
                                 builder -> {
                                     Pose pose = getIntakePose();
                                     return builder
-                                            .addPath(getLocation()==Location.LOADING_ZONE? new BezierCurve(robot.getPose(), new Pose(5, -50*getSign()), pose):new BezierCurve(robot.getPose(), pose))
-                                            .setConstantHeadingInterpolation(pose.getHeading())
+                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                (getLocation()==Location.LOADING_ZONE? 0.7:1.0),
-                                (getLocation()==Location.LOADING_ZONE? 2000:30000)
+                                1.0,
+                                (getLocation()==Location.LOADING_ZONE? 4000:30000)
                         ),
                         new FlywheelTask(robot, 0, 500),
                         new UnboundedIntakeTask(robot, 1.0, false)
@@ -94,7 +94,7 @@ public abstract class FarAuto extends AutoBase {
                                             .build();
                                 },
                                 INTAKE_VELOCITY_CONSTRAINT,
-                                (getLocation()==Location.LOADING_ZONE? 1000:30000)
+                                (getLocation()==Location.LOADING_ZONE? 3000:30000)
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
