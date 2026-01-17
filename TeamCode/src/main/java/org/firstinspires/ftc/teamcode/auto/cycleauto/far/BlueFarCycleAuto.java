@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.auto.defaultauto.far.FarAutoPath;
 
-@Autonomous(name = "Blue \uD83D\uDD35 Far Auto PLAYOFFS \uD83C\uDFC6", group = "Playoffs")
+@Autonomous(name = "Blue \uD83D\uDD35 Far Cycle \uD83D\uDD04 Auto \uD83C\uDFC6", group = "Auto Cycle")
 public class BlueFarCycleAuto extends FarAutoPath {
     @Override
     protected boolean isRed() {
