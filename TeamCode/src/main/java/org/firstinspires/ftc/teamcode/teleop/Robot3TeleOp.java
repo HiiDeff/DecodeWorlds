@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -165,8 +167,16 @@ public abstract class Robot3TeleOp extends LinearOpMode {
 
     private void park(){
         if(gp1.back()&&gp1.onceA()) {
+            if(parking) {
+                robot.setParkPosition(ParkTask.Position.UP);
+            } else if(gp1.leftBumper()) {
+                robot.setParkPosition(ParkTask.WhichPark.LEFT, ParkTask.Position.DOWN);
+            } else if(gp1.rightBumper()) {
+                robot.setParkPosition(ParkTask.WhichPark.RIGHT, ParkTask.Position.DOWN);
+            } else {
+                robot.setParkPosition(ParkTask.Position.DOWN);
+            }
             parking = !parking;
-            robot.setParkPosition(parking ? ParkTask.Position.DOWN : ParkTask.Position.UP);
         }
     }
 

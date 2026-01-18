@@ -13,6 +13,7 @@ import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 
+@Disabled
 @Config
 @TeleOp(name = "Drive Test TeleOp", group = "Test")
 public class DriveTeleOpTest extends LinearOpMode {

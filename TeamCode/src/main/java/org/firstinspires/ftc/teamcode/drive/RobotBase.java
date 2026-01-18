@@ -337,9 +337,12 @@ public abstract class RobotBase extends MecanumDrive {
     ///////////////////* PARK UTILS *///////////////////
     public abstract double getParkPosition(ParkTask.WhichPark pivot, ParkTask.Position position);
 
-    public void setParkPosition(double position) {
-        leftPark.setPosition(position);
-        rightPark.setPosition(position);
+    public void setParkPosition(ParkTask.WhichPark whichPark, ParkTask.Position position){
+        if(whichPark==ParkTask.WhichPark.LEFT) {
+            leftPark.setPosition(getParkPosition(ParkTask.WhichPark.LEFT, position));
+        } else {
+            rightPark.setPosition(getParkPosition(ParkTask.WhichPark.RIGHT, position));
+        }
     }
     public void setParkPosition(ParkTask.Position position){
         leftPark.setPosition(getParkPosition(ParkTask.WhichPark.LEFT, position));

@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.auto.experimental;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 
+@Disabled
 @Config
 @Autonomous(name="Test auto", group="autoTest")
 public class TestAutoPath extends TestAuto {

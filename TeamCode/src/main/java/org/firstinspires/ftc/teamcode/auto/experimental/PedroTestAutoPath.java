@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.auto.Location;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.task.SeriesTask;
 import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 
+@Disabled
 @Config
 @Autonomous(name = "PedroTestAuto", group = "autoTest")
 public class PedroTestAutoPath extends TestAutoBase {
