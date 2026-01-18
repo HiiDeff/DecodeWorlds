@@ -116,7 +116,7 @@ public abstract class CloseAuto extends AutoBase {
                             new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                     )
             );
-            task.add(new SleepTask(300));
+//            task.add(new SleepTask(300));
         }
         task.add(new SleepTask(100));
         task.add(

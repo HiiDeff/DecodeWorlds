@@ -157,6 +157,7 @@ public abstract class RobotBase extends MecanumDrive {
         setBlockerPosition(BlockerTask.Position.CLOSE);
         setParkPosition(ParkTask.Position.UP);
         setStartingPose(new Pose(100, 0, heading));
+        turret.activateVelocityFeedForward();
     }
 
     public void autoInit() {
@@ -168,6 +169,7 @@ public abstract class RobotBase extends MecanumDrive {
         setBlockerPosition(BlockerTask.Position.CLOSE);
         setParkPosition(ParkTask.Position.UP);
         setRampPosition(RampTask.Position.DOWN);
+        turret.disableVelocityFeedForward();
     }
     ///////////////////* UPDATES *///////////////////
     public void updateEverything() {

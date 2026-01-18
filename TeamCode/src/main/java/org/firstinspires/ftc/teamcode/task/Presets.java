@@ -11,6 +11,21 @@ public class Presets {
     public static double FLYWHEEL_ON_INTAKE_POWER = 0.8, FLYWHEEL_WAIT_INTAKE_POWER = -0.2;
     public static int SHOOT_ONE_TIME = 150, SHOOT_ONE_WAIT_TIME = 200;
 
+    public static Task createRapidShootTask(RobotBase robot, int shootTime) {
+        return new SeriesTask(
+                new ParallelTask(
+                        new RampTask(robot, RampTask.Position.UP),
+                        new BlockerTask(robot, BlockerTask.Position.OPEN),
+                        new UnboundedIntakeTask(robot, 0.8, false),
+                        new SleepTask(shootTime)
+                ),
+                new ParallelTask(
+                        new RampTask(robot, RampTask.Position.DOWN),
+                        new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                )
+        );
+    }
+
     public static Task createRapidShootTask(RobotBase robot){
         return new SeriesTask(
                 new ParallelTask(

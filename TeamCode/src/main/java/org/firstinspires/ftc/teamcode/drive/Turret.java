@@ -22,7 +22,7 @@ public class Turret extends PIDModel {
     public static double TURRET_Y_DIST_TO_ROBOT_CENTER_INCH = -0.75; //left is positive
     private final RobotBase robot;
     private final double ticksPerRadian;
-    public static boolean autoAim = true;
+    public static boolean velocityFeedForwardActive = false;
     private int targetAngle;
     private double prevLimelightHeading = 0.0;
     private ElapsedTime headingTimer = null, targetTimer = null;
@@ -121,9 +121,16 @@ public class Turret extends PIDModel {
         return tau_ff;
     }
 
+    public void activateVelocityFeedForward() {
+        velocityFeedForwardActive = true;
+    }
+    public void disableVelocityFeedForward() {
+        velocityFeedForwardActive = false;
+    }
+
     @Override
     public double getFeedForward2() {
-        if(dTarget_dT==null || !autoAim) return 0;
+        if(dTarget_dT==null || !velocityFeedForwardActive) return 0;
         Log.i("edbug dTarget_dT", dTarget_dT.get()+"");
         return dTarget_dT.get();
     }

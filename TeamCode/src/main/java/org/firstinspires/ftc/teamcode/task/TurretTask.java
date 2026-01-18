@@ -18,9 +18,8 @@ public class TurretTask extends TimedTask {
     protected boolean performInternal(){
         if(!started){
             started = true;
-            robot.setTurretTargetPosition(angle);
-            return false;
         }
+        robot.setTurretTargetPosition(angle);
         return robot.turret.isDone();
     }
 
