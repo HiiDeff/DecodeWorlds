@@ -32,39 +32,9 @@ public class Robot3 extends RobotBase {
     // Constants
     public static double RAMP_UP = 0.55, RAMP_DOWN = 0.49;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.150, 0.0, 0.0,0.00038);
-    public static double PIVOT_CLOSE = 0.17, PIVOT_MID = 0.43, PIVOT_FAR = 0.55; //all the way down is 0.07, all the way up is 0.5
+    public static double PIVOT_CLOSE = 0.06, PIVOT_MID = 0.32, PIVOT_FAR = 0.44; //all the way down is 0.06, all the way up is 0.49
     public static double PARK_DOWN = 0.80, PARK_UP = 0.20;
-
-    //CLOSE is 20 inches
-    //MID is 53 inches
-    //FAR is 115 inches
     public static double BLOCKER_BLOCKING = 0.39, BLOCKER_NONBLOCKING = 0.539;
-    public static double DIST_OFFSET = 0.0;
-
-    // Flywheel Tuning Vals
-    public static double pivotCoef[] = {
-            141.80254,
-            -18.080509,
-            0.98758525,
-            -0.03035731,
-            0.00058024319,
-            -0.0000071683979,
-            5.7370387* Math.pow(10.0, -8.0),
-            -2.8745632 * Math.pow(10.0, -10.0),
-            8.1995853 * Math.pow(10.0, -13.0),
-            -1.0164994 * Math.pow(10.0, -15.0)
-    };
-    public static double rpmCoef[] = {
-            40664.9875,
-            -4763.31453,
-            246.33801,
-            -6.9280887,
-            0.11648275,
-            -0.0012014148,
-            0.0000074416616,
-            -2.5380797* Math.pow(10.0, -8.0),
-            3.6605427 * Math.pow(10.0, -11.0)
-    };
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
@@ -105,10 +75,11 @@ public class Robot3 extends RobotBase {
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
-    public static double T_VALUE_CONSTRAINT = 0.99;
-    public static double TIMEOUT_CONSTRAINT = 100;
-    public static double BRAKING_STRENGTH = 0.45;
-    public static double BRAKING_START = 1;
+    public static double T_VALUE_CONSTRAINT = 0.99,
+            VELOCITY_CONSTRAINT = 0.1, TRANSLATIONAL_CONSTRAINT = 0.1,
+            HEADING_CONSTRAINT = 0.007, TIMEOUT_CONSTRAINT = 100,
+            BRAKING_STRENGTH = 0.45, BRAKING_START = 1;
+    public static int BEZIER_CURVE_SEARCH_LIMIT = 10;
 
     public Robot3(HardwareMap hardwareMap) {
         super(hardwareMap, FOLLOWER_CONSTANTS, DRIVE_CONSTANTS,
@@ -118,7 +89,7 @@ public class Robot3 extends RobotBase {
     }
 
     private static PathConstraints getPathConstraints() {
-        PathConstraints pc = new PathConstraints(T_VALUE_CONSTRAINT, TIMEOUT_CONSTRAINT, BRAKING_STRENGTH, BRAKING_START);
+        PathConstraints pc = new PathConstraints(T_VALUE_CONSTRAINT, VELOCITY_CONSTRAINT, TRANSLATIONAL_CONSTRAINT, HEADING_CONSTRAINT, TIMEOUT_CONSTRAINT, BRAKING_STRENGTH, BEZIER_CURVE_SEARCH_LIMIT, BRAKING_START);
         PathConstraints.setDefaultConstraints(pc);
         return pc;
     }
@@ -133,8 +104,6 @@ public class Robot3 extends RobotBase {
                 return RAMP_DOWN;
         }
     }
-
-
     @Override
     public double getBlockerPosition(BlockerTask.Position position){
         switch (position){
@@ -145,12 +114,10 @@ public class Robot3 extends RobotBase {
                 return BLOCKER_NONBLOCKING;
         }
     }
-
     @Override
     public VelocityPIDCoefficients getVelocityPIDCoefficients() {
         return FLYWHEEL_VELOCITY_PID_COEFFICIENTS;
     }
-
     @Override
     public double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position) {
         switch (position){
@@ -163,7 +130,6 @@ public class Robot3 extends RobotBase {
                 return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE: PIVOT_CLOSE;
         }
     }
-
     @Override
     public double getParkPosition(ParkTask.WhichPark park, ParkTask.Position position){
         switch (position){
@@ -175,13 +141,37 @@ public class Robot3 extends RobotBase {
         }
     }
 
+    // Flywheel Regressions
+    public static double pivotCoefs[] = {
+            23.5512716,
+            -3.19218652,
+            0.18052277,
+            -0.00563123979,
+            0.000107918828,
+            -0.00000132576893,
+            1.04845545e-8,
+            -5.16391897e-11,
+            1.44139306e-13,
+            -1.74165127e-16
+    };
+    public static double rpmCoefs[] = {
+            12.62083-50,
+            269.78422,
+            -11.66927,
+            0.277634,
+            -0.00367897,
+            0.0000265213,
+            -9.03248e-8,
+            6.23288e-11,
+            2.35428e-13
+    };
 
     @Override
     public double calcPivotPosition() {
-        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()+DIST_OFFSET), 35, 140);
+        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()), 25, 140);
         double pos = 0;
         double pow = 1;
-        for (double v : pivotCoef) {
+        for (double v : pivotCoefs) {
             pos += pow * v;
             pow *= distToGoalInch;
         }
@@ -190,15 +180,16 @@ public class Robot3 extends RobotBase {
 
     @Override
     public int calcFlywheelRpm() {
-        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()+DIST_OFFSET), 35, 140);
+        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()), 25, 150);
         double rpm = 0;
         double pow = 1;
-        for(double v: rpmCoef) {
-            rpm += pow *  v;
+        for(double v: rpmCoefs) {
+            rpm += pow * v;
             pow *= distToGoalInch;
         }
         return (int) rpm;
     }
+
 
     @Override
     public Pose getTargetArtifactClusterPose(){

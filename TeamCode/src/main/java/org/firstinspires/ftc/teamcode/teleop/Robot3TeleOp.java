@@ -28,8 +28,8 @@ import org.firstinspires.ftc.teamcode.util.GamePad;
 @Config
 public abstract class Robot3TeleOp extends LinearOpMode {
     public static int FLYWHEEL_TARGET_RPM = 2600, MANUAL_OVERRIDE_FLYWHEEL_RPM = 2600;
-    public static double PIVOT_TARGET_POS = 0.17, MANUAL_OVERRIDE_PIVOT_POS = 0.17;
-    public static double FLYWHEEL_ON_INTAKE_POWER = 1.0, FLYWHEEL_WAIT_INTAKE_POWER = -0.2, INTAKE_IDLE_POWER = 0.0;
+    public static double PIVOT_TARGET_POS = 0.17, MANUAL_OVERRIDE_PIVOT_POS = 0.06;
+    public static double INTAKE_IDLE_POWER = 0.0;
 
     public static int RAPID_FIRE_THRESHOLD = 100;
     private TeleOpState state;

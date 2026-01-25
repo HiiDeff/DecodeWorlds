@@ -29,7 +29,7 @@ public abstract class CloseAutoPath extends CloseAuto {
 
         INTAKE_1_X = 30.652; INTAKE_1_Y = 27.387; INTAKE_1_H = -Math.PI/2;
         INTAKE_FORWARD_1_X = 31.126; INTAKE_FORWARD_1_Y = 10.867; INTAKE_FORWARD_1_H = -Math.PI/2;
-        GATE_1_X = 38.279; GATE_1_Y = -1.472; GATE_1_H = Math.PI;
+        GATE_1_X = 40.279; GATE_1_Y = -1.472; GATE_1_H = Math.PI;
         SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.27;
 
         INTAKE_2_X = 55.142; INTAKE_2_Y = 27.694; INTAKE_2_H = -Math.PI/2;

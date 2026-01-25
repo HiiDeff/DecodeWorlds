@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.Utils;
 @Config
 public class Presets {
     public static int SHOOT_THREE_TIME = 1000;
-    public static double FLYWHEEL_ON_INTAKE_POWER = 0.8, FLYWHEEL_WAIT_INTAKE_POWER = -0.2;
+    public static double FLYWHEEL_ON_INTAKE_POWER = 0.8, FLYWHEEL_WAIT_INTAKE_POWER = -0.1;
     public static int SHOOT_ONE_TIME = 150, SHOOT_ONE_WAIT_TIME = 200;
 
     public static Task createRapidShootTask(RobotBase robot, int shootTime) {

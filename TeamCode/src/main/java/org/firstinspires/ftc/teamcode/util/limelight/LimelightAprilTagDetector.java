@@ -73,14 +73,14 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
         Vector toGoal = new Vector(goalPose.minus(pose));
         rawDistToGoal = toGoal.getMagnitude();
         //flight time
-        //60 inch: 1.0 sec
-        //100 inch: 1.2 sec
-        //120 inch: 1.3 sec
-        // y-1 = 0.005(x-60)
-        // y-1 = 0.005x-0.3
-        // y = 0.005x + 0.7
+        //50 inch: 2.8-2.2 = 0.6 sec
+        //90 inch: 2.96-2.16 = 0.8 sec
+        //130 inch: 3.6-2.70 = 0.9 sec
+        // y-0.6 = 0.00375(x-50)
+        // y-0.6 = 0.00375x-0.1875
+        // y = 0.00375x + 0.7875 (changed to 0.4 after some testing)
         if(shootingWhileMoving) {
-            double flightTimeSec = 0.005*toGoal.getMagnitude()+0.4;
+            double flightTimeSec = 0.00375*toGoal.getMagnitude()+0.4;
             toGoal = toGoal.minus(velocity.times(flightTimeSec));
         }
         toGoal.setTheta(Utils.normalize(toGoal.getTheta()));

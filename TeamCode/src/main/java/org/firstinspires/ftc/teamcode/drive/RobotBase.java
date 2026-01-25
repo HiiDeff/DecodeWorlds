@@ -41,7 +41,7 @@ public abstract class RobotBase extends MecanumDrive {
     // Constants
     public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
     public static double PUSHER_POWER = 1.0;
-    public static double TURRET_TICKS_PER_RAD = 384.5*2.0/Math.PI;
+    public static double TURRET_TICKS_PER_RAD = 537.7*2.0/Math.PI;
 
     // Common
     protected final HardwareMap hardwareMap;
@@ -54,7 +54,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final DcMotorEx turretMotor;
     public final Turret turret;
     private boolean turretOn;
-    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 0.8, 0.004, 0.0, 0.25, 0.00002, 0.3);
+    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.004, 0.0, 0.15, 0.00002, 0.3);
     public final DcMotorEx intake;
     private boolean intakeOn;
 
