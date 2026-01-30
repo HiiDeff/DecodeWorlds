@@ -22,9 +22,11 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 public abstract class CloseGateSpamAuto extends AutoBase {
 
     public static int AA_NUM_OF_CYCLES = 3;
-    public static int FLYWHEEL_VELOCITY = 3200;
+    public static int FLYWHEEL_VELOCITY = 3100;
     public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
+    public static double MAX_PATH_VELOCITY = 0.8;
+
     @Override
     protected Location getFirstLocation() {
         return Location.CLOSE;
@@ -50,12 +52,13 @@ public abstract class CloseGateSpamAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         )
                 )
         );
         task.add(new SleepTask(100));
-        task.add(Presets.createRapidShootTask(robot));
+        task.add(Presets.createRapidShootTask(robot, 1000, 0.5));
 
         return task;
     }
@@ -78,7 +81,7 @@ public abstract class CloseGateSpamAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                1.0,
+                                MAX_PATH_VELOCITY,
                                 (autoStates.getCycleNumber()==3?3000:30000)
                         ),
                         new FlywheelTask(robot, 0, 300),
@@ -120,12 +123,13 @@ public abstract class CloseGateSpamAuto extends AutoBase {
                                                 .addPath((cycleNumber==1) ? new BezierCurve(robot.getPose(), new Pose(38, 10*getSign()), pose) : new BezierCurve(robot.getPose(), pose))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
-                                    }
+                                    },
+                                    MAX_PATH_VELOCITY
                             ),
                             new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                     )
             );
-            task.add(new SleepTask(300));
+            task.add(new SleepTask(700));
         }
         task.add(new SleepTask(100));
         // Go back to shoot position
@@ -148,11 +152,8 @@ public abstract class CloseGateSpamAuto extends AutoBase {
                 )
         );
         task.add(new SleepTask(100));
-        task.add(Presets.createRapidShootTask(robot));
+        task.add(Presets.createRapidShootTask(robot, 1000, 0.5));
 
-        if(cycleNumber == AA_NUM_OF_CYCLES) {
-            task.add(new SleepTask(10000));
-        }
         return task;
     }
 
@@ -172,7 +173,7 @@ public abstract class CloseGateSpamAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                0.4
+                                MAX_PATH_VELOCITY
                         )
                 )
         );
