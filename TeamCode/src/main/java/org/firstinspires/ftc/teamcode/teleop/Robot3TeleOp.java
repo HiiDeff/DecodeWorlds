@@ -9,6 +9,7 @@ import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
@@ -40,6 +41,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
     private SensorUpdateThread sensorUpdateThread;
     private GamePad gp1, gp2;
     private RobotBase robot;
+    private ElapsedTime loopTime = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -57,6 +59,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         robot.setLimelightAllianceColor(isRed());
         sensorUpdateThread.start();
         state = TeleOpState.OVERRIDE;
+        loopTime = new ElapsedTime();
 
         while (opModeIsActive()) {
             update();
@@ -116,6 +119,9 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         multipleTelemetry.addData("current rpm", robot.getFlywheelVelocityRpm());
         multipleTelemetry.addData("target rpm", FLYWHEEL_TARGET_RPM);
         multipleTelemetry.update();
+
+        Log.i("edbug loop time", loopTime.milliseconds()+"");
+        loopTime.reset();
     }
 
     private void manualOverride() {

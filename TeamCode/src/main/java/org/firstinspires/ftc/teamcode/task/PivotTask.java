@@ -48,6 +48,7 @@ public class PivotTask extends TimedTask {
     public enum Position {
         CLOSE,
         MID,
-        FAR
+        FAR,
+        SORT
     }
 }

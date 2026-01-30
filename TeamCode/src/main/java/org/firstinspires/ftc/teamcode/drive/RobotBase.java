@@ -54,7 +54,7 @@ public abstract class RobotBase extends MecanumDrive {
     public final DcMotorEx turretMotor;
     public final Turret turret;
     private boolean turretOn;
-    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.004, 0.0, 0.15, 0.00002, 0.3);
+    public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.004, 0.0, 0.0, 0.00000, 0.0); //new PIDCoefficients(0.0, 1.0, 0.004, 0.0, 0.15, 0.00002, 0.3);
     public final DcMotorEx intake;
     private boolean intakeOn;
 
@@ -369,6 +369,7 @@ public abstract class RobotBase extends MecanumDrive {
         limelightAprilTagDetector.setAllianceColor(isRedAlliance);
     }
     public void updateLimelight() { // public for teleop usage, auto for motifs
+        Log.i("edbug atag type", "HERE");
         if (detectingAprilTags){
             limelightAprilTagDetector.update();
         }else{

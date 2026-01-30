@@ -57,7 +57,7 @@ public abstract class CloseCycleAuto extends AutoBase {
                         )
                 )
         );
-        task.add(Presets.createRapidShootTask(robot, SHOOT_TIME));
+        task.add(Presets.createRapidShootTask(robot, SHOOT_TIME, 0.8));
 
         return task;
     }
@@ -124,7 +124,7 @@ public abstract class CloseCycleAuto extends AutoBase {
                 )
         );
 
-        task.add(Presets.createRapidShootTask(robot, SHOOT_TIME));
+        task.add(Presets.createRapidShootTask(robot, SHOOT_TIME, 0.8));
 
         if(cycleNumber == AA_NUM_OF_CYCLES) {
             task.add(new SleepTask(10000));

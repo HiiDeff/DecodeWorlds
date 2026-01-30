@@ -10,13 +10,14 @@ public class Presets {
     public static int SHOOT_THREE_TIME = 1000;
     public static double FLYWHEEL_ON_INTAKE_POWER = 0.8, FLYWHEEL_WAIT_INTAKE_POWER = -0.1;
     public static int SHOOT_ONE_TIME = 150, SHOOT_ONE_WAIT_TIME = 200;
+    public static int SORT_SLEEP_TIME = 50;
 
-    public static Task createRapidShootTask(RobotBase robot, int shootTime) {
+    public static Task createRapidShootTask(RobotBase robot, int shootTime, double intakePower) {
         return new SeriesTask(
                 new ParallelTask(
                         new RampTask(robot, RampTask.Position.UP),
                         new BlockerTask(robot, BlockerTask.Position.OPEN),
-                        new UnboundedIntakeTask(robot, 0.8, false),
+                        new UnboundedIntakeTask(robot, intakePower, false),
                         new SleepTask(shootTime)
                 ),
                 new ParallelTask(
@@ -25,21 +26,10 @@ public class Presets {
                 )
         );
     }
-
     public static Task createRapidShootTask(RobotBase robot){
-        return new SeriesTask(
-                new ParallelTask(
-                        new RampTask(robot, RampTask.Position.UP),
-                        new BlockerTask(robot, BlockerTask.Position.OPEN),
-                        new UnboundedIntakeTask(robot, 0.8, false),
-                        new SleepTask(SHOOT_THREE_TIME)
-                ),
-                new ParallelTask(
-                        new RampTask(robot, RampTask.Position.DOWN),
-                        new BlockerTask(robot, BlockerTask.Position.CLOSE)
-                )
-        );
+        return createRapidShootTask(robot, SHOOT_THREE_TIME, 0.8);
     }
+
     public static Task createSlowShootTask(RobotBase robot) {
         return new SeriesTask(
                 new ParallelTask(
@@ -55,6 +45,37 @@ public class Presets {
                         new RampTask(robot, RampTask.Position.DOWN),
                         new BlockerTask(robot, BlockerTask.Position.CLOSE)
                 )
+        );
+    }
+
+    public static Task createSortOneTask(RobotBase robot) {
+        return new SeriesTask(
+                new ParallelTask(
+                        new FlywheelTask(robot, 1200, 500),
+                        new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.SORT),
+                        new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.SORT)
+                ),
+                new ParallelTask(
+                        new UnboundedIntakeTask(robot, 0.6, false),
+                        new SeriesTask(
+                                new ParallelTask(
+                                        new RampTask(robot, RampTask.Position.UP),
+                                        new BlockerTask(robot, BlockerTask.Position.OPEN)
+                                ),
+                                new SleepTask(SORT_SLEEP_TIME),
+                                new ParallelTask(
+                                        new RampTask(robot, RampTask.Position.DOWN),
+                                        new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                                )
+                        )
+                ),
+                new IntakeTask(robot, 1.0, false, 1000)
+        );
+    }
+    public static Task createSortTwoTask(RobotBase robot) {
+        return new SeriesTask(
+                createSortOneTask(robot),
+                createSortOneTask(robot)
         );
     }
 

@@ -12,8 +12,14 @@ import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
+import org.firstinspires.ftc.teamcode.task.FlywheelTask;
+import org.firstinspires.ftc.teamcode.task.IntakeTask;
+import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
+import org.firstinspires.ftc.teamcode.task.SeriesTask;
+import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
+import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 import org.firstinspires.ftc.teamcode.util.Utils;
 import org.firstinspires.ftc.teamcode.util.limelight.Coords;
@@ -56,6 +62,7 @@ public class TeleopTest extends LinearOpMode {
     public static boolean isRed = false;
     public static boolean rampUp, flywheelActive, aiming, autoaim = true, turretActive = false, turretAutoAim = true, updateLimelight = true;
     private Task task;
+    public static int SORT_SLEEP_TIME = 100;
 
     public static double PARK_POSITION = 1.0;
 
@@ -101,21 +108,43 @@ public class TeleopTest extends LinearOpMode {
             multipleTelemetry.addData("closest cluster pose", clusterPose.getX()+" "+clusterPose.getY()+" "+clusterPose.getHeading());
             Coords clusterCoords = robot.getTargetArtifactClusterCoords();
             multipleTelemetry.addData("closest cluster coords", clusterCoords.getX()+" "+clusterCoords.getY()+" "+clusterCoords.getAngle());
+            if (gp1.onceB()){
+                if(task!=null) {
+                    task.cancel();
+                }
+                task = new SeriesTask(
+                        new FlywheelTask(robot, 1200, 500),
+                        new ParallelTask(
+                                new UnboundedIntakeTask(robot, 0.6, false),
+                                new SeriesTask(
+                                        new ParallelTask(
+                                                new RampTask(robot, RampTask.Position.UP),
+                                                new BlockerTask(robot, BlockerTask.Position.OPEN)
+                                        ),
+                                        new SleepTask(SORT_SLEEP_TIME),
+                                        new ParallelTask(
+                                                new RampTask(robot, RampTask.Position.DOWN),
+                                                new BlockerTask(robot, BlockerTask.Position.CLOSE)
+                                        )
+                                )
+                        ),
+                        new IntakeTask(robot, 1.0, false, 1000)
+                );
+            } else if(task==null) {
+                if(turretActive) {
+                    robot.setTurretTargetPosition(TURRET_TARGET_RAD);
+                } else if(turretAutoAim) {
+                    robot.turretAutoAim();
+                }else {
+                    robot.setTurretTargetPosition(0);
+                }
 
-            if(turretActive) {
-                robot.setTurretTargetPosition(TURRET_TARGET_RAD);
-            } else if(turretAutoAim) {
-                robot.turretAutoAim();
-            }else {
-                robot.setTurretTargetPosition(0);
-            }
+                if(autoaim) {
+                    FLYWHEEL_RPM = robot.calcFlywheelRpm();
+                    PIVOT_POS = robot.calcPivotPosition();
+                }
 
-            if(autoaim) {
-                FLYWHEEL_RPM = robot.calcFlywheelRpm();
-                PIVOT_POS = robot.calcPivotPosition();
-            }
-
-            robot.setPivotPosition(PIVOT_POS);
+                robot.setPivotPosition(PIVOT_POS);
 
 
 //            if(autoaim) {
@@ -124,20 +153,20 @@ public class TeleopTest extends LinearOpMode {
 //            } else {
 //                robot.setPivotPosition(PIVOT_POS);
 //            }
-            robot.setPivotPosition(PIVOT_POS);
+                robot.setPivotPosition(PIVOT_POS);
 //
-            if(gp1.onceX()) flywheelActive = !flywheelActive;
-            if(flywheelActive) {
-                robot.setFlywheelTargetVelocity(FLYWHEEL_RPM);
-            } else {
-                robot.setFlywheelTargetVelocity(0);
-            }
+                if(gp1.onceX()) flywheelActive = !flywheelActive;
+                if(flywheelActive) {
+                    robot.setFlywheelTargetVelocity(FLYWHEEL_RPM);
+                } else {
+                    robot.setFlywheelTargetVelocity(0);
+                }
 //
-            if(gp1.rightTrigger()>0.3) {
-                robot.runIntakeWithPower(INTAKE_POWER);
-            } else if(gp1.leftTrigger()>0.3) {
-                robot.runIntakeReversed();
-            } else robot.runIntakeWithPower(INTAKE_IDLE_POWER);
+                if(gp1.rightTrigger()>0.3) {
+                    robot.runIntakeWithPower(INTAKE_POWER);
+                } else if(gp1.leftTrigger()>0.3) {
+                    robot.runIntakeReversed();
+                } else robot.runIntakeWithPower(INTAKE_IDLE_POWER);
 
 //            if(gp1.rightBumper()) {
 //                robot.runPusher();
@@ -145,25 +174,25 @@ public class TeleopTest extends LinearOpMode {
 //                robot.runPusherReversed();
 //            } else robot.stopPusher();
 
-            if(gp1.onceA()) {
-                rampUp = !rampUp;
-            }
+                if(gp1.onceA()) {
+                    rampUp = !rampUp;
+                }
 //
-//            if (gp1.onceB()){
-//
-//            }
-            if(rampUp) {
-                robot.setRampPosition(RampTask.Position.UP);
-                robot.setBlockerPosition(BlockerTask.Position.OPEN);
-            } else {
-                robot.setRampPosition(RampTask.Position.DOWN);
-                robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+
+                if(rampUp) {
+                    robot.setRampPosition(RampTask.Position.UP);
+                    robot.setBlockerPosition(BlockerTask.Position.OPEN);
+                } else {
+                    robot.setRampPosition(RampTask.Position.DOWN);
+                    robot.setBlockerPosition(BlockerTask.Position.CLOSE);
+                }
+
+                robot.leftPark.setPosition(PARK_POSITION);
+                robot.rightPark.setPosition(PARK_POSITION);
+
+                drive();
+
             }
-
-            robot.leftPark.setPosition(PARK_POSITION);
-            robot.rightPark.setPosition(PARK_POSITION);
-
-            drive();
 
             gp1.update();
             gp2.update();

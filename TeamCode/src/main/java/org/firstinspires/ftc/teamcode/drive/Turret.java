@@ -31,6 +31,7 @@ public class Turret extends PIDModel {
     private double prevRobotAngleToGoal = 0.0;
     private MovingAverage dTarget_dT;
     private Pose turretCenter = new Pose(0, 0);
+    private final MovingAverage xAvg = new MovingAverage(5), yAvg = new MovingAverage(5);
 
     public Turret(RobotBase robot, PIDCoefficients pidCoefficients, double ticksPerRadian) {
         super(pidCoefficients);
@@ -47,16 +48,23 @@ public class Turret extends PIDModel {
         if(headingTimer == null || headingTimer.seconds() >= 1) { //haven't used calcRobotPose in a while
             headingTimer = new ElapsedTime();
             prevLimelightHeading = limelightHeading;
+            resetMovingAverages();
             return null;
         } else {
             double dTheta_dT = Utils.normalize(limelightHeading-prevLimelightHeading)/ headingTimer.seconds(); //TODO: check jumps between -PI <-> PI
             Log.i("edbug turret dTheta_dT", dTheta_dT+"");
             prevLimelightHeading = limelightHeading;
             headingTimer.reset();
-            if(Math.abs(dTheta_dT)>THRESHOLD_RAD_PER_SEC) return null;
+            if(Math.abs(dTheta_dT)>THRESHOLD_RAD_PER_SEC) {
+                resetMovingAverages();
+                return null;
+            }
         }
         Log.i("edbug robot velocity", robot.getVelocity().getMagnitude()+"");
-        if(robot.getVelocity().getMagnitude()>THRESHOLD_ROBOT_VELOCITY) return null;
+        if(robot.getVelocity().getMagnitude()>THRESHOLD_ROBOT_VELOCITY) {
+            resetMovingAverages();
+            return null;
+        }
 
         Vector toTurretCenter = new Vector(-LIMELIGHT_DIST_TO_TURRET_CENTER_INCH, limelightHeading);
         turretCenter = limelightPose.plus(new Pose(toTurretCenter.getXComponent(), toTurretCenter.getYComponent()));
@@ -74,7 +82,9 @@ public class Turret extends PIDModel {
         Log.i("ndbug robot center vector", toRobotCenterY.getXComponent() + " " + toRobotCenterY.getYComponent());
         Log.i("ndbug robot center pose", robotPose.getX() + " " + robotPose.getY() + " " + robotPose.getHeading());
 
-        return turretCenter.setHeading(robotHeading);
+        updateMovingAverages(turretCenter);
+
+        return new Pose(xAvg.get(), yAvg.get(), robotHeading);
     }
     public Pose getTurretCenter() {
         return turretCenter;
@@ -149,5 +159,14 @@ public class Turret extends PIDModel {
     @Override
     public void cancel() {
         //do nothing
+    }
+
+    private void updateMovingAverages(Pose pose) {
+        xAvg.add(pose.getX());
+        yAvg.add(pose.getY());
+    }
+    private void resetMovingAverages() {
+        xAvg.reset();
+        yAvg.reset();
     }
 }

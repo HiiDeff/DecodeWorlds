@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.auto.sortauto.close.CloseSortAuto;
 import org.firstinspires.ftc.teamcode.common.AutoStates;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.SensorUpdateThread;
@@ -51,14 +52,15 @@ public abstract class AutoBase extends LinearOpMode {
         boolean done = false;
         while (opModeIsActive() && !done && globalTask != null) {
             robot.updateEverything();
-            if(timeToFinish() && state!=AutoState.FINISH) {
+            robot.updateLimelight();
+            if(timeToFinish() && state!=AutoState.FINISH && !(this instanceof CloseSortAuto)) {
                 globalTask.cancel();
                 globalTask = createFinishTask();
-            }else if(globalTask.perform()) {
+            } else if(globalTask.perform()) {
                 if(hasTimeForOneMoreCycle()){
                     autoStates.setCycleNumber(autoStates.getCycleNumber()+1);
                     globalTask = createCycleTask();
-                } else {
+                } else if(state != AutoState.FINISH) {
                     globalTask = createFinishTask();
                 }
             }
@@ -70,6 +72,7 @@ public abstract class AutoBase extends LinearOpMode {
             cycleTimer.reset();
         }
         sensorUpdateThread.interrupt();
+        robot.stopLimelight();
     }
 
     private boolean timeToFinish() {
@@ -83,6 +86,7 @@ public abstract class AutoBase extends LinearOpMode {
 
     private void resetRobot() {
         robot.autoInit();
+        robot.startLimelight();
         //TODO: this works, but not all 3 lines are necessary
         robot.setStartingPose(getStartingPose());
         robot.setPose(getStartingPose());

@@ -48,16 +48,17 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
     @Override
     protected void updateInternal() {
+        Log.i("edbug atag type", "here");
         if(timeSinceLastDetection==null) {
             timeSinceLastDetection = new ElapsedTime();
         }
         limelightPose = null;
-        if(rawDistToGoal<MIN_DIST_DETECTABLE) return;
         for(LLResultTypes.FiducialResult aTag: result.getFiducialResults()) {
             AprilTagType type = AprilTagType.getAprilTagType(aTag.getFiducialId());
+            Log.i("atag type", type.getTagIDNumber()+"");
             if(type.isMotif()) {
                 motif = type;
-            } else if(isRedAlliance ^ (type == AprilTagType.BLUE_GOAL)) {
+            } else if((isRedAlliance ^ (type == AprilTagType.BLUE_GOAL)) && rawDistToGoal>MIN_DIST_DETECTABLE) {
                 YawPitchRollAngles llAngles = aTag.getRobotPoseFieldSpace().getOrientation();
                 Position llPos = aTag.getRobotPoseFieldSpace().getPosition();
                 if(!(timeSinceLastDetection.milliseconds()<SUDDEN_ATAG_JUMP_IN_YAW_FILTER_MS && Math.abs(llAngles.getYaw(AngleUnit.DEGREES)-lastSeenGoalYaw) > SUDDEN_ATAG_JUMP_IN_YAW_FILTER_DEGREE)) {
@@ -99,6 +100,13 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
     public AprilTagType getMotif() {
         return motif;
+    }
+
+    //intakePattern describes the balls in the order they are shot
+    public int getSortRequirement(AprilTagType intakePattern) {
+        int diff = intakePattern.getTagIDNumber() - motif.getTagIDNumber();
+        if(diff<0) diff += 3;
+        return diff;
     }
 
     private double metersToInches(double distMeters) {

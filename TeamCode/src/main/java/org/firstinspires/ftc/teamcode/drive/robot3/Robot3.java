@@ -32,7 +32,7 @@ public class Robot3 extends RobotBase {
     // Constants
     public static double RAMP_UP = 0.55, RAMP_DOWN = 0.49;
     public static VelocityPIDCoefficients FLYWHEEL_VELOCITY_PID_COEFFICIENTS = new VelocityPIDCoefficients(0, 1.0,  0.150, 0.0, 0.0,0.00038);
-    public static double PIVOT_CLOSE = 0.06, PIVOT_MID = 0.32, PIVOT_FAR = 0.44; //all the way down is 0.06, all the way up is 0.49
+    public static double PIVOT_CLOSE = 0.06, PIVOT_MID = 0.32, PIVOT_FAR = 0.44, PIVOT_SORT = 0.47; //all the way down is 0.06, all the way up is 0.49
     public static double PARK_DOWN = 0.80, PARK_UP = 0.20;
     public static double BLOCKER_BLOCKING = 0.39, BLOCKER_NONBLOCKING = 0.539;
 
@@ -78,7 +78,7 @@ public class Robot3 extends RobotBase {
     public static double T_VALUE_CONSTRAINT = 0.99,
             VELOCITY_CONSTRAINT = 0.1, TRANSLATIONAL_CONSTRAINT = 0.1,
             HEADING_CONSTRAINT = 0.007, TIMEOUT_CONSTRAINT = 100,
-            BRAKING_STRENGTH = 0.45, BRAKING_START = 1;
+            BRAKING_STRENGTH = 1, BRAKING_START = 1;
     public static int BEZIER_CURVE_SEARCH_LIMIT = 10;
 
     public Robot3(HardwareMap hardwareMap) {
@@ -99,8 +99,8 @@ public class Robot3 extends RobotBase {
         switch (position){
             case UP:
                 return RAMP_UP;
-            default:
             case DOWN:
+            default:
                 return RAMP_DOWN;
         }
     }
@@ -109,8 +109,8 @@ public class Robot3 extends RobotBase {
         switch (position){
             case CLOSE:
                 return BLOCKER_BLOCKING;
-            default:
             case OPEN:
+            default:
                 return BLOCKER_NONBLOCKING;
         }
     }
@@ -122,12 +122,14 @@ public class Robot3 extends RobotBase {
     public double getPivotTargetPos(PivotTask.WhichPivot pivot, PivotTask.Position position) {
         switch (position){
             case FAR:
-                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_FAR: PIVOT_FAR;
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_FAR:PIVOT_FAR;
             case MID:
-                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_MID: PIVOT_MID;
-            default:
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_MID:PIVOT_MID;
+            case SORT:
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_SORT:PIVOT_SORT;
             case CLOSE:
-                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE: PIVOT_CLOSE;
+            default:
+                return pivot == PivotTask.WhichPivot.LEFT? PIVOT_CLOSE:PIVOT_CLOSE;
         }
     }
     @Override
@@ -135,8 +137,8 @@ public class Robot3 extends RobotBase {
         switch (position){
             case DOWN:
                 return park == ParkTask.WhichPark.LEFT ? PARK_DOWN : PARK_DOWN;
-            default:
             case UP:
+            default:
                 return park == ParkTask.WhichPark.LEFT ? PARK_UP : PARK_UP;
         }
     }

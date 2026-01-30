@@ -27,6 +27,7 @@ public abstract class MecanumDrive extends Follower {
     private Pose defaulStartPose = new Pose();
     public static double LATERAL_MULTIPLIER = 1.0; // adjust if robot is skewed
     public static double TRACK_WIDTH = 1.0; // adjust for robot geometry
+    public static int FILTER_SIZE = 2;
 
     // Pedro
     private static Mecanum mecanum;
@@ -34,15 +35,11 @@ public abstract class MecanumDrive extends Follower {
 
     // Angular Velocity & Acceleration
     private ElapsedTime timer = null;
-    private final MovingAverage angularVelocityFilter = new MovingAverage(5);
-    private final MovingAverage angularAccelerationFilter = new MovingAverage(5);
+    private final MovingAverage angularVelocityFilter = new MovingAverage(3);
+    private final MovingAverage angularAccelerationFilter = new MovingAverage(4);
     private double lastHeading = 0.0, lastFilteredAngularVelocity = 0.0;
-    private final MovingAverage velXFilter = new MovingAverage(5);
-    private final MovingAverage velYFilter = new MovingAverage(5);
-    private final MovingAverage accelXFilter = new MovingAverage(5);
-    private final MovingAverage accelYFilter = new MovingAverage(5);
-    private Pose lastPose = new Pose();
-    private double lastFilteredVx = 0.0, lastFilteredVy = 0.0;
+    private final MovingAverage accelXFilter = new MovingAverage(3);
+    private final MovingAverage accelYFilter = new MovingAverage(3);
 
     //Translational Acceleration
 
@@ -78,15 +75,11 @@ public abstract class MecanumDrive extends Follower {
         Log.i("edbug raw heading", heading+"");
     }
     private void updateAcceleration() {
-        Pose pose = getPose();
 
         if (timer == null) {
             timer = new ElapsedTime();
             lastHeading = heading;
             lastFilteredAngularVelocity = 0.0;
-            lastPose = new Pose();
-            lastFilteredVx = 0.0;
-            lastFilteredVy = 0.0;
             return;
         }
         double dt = timer.seconds();
@@ -107,31 +100,24 @@ public abstract class MecanumDrive extends Follower {
         angularAccelerationFilter.add(angularAcceleration);
 
         // Translational Velocity
-        Pose deltaPose = pose.copy().minus(lastPose);
-        lastPose = pose;
 
-        velXFilter.add(deltaPose.getX()/dt);
-        velYFilter.add(deltaPose.getY()/dt);
-        double filteredVx = velXFilter.get();
-        double filteredVy = velYFilter.get();
+        accelXFilter.add(getAcceleration().getXComponent());
+        accelYFilter.add(getAcceleration().getYComponent());
 
-        double ax = (filteredVx - lastFilteredVx) / dt;
-        double ay = (filteredVy - lastFilteredVy) / dt;
-        lastFilteredVx = filteredVx;
-        lastFilteredVy = filteredVy;
 
-        accelXFilter.add(ax);
-        accelYFilter.add(ay);
+        Log.i("pedro translational velo", "("+this.getVelocity().getXComponent()+" "+this.getVelocity().getYComponent()+")");
+        Log.i("pedro translational accel", "("+this.getAcceleration().getXComponent()+" "+this.getAcceleration().getYComponent()+")");
+        Log.i("edbug translational accel x", accelXFilter.get()+"");
+        Log.i("edbug translational accel y", accelYFilter.get()+"");
 
+        Log.i("edbug angular velo", angularVelocityFilter.get()+""); //pedro angular velo doesn't work
         Log.i("edbug angular accel", angularAccelerationFilter.get()+"");
-        Log.i("edbug translational velo", "("+velXFilter.get()+" "+velYFilter.get()+")");
-        Log.i("edbug translational accel", "("+accelXFilter.get()+" "+accelYFilter.get()+")");
 
         // Heading for transfer between teleop and auto
     }
 
     public Vector getTranslationalVelocity() {
-        return new Vector(new Pose(velXFilter.get(), velYFilter.get()));
+        return getVelocity();
     }
 
     public Vector getTranslationalAcceleration() {
