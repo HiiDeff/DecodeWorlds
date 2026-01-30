@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 public abstract class FarAuto extends AutoBase {
 
     public static int AA_NUM_OF_CYCLES = 3;
-    public static int FLYWHEEL_VELOCITY = 4000;
+    public static int FLYWHEEL_VELOCITY = 3950;
     public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     public static double MAX_PATH_VELOCITY = 0.8;

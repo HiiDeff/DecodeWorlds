@@ -26,7 +26,7 @@ public abstract class FarAutoPath extends FarAuto {
     static {
         SHOOT_START_X = -11.778; SHOOT_START_Y = 4; SHOOT_START_H = -2.75;
         SHOOT_MID_X = -11.778; SHOOT_MID_Y = 4; SHOOT_MID_H = -2.72;
-        SHOOT_FAR_X = -11.778; SHOOT_FAR_Y = 4; SHOOT_FAR_H = -2.72;
+        SHOOT_FAR_X = -11.778; SHOOT_FAR_Y = 4; SHOOT_FAR_H = -2.70;
         SHOOT_LOADING_X = -11.778; SHOOT_LOADING_Y = 4; SHOOT_LOADING_H = -2.72;
 
         INTAKE_MID_X = -51.574; INTAKE_MID_Y = -10.916; INTAKE_1_H = -Math.PI/2;
