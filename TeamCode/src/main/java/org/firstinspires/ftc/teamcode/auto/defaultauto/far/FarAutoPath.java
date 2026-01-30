@@ -39,7 +39,7 @@ public abstract class FarAutoPath extends FarAuto {
         INTAKE_LOADING_FORWARD_X = -4.334; INTAKE_LOADING_FORWARD_Y = -41.949; INTAKE_LOADING_FORWARD_H = -1.260;
 
         GATE_X = -63.975; GATE_Y = -40.256; GATE_H = 0;
-        PARK_X = -11.778; PARK_Y = -15; PARK_H = -2.75;
+        PARK_X = -8; PARK_Y = -8; PARK_H = -Math.PI/2;
     }
 
     @Override

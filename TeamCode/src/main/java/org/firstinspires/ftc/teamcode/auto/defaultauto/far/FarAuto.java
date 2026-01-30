@@ -24,9 +24,10 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 public abstract class FarAuto extends AutoBase {
 
     public static int AA_NUM_OF_CYCLES = 3;
-    public static int FLYWHEEL_VELOCITY = 4050;
+    public static int FLYWHEEL_VELOCITY = 4000;
     public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
+    public static double MAX_PATH_VELOCITY = 0.8;
     @Override
     protected Location getFirstLocation() { return Location.MID; }
     @Override
@@ -50,7 +51,8 @@ public abstract class FarAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         )
                 )
         );
@@ -75,7 +77,7 @@ public abstract class FarAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                1.0,
+                                MAX_PATH_VELOCITY,
                                 (getLocation()==Location.LOADING_ZONE? 4000:30000)
                         ),
                         new FlywheelTask(robot, 0, 500),
@@ -110,12 +112,13 @@ public abstract class FarAuto extends AutoBase {
                                                 .addPath(new BezierCurve(robot.getPose(), pose))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
-                                    }
+                                    },
+                                    MAX_PATH_VELOCITY
                             ),
                             new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                     )
             );
-            task.add(new SleepTask(300));
+            task.add(new SleepTask(1000));
         }
         task.add(new SleepTask(70));
         task.add(
@@ -134,7 +137,8 @@ public abstract class FarAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         ),
                         new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 4000)
@@ -143,9 +147,6 @@ public abstract class FarAuto extends AutoBase {
         task.add(new SleepTask(100));
         task.add(Presets.createSlowShootTask(robot));
 
-        if(cycleNumber==AA_NUM_OF_CYCLES) {
-            task.add(new SleepTask(10000));
-        }
         return task;
     }
 
@@ -165,7 +166,7 @@ public abstract class FarAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                0.4
+                                MAX_PATH_VELOCITY
                         )
                 )
         );

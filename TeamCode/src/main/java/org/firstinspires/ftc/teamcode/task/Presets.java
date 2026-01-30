@@ -20,6 +20,7 @@ public class Presets {
                         new UnboundedIntakeTask(robot, intakePower, false),
                         new SleepTask(shootTime)
                 ),
+                new IntakeTask(robot, 1.0, false, 200),
                 new ParallelTask(
                         new RampTask(robot, RampTask.Position.DOWN),
                         new BlockerTask(robot, BlockerTask.Position.CLOSE)
