@@ -25,22 +25,22 @@ public abstract class CloseAutoPath extends CloseAuto {
             PARK_X, PARK_Y, PARK_H;
 
     static {
-        SHOOT_1_X = 27.631; SHOOT_1_Y = 40.047; SHOOT_1_H = -2.27;
+        SHOOT_1_X = 27.631; SHOOT_1_Y = 40.047; SHOOT_1_H = -2.29;
 
         INTAKE_1_X = 30.652; INTAKE_1_Y = 27.387; INTAKE_1_H = -Math.PI/2;
         INTAKE_FORWARD_1_X = 31.126; INTAKE_FORWARD_1_Y = 10.867; INTAKE_FORWARD_1_H = -Math.PI/2;
         GATE_1_X = 40.279; GATE_1_Y = -1.472; GATE_1_H = Math.PI;
-        SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.27;
+        SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.29;
 
         INTAKE_2_X = 55.142; INTAKE_2_Y = 27.694; INTAKE_2_H = -Math.PI/2;
         INTAKE_FORWARD_2_X = 54.370; INTAKE_FORWARD_2_Y = 9.728; INTAKE_FORWARD_2_H = -Math.PI/2;
-        SHOOT_3_X = 27.631; SHOOT_3_Y = 40.047; SHOOT_3_H = -2.27;
+        SHOOT_3_X = 27.631; SHOOT_3_Y = 40.047; SHOOT_3_H = -2.29;
 
         INTAKE_3_X = 78.833; INTAKE_3_Y = 27.553; INTAKE_3_H = -Math.PI/2;
         INTAKE_FORWARD_3_X = 78.277; INTAKE_FORWARD_3_Y = 8.560; INTAKE_FORWARD_3_H = -Math.PI/2;
-        SHOOT_4_X = 27.631; SHOOT_4_Y = 40.047; SHOOT_4_H = -2.27;
+        SHOOT_4_X = 27.631; SHOOT_4_Y = 40.047; SHOOT_4_H = -2.29;
 
-        PARK_X = 47.631; PARK_Y = 20.047; PARK_H = -2.27;
+        PARK_X = 35; PARK_Y = 28; PARK_H = -Math.PI/2;
     }
 
     @Override

@@ -104,6 +104,10 @@ public class LimelightAprilTagDetector extends LimelightProcessorBase {
 
     //intakePattern describes the balls in the order they are shot
     public int getSortRequirement(AprilTagType intakePattern) {
+        if(motif==null) {
+            Log.i("edbug motif", "not found!");
+            return 0;
+        }
         int diff = intakePattern.getTagIDNumber() - motif.getTagIDNumber();
         if(diff<0) diff += 3;
         return diff;

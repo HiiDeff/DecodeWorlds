@@ -21,9 +21,11 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 @Config
 public abstract class CloseAuto extends AutoBase {
     public static int AA_NUM_OF_CYCLES = 3;
-    public static int FLYWHEEL_VELOCITY = 3200;
+    public static int FLYWHEEL_VELOCITY = 3130;
     public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
+    public static double MAX_PATH_VELOCITY = 0.8;
+
     @Override
     protected Location getFirstLocation() {
         return Location.CLOSE;
@@ -49,7 +51,8 @@ public abstract class CloseAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         )
                 )
         );
@@ -75,7 +78,8 @@ public abstract class CloseAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         ),
                         new FlywheelTask(robot, 0, 300)
                 )
@@ -111,12 +115,13 @@ public abstract class CloseAuto extends AutoBase {
                                                 .addPath(new BezierCurve(robot.getPose(), new Pose(38, 10*getSign()), pose))
                                                 .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                                 .build();
-                                    }
+                                    },
+                                    MAX_PATH_VELOCITY
                             ),
                             new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
                     )
             );
-//            task.add(new SleepTask(300));
+            task.add(new SleepTask(1000));
         }
         task.add(new SleepTask(100));
         task.add(
@@ -131,7 +136,8 @@ public abstract class CloseAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
                         new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
@@ -140,9 +146,6 @@ public abstract class CloseAuto extends AutoBase {
         task.add(new SleepTask(100));
         task.add(Presets.createRapidShootTask(robot));
 
-        if(cycleNumber == AA_NUM_OF_CYCLES) {
-            task.add(new SleepTask(10000));
-        }
         return task;
     }
 
@@ -162,7 +165,7 @@ public abstract class CloseAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                0.4
+                                MAX_PATH_VELOCITY
                         )
                 )
         );
