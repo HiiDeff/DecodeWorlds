@@ -32,7 +32,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
     public static double PIVOT_TARGET_POS = 0.17, MANUAL_OVERRIDE_PIVOT_POS = 0.06;
     public static double INTAKE_IDLE_POWER = 0.0;
 
-    public static int RAPID_FIRE_THRESHOLD = 100;
+    public static int RAPID_FIRE_THRESHOLD = 142;
     private TeleOpState state;
     private boolean parking = false;
     private double drivePow = 0.0;

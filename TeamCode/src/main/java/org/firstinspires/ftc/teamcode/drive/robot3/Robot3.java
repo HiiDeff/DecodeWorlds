@@ -145,32 +145,37 @@ public class Robot3 extends RobotBase {
 
     // Flywheel Regressions
     public static double pivotCoefs[] = {
-            23.5512716,
-            -3.19218652,
-            0.18052277,
-            -0.00563123979,
-            0.000107918828,
-            -0.00000132576893,
-            1.04845545e-8,
-            -5.16391897e-11,
-            1.44139306e-13,
-            -1.74165127e-16
+            -155.735128,
+            19.9331173,
+            -1.09734315,
+            0.034113584,
+            -0.000660471248,
+            0.00000827346758,
+            -6.71946791e-8,
+            3.41913343e-10,
+            -9.91057983e-13,
+            1.2490502e-15
     };
     public static double rpmCoefs[] = {
-            12.62083-50,
-            269.78422,
-            -11.66927,
-            0.277634,
-            -0.00367897,
-            0.0000265213,
-            -9.03248e-8,
-            6.23288e-11,
-            2.35428e-13
+            -28963.7071,
+            1988.3742,
+            32.024883,
+            -6.6183559,
+            0.2715061,
+            -0.0058721863,
+            0.000077233521,
+            -6.3892117e-7,
+            3.2541566e-9,
+            -9.3350318e-12,
+            1.1550232e-14
     };
 
     @Override
     public double calcPivotPosition() {
-        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()), 25, 140);
+        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()), 35, 140);
+        if(distToGoalInch>130) { //linear interpolation
+            return 0.001*(distToGoalInch-130) + 0.46;
+        }
         double pos = 0;
         double pow = 1;
         for (double v : pivotCoefs) {
@@ -182,7 +187,10 @@ public class Robot3 extends RobotBase {
 
     @Override
     public int calcFlywheelRpm() {
-        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()), 25, 150);
+        double distToGoalInch = Utils.clamp((getVectorToGoal().getMagnitude()), 35, 150);
+        if(distToGoalInch>140) { //linear interpolation
+            return (int) (15.0*(distToGoalInch-140) + 4150);
+        }
         double rpm = 0;
         double pow = 1;
         for(double v: rpmCoefs) {

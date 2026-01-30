@@ -157,6 +157,7 @@ public abstract class RobotBase extends MecanumDrive {
         setBlockerPosition(BlockerTask.Position.CLOSE);
         setParkPosition(ParkTask.Position.UP);
         setStartingPose(new Pose(100, 0, heading));
+        setRampPosition(RampTask.Position.DOWN);
         turret.activateVelocityFeedForward();
     }
 
