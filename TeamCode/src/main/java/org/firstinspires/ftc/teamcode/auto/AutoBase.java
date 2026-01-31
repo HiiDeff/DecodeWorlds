@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.auto.cycleauto.close.CloseCycleAuto;
 import org.firstinspires.ftc.teamcode.auto.sortauto.close.CloseSortAuto;
 import org.firstinspires.ftc.teamcode.common.AutoStates;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
@@ -19,7 +20,7 @@ public abstract class AutoBase extends LinearOpMode {
 
     public static int AA_TOTAL_TIME_MILLIS = 30000;
     public static int AA_TIME_FOR_A_CYCLE = 4000;
-    public static int AA_TIME_FOR_PARK = 1000;
+    public static int AA_TIME_FOR_PARK = 1500;
 
     public static Location firstLocation = Location.MID;
 
@@ -53,7 +54,7 @@ public abstract class AutoBase extends LinearOpMode {
         while (opModeIsActive() && !done && globalTask != null) {
             robot.updateEverything();
             robot.updateLimelight();
-            if(timeToFinish() && state!=AutoState.FINISH && !(this instanceof CloseSortAuto)) {
+            if(timeToFinish() && state!=AutoState.FINISH && !(this instanceof CloseSortAuto) && !(this instanceof CloseCycleAuto)) {
                 globalTask.cancel();
                 globalTask = createFinishTask();
             } else if(globalTask.perform()) {

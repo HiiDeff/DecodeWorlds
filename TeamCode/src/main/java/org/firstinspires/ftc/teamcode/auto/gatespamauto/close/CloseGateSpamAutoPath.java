@@ -32,7 +32,7 @@ public abstract class CloseGateSpamAutoPath extends CloseGateSpamAuto {
         GATE_1_X = 38.279; GATE_1_Y = -1.472; GATE_1_H = Math.PI;
         SHOOT_2_X = 27.631; SHOOT_2_Y = 40.047; SHOOT_2_H = -2.28;
 
-        INTAKE_2_X = 55.142; INTAKE_2_Y = 27.694; INTAKE_2_H = -Math.PI/2;
+        INTAKE_2_X = 55.142; INTAKE_2_Y = 29.694; INTAKE_2_H = -Math.PI/2;
         INTAKE_FORWARD_2_X = 54.370; INTAKE_FORWARD_2_Y = 9.728; INTAKE_FORWARD_2_H = -Math.PI/2;
         GATE_2_X = 45.186; GATE_2_Y = -1.410; GATE_2_H = 0;
         SHOOT_3_X = 27.631; SHOOT_3_Y = 40.047; SHOOT_3_H = -2.28;
