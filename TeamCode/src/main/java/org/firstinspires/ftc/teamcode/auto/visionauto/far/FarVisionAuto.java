@@ -58,6 +58,19 @@ public abstract class FarVisionAuto extends AutoBase {
         task.add(new SleepTask(100));
         task.add(Presets.createSlowShootTask(robot));
 
+        task.add(
+                new RuntimeDrivingTask(robot,
+                        builder -> {
+                            Pose pose = getParkPose();
+                            return builder
+                                    .addPath(new BezierCurve(robot.getPose(), pose))
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        },
+                        MAX_PATH_VELOCITY
+                )
+        );
+
         return task;
     }
 
@@ -124,6 +137,19 @@ public abstract class FarVisionAuto extends AutoBase {
         task.add(new SleepTask(100));
         task.add(Presets.createSlowShootTask(robot));
 
+        task.add(
+                new RuntimeDrivingTask(robot,
+                        builder -> {
+                            Pose pose = getParkPose();
+                            return builder
+                                    .addPath(new BezierCurve(robot.getPose(), pose))
+                                    .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
+                                    .build();
+                        },
+                        MAX_PATH_VELOCITY
+                )
+        );
+
         return task;
     }
 
@@ -132,20 +158,7 @@ public abstract class FarVisionAuto extends AutoBase {
         state = AutoState.FINISH;
         SeriesTask task = new SeriesTask();
         task.add(
-                new ParallelTask(
-                        new FlywheelTask(robot, 0,1000),
-                        new RuntimeDrivingTask(
-                                robot,
-                                builder -> {
-                                    Pose pose = getParkPose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                },
-                                MAX_PATH_VELOCITY
-                        )
-                )
+                new FlywheelTask(robot, 0,1000)
         );
         return task;
     }
