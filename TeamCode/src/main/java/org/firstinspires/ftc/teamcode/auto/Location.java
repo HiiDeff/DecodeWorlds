@@ -4,5 +4,6 @@ public enum Location {
     CLOSE,
     MID,
     FAR,
+    GATE,
     LOADING_ZONE
 }

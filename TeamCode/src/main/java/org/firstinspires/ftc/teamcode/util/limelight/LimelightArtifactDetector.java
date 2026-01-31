@@ -5,6 +5,8 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+import org.firstinspires.ftc.teamcode.auto.Location;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -133,5 +135,9 @@ public class LimelightArtifactDetector extends LimelightProcessorBase {
         double angle = Math.atan2(xDistInch, yDistInch);
 
         return new Coords(xDistInch, yDistInch, angle);
+    }
+
+    public List<Coords> getArtifactCoords(){
+        return targetCoords;
     }
 }

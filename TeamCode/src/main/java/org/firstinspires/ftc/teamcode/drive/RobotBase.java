@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.ParkTask;
@@ -411,6 +412,7 @@ public abstract class RobotBase extends MecanumDrive {
     public Coords getTargetArtifactClusterCoords(){return limelightArtifactDetector.getTargetPosition();}
     public abstract Pose getTargetArtifactClusterPose();
     public abstract List<Pose> getTopThreeTargetPositions();
+    public abstract Location getArtifactDensestLocation();
 
     public Pose coordsToPose(Coords coords){
         // x is forward, y is left-right
