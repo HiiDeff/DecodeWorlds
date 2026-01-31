@@ -25,9 +25,10 @@ public abstract class CloseCycleAuto extends AutoBase {
     public static boolean INTAKE_FAR_SPIKE_MARK = false;
     public static int INTAKE_AT_GATE_TIME = 800;
     public static int SHOOT_TIME = 600;
-    public static int FLYWHEEL_VELOCITY = 3200;
+    public static int FLYWHEEL_VELOCITY = 3100;
     public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 1.0;
+    public static double MAX_PATH_VELOCITY = 0.9;
     @Override
     protected Location getFirstLocation() {
         return Location.CLOSE;
@@ -53,7 +54,8 @@ public abstract class CloseCycleAuto extends AutoBase {
                                             .addPath(new BezierCurve(robot.getPose(), pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         )
                 )
         );
@@ -66,6 +68,8 @@ public abstract class CloseCycleAuto extends AutoBase {
     protected Task createCycleTask() {
         state = AutoState.CYCLE;
         int cycleNumber = autoStates.getCycleNumber();
+        boolean intakeAtGate = !(cycleNumber==1||cycleNumber==AA_NUM_OF_CYCLES||(INTAKE_FAR_SPIKE_MARK&&cycleNumber==AA_NUM_OF_CYCLES-1));
+
         SeriesTask task = new SeriesTask();
         task.add(
                 new ParallelTask(
@@ -76,16 +80,25 @@ public abstract class CloseCycleAuto extends AutoBase {
                                     else if(cycleNumber==AA_NUM_OF_CYCLES-1 && INTAKE_FAR_SPIKE_MARK) pose = getIntake2Pose();
                                     else if(cycleNumber==AA_NUM_OF_CYCLES) pose = getIntake3Pose();
                                     return builder
-                                            .addPath(cycleNumber<AA_NUM_OF_CYCLES-(INTAKE_FAR_SPIKE_MARK?1:0)? new BezierCurve(robot.getPose(),new Pose(40, 30*getSign()), pose):new BezierCurve(robot.getPose(),pose))
+                                            .addPath(cycleNumber<AA_NUM_OF_CYCLES-(INTAKE_FAR_SPIKE_MARK?1:0)? new BezierCurve(robot.getPose(),new Pose(50, 20*getSign()), pose):new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                1.0,
-                                (cycleNumber==1||cycleNumber==AA_NUM_OF_CYCLES||(INTAKE_FAR_SPIKE_MARK&&cycleNumber==AA_NUM_OF_CYCLES-1)?30000:2000)
+                                intakeAtGate?0.7:MAX_PATH_VELOCITY,
+                                intakeAtGate?2500:8000
                         ),
-                        new FlywheelTask(robot, 0, 300)
+                        new FlywheelTask(robot, 0, 300),
+                        new UnboundedIntakeTask(robot, 0.4, false)
                 )
         );
+        if(intakeAtGate) {
+            task.add(
+                    new ParallelTask(
+                            new SleepTask(400),
+                            new UnboundedIntakeTask(robot, 0.4, false)
+                    )
+            );
+        }
         task.add(
                 new ParallelTask(
                         new RuntimeDrivingTask(robot,
@@ -104,7 +117,7 @@ public abstract class CloseCycleAuto extends AutoBase {
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )
         );
-        if(cycleNumber!=1 && cycleNumber!=AA_NUM_OF_CYCLES) {
+        if(intakeAtGate) {
             task.add(new IntakeTask(robot, 1.0, false, INTAKE_AT_GATE_TIME));
         }
         task.add(
@@ -114,10 +127,11 @@ public abstract class CloseCycleAuto extends AutoBase {
                                 builder -> {
                                     Pose pose = getShootPose();
                                     return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
+                                            .addPath(cycleNumber<AA_NUM_OF_CYCLES-(INTAKE_FAR_SPIKE_MARK?1:0)? new BezierCurve(robot.getPose(),new Pose(50, 30*getSign()), pose):new BezierCurve(robot.getPose(),pose))
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
-                                }
+                                },
+                                MAX_PATH_VELOCITY
                         ),
                         new FlywheelTask(robot, FLYWHEEL_VELOCITY, 1000),
                         new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false)
@@ -126,9 +140,6 @@ public abstract class CloseCycleAuto extends AutoBase {
 
         task.add(Presets.createRapidShootTask(robot, SHOOT_TIME, 0.8));
 
-        if(cycleNumber == AA_NUM_OF_CYCLES) {
-            task.add(new SleepTask(10000));
-        }
         return task;
     }
 
@@ -149,7 +160,7 @@ public abstract class CloseCycleAuto extends AutoBase {
                                             .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
                                             .build();
                                 },
-                                0.4
+                                MAX_PATH_VELOCITY
                         )
                 )
         );

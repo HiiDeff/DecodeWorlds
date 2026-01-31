@@ -27,8 +27,8 @@ public abstract class CloseCycleAutoPath extends CloseCycleAuto {
         INTAKE_1_X = 55.142; INTAKE_1_Y = 27.694; INTAKE_1_H = -Math.PI/2;
         INTAKE_FORWARD_1_X = 54.370; INTAKE_FORWARD_1_Y = 7.728; INTAKE_FORWARD_1_H = -Math.PI/2;
 
-        INTAKE_GATE_X = 52.094; INTAKE_GATE_Y = -4; INTAKE_GATE_H = -1.891;
-        INTAKE_GATE_FORWARD_X = 60; INTAKE_GATE_FORWARD_Y = -4.5; INTAKE_GATE_FORWARD_H = -Math.PI*2/3;
+        INTAKE_GATE_X = 52.5; INTAKE_GATE_Y = -2; INTAKE_GATE_H = -2.07;
+        INTAKE_GATE_FORWARD_X = 57.9; INTAKE_GATE_FORWARD_Y = -5.7; INTAKE_GATE_FORWARD_H = -2.44;
 
         INTAKE_2_X = 78.833; INTAKE_2_Y = 27.553; INTAKE_2_H = -Math.PI/2;
         INTAKE_FORWARD_2_X = 78.277; INTAKE_FORWARD_2_Y = 8.560; INTAKE_FORWARD_2_H = -Math.PI/2;
@@ -36,7 +36,7 @@ public abstract class CloseCycleAutoPath extends CloseCycleAuto {
         INTAKE_3_X = 30.652; INTAKE_3_Y = 27.387; INTAKE_3_H = -Math.PI/2;
         INTAKE_FORWARD_3_X = 31.126; INTAKE_FORWARD_3_Y = 10.867; INTAKE_FORWARD_3_H = -Math.PI/2;
 
-        PARK_X = 47.631; PARK_Y = 20.047; PARK_H = -2.27;
+        PARK_X = 35; PARK_Y = 28; PARK_H = -Math.PI/2;
     }
 
     @Override
