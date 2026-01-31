@@ -20,7 +20,7 @@ public class Presets {
                         new UnboundedIntakeTask(robot, intakePower, false),
                         new SleepTask(shootTime)
                 ),
-                new IntakeTask(robot, 1.0, false, 200),
+                new IntakeTask(robot, 1.0, false, 300),
                 new ParallelTask(
                         new RampTask(robot, RampTask.Position.DOWN),
                         new BlockerTask(robot, BlockerTask.Position.CLOSE)
@@ -28,7 +28,7 @@ public class Presets {
         );
     }
     public static Task createRapidShootTask(RobotBase robot){
-        return createRapidShootTask(robot, SHOOT_THREE_TIME, 0.8);
+        return createRapidShootTask(robot, SHOOT_THREE_TIME, FLYWHEEL_ON_INTAKE_POWER);
     }
 
     public static Task createSlowShootTask(RobotBase robot) {

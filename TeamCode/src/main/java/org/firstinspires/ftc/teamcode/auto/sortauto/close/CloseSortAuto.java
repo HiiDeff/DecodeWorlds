@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.auto.AutoBase;
 import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.FlywheelTask;
+import org.firstinspires.ftc.teamcode.task.IntakeTask;
 import org.firstinspires.ftc.teamcode.task.ParallelTask;
 import org.firstinspires.ftc.teamcode.task.PivotTask;
 import org.firstinspires.ftc.teamcode.task.Presets;
@@ -27,7 +28,7 @@ public abstract class CloseSortAuto extends AutoBase {
     public static int AA_NUM_OF_CYCLES = 3;
     public static int FLYWHEEL_VELOCITY = 2600;
     public static double INTAKE_IDLE_POWER = 0.3, TURRET_OFFSET = 0.35;
-    public static double INTAKE_VELOCITY_CONSTRAINT = 1.0;
+    public static double INTAKE_VELOCITY_CONSTRAINT = 0.8;
     @Override
     protected Location getFirstLocation() {
         return Location.CLOSE;
@@ -41,11 +42,11 @@ public abstract class CloseSortAuto extends AutoBase {
         task.add(
                 new ParallelTask(
                         new SeriesTask(
-                                new TurretTask(robot, -Math.PI/4*getSign(), 750),
+                                new TurretTask(robot, -Math.PI/3*getSign(), 750),
                                 new SleepTask(750),
-                                new TurretTask(robot, -(Math.PI/4+0.05)*getSign(), 500)
+                                new TurretTask(robot, -(Math.PI/4+0.1)*getSign(), 500)
                         ),
-                        new FlywheelTask(robot, 3200, 1000),
+                        new FlywheelTask(robot, 3000, 1000),
                         new UnboundedIntakeTask(robot, INTAKE_IDLE_POWER, false),
                         new PivotTask(robot, PivotTask.WhichPivot.LEFT, PivotTask.Position.MID),
                         new PivotTask(robot, PivotTask.WhichPivot.RIGHT, PivotTask.Position.MID),
@@ -177,21 +178,28 @@ public abstract class CloseSortAuto extends AutoBase {
             );
             task.add(
                     new ParallelTask(
-                            Presets.createSortOneTask(robot),
-                            new RuntimeDrivingTask(
-                                    robot,
-                                    builder -> {
-                                        Pose pose = getShoot2SpinPose();
-                                        if(cycleNumber==2) pose = getShoot3SpinPose();
-                                        else if(cycleNumber==3) pose = getShoot4SpinPose();
-                                        return builder
-                                                .addPath(new BezierCurve(robot.getPose(), pose))
-                                                .setConstantHeadingInterpolation(pose.getHeading())
-                                                .build();
-                                    },
-                                    0.4
+                            new SeriesTask(
+                                    Presets.createSortOneTask(robot),
+                                    new IntakeTask(robot, 1.0, false, 1000)
+                            ),
+                            new SeriesTask(
+                                    new SleepTask(1500),
+                                    new RuntimeDrivingTask(
+                                            robot,
+                                            builder -> {
+                                                Pose pose = getShoot2SpinPose();
+                                                if(cycleNumber==2) pose = getShoot3SpinPose();
+                                                else if(cycleNumber==3) pose = getShoot4SpinPose();
+                                                pose = new Pose(pose.getX()+3.5, pose.getY()+3.5*getSign(), pose.getHeading());
+                                                return builder
+                                                        .addPath(new BezierCurve(robot.getPose(), pose))
+                                                        .setConstantHeadingInterpolation(pose.getHeading())
+                                                        .build();
+                                            },
+                                            0.2,
+                                            1000
+                                    )
                             )
-
                     )
             );
         }
@@ -218,7 +226,7 @@ public abstract class CloseSortAuto extends AutoBase {
                 )
         );
 
-        task.add(Presets.createRapidShootTask(robot, 1700, 0.5));
+        task.add(Presets.createRapidShootTask(robot, 1200, 0.4));
 
 //        if(cycleNumber == AA_NUM_OF_CYCLES) {
 //            task.add(new SleepTask(10000));
@@ -231,20 +239,7 @@ public abstract class CloseSortAuto extends AutoBase {
         state = AutoState.FINISH;
         SeriesTask task = new SeriesTask();
         task.add(
-                new ParallelTask(
-                        new FlywheelTask(robot, 0,1000),
-                        new RuntimeDrivingTask(
-                                robot,
-                                builder -> {
-                                    Pose pose = getParkPose();
-                                    return builder
-                                            .addPath(new BezierCurve(robot.getPose(), pose))
-                                            .setLinearHeadingInterpolation(robot.getHeading(), pose.getHeading())
-                                            .build();
-                                },
-                                1.0
-                        )
-                )
+                new FlywheelTask(robot, 0,1000)
         );
 //        task.add(new SleepTask(10000));
         return task;

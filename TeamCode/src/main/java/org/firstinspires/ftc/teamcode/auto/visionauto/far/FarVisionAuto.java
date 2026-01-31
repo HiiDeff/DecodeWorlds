@@ -33,6 +33,7 @@ public abstract class FarVisionAuto extends AutoBase {
     @Override
     protected Task createStartTask() {
         state = AutoState.START;
+        robot.startArtifactPipeline();
         SeriesTask task = new SeriesTask();
         task.add(
                 new ParallelTask(
