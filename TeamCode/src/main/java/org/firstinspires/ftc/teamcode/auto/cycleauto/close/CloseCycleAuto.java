@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
 @Config
 public abstract class CloseCycleAuto extends AutoBase {
     public static int AA_NUM_OF_CYCLES = 4;
-    public static boolean INTAKE_FAR_SPIKE_MARK = true;
+    public static boolean INTAKE_FAR_SPIKE_MARK = false;
     public static int INTAKE_AT_GATE_TIME = 800, WAIT_AT_GATE_TIME = 200;
     public static int SHOOT_TIME = 600;
     public static int FLYWHEEL_VELOCITY = 3100;
@@ -112,7 +112,8 @@ public abstract class CloseCycleAuto extends AutoBase {
                                             .setConstantHeadingInterpolation(pose.getHeading())
                                             .build();
                                 },
-                                INTAKE_VELOCITY_CONSTRAINT
+                                INTAKE_VELOCITY_CONSTRAINT,
+                                3000
                         ),
                         new UnboundedIntakeTask(robot, 1.0, false)
                 )

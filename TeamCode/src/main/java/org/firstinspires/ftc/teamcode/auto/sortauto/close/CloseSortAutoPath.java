@@ -29,7 +29,7 @@ public abstract class CloseSortAutoPath extends CloseSortAuto {
             PARK_X, PARK_Y, PARK_H;
 
     static {
-        SHOOT_1_X = 30; SHOOT_1_Y = 30.7; SHOOT_1_H = -Math.PI/2;
+        SHOOT_1_X = 30; SHOOT_1_Y = 33; SHOOT_1_H = -Math.PI/2;
 
         INTAKE_FORWARD_1_X = 30.7; INTAKE_FORWARD_1_Y = 10.5; INTAKE_FORWARD_1_H = -Math.PI/2;
         GATE_1_X = 38; GATE_1_Y = -3; GATE_1_H = Math.PI;
@@ -37,13 +37,13 @@ public abstract class CloseSortAutoPath extends CloseSortAuto {
         SHOOT_2_SPIN_X = -4.7; SHOOT_2_SPIN_Y = 7.5; SHOOT_2_SPIN_H = -2.28;
         SHOOT_2_GUARANTEE_X = -1.4; SHOOT_2_GUARANTEE_Y = 15.5; SHOOT_2_GUARANTEE_H = -2.87;
 
-        INTAKE_2_X = 57; INTAKE_2_Y = 33; INTAKE_2_H = -2.87;
-        INTAKE_FORWARD_2_X = 57; INTAKE_FORWARD_2_Y = 12; INTAKE_FORWARD_2_H = -Math.PI/2;
+        INTAKE_2_X = 55; INTAKE_2_Y = 33; INTAKE_2_H = -2.87;
+        INTAKE_FORWARD_2_X = 55; INTAKE_FORWARD_2_Y = 12; INTAKE_FORWARD_2_H = -Math.PI/2;
         SHOOT_3_X = -2.1; SHOOT_3_Y = 8.6; SHOOT_3_H = Math.PI;
         SHOOT_3_SPIN_X = -4.7; SHOOT_3_SPIN_Y = 7.5; SHOOT_3_SPIN_H = -2.28;
         SHOOT_3_GUARANTEE_X = 2.2; SHOOT_3_GUARANTEE_Y = 15.8; SHOOT_3_GUARANTEE_H = -2.94;
 
-        INTAKE_3_X = 78; INTAKE_3_Y = 33; INTAKE_3_H = -2.9;
+        INTAKE_3_X = 78; INTAKE_3_Y = 35; INTAKE_3_H = -2.9;
         INTAKE_FORWARD_3_X = 80; INTAKE_FORWARD_3_Y = 13; INTAKE_FORWARD_3_H = -Math.PI/2;
         SHOOT_4_X = -2.1; SHOOT_4_Y = 8.6; SHOOT_4_H = Math.PI;
         SHOOT_4_SPIN_X = -4.7; SHOOT_4_SPIN_Y = 7.5; SHOOT_4_SPIN_H = -2.28;

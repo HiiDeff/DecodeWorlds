@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.task.Task;
 public abstract class AutoBase extends LinearOpMode {
 
     public static int AA_TOTAL_TIME_MILLIS = 30000;
-    public static int AA_TIME_FOR_A_CYCLE = 4000;
+    public static int AA_TIME_FOR_A_CYCLE = 2000;
     public static int AA_TIME_FOR_PARK = 1500;
 
     public static Location firstLocation = Location.MID;

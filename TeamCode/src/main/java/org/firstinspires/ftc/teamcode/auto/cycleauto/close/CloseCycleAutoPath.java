@@ -36,7 +36,7 @@ public abstract class CloseCycleAutoPath extends CloseCycleAuto {
         INTAKE_3_X = 29; INTAKE_3_Y = 29.387; INTAKE_3_H = -Math.PI/2;
         INTAKE_FORWARD_3_X = 29; INTAKE_FORWARD_3_Y = 10; INTAKE_FORWARD_3_H = -Math.PI/2;
 
-        PARK_X = 2; PARK_Y = 35; PARK_H = -0.44;
+        PARK_X = 5; PARK_Y = 38; PARK_H = -0.44;
     }
 
     @Override
