@@ -238,7 +238,7 @@ public class Robot3 extends RobotBase {
             Pose artifactPose = coordsToPose(artifact);
 
             // No seeing reflections of artifacts in the field wall
-            if (artifactPose.getX() > 72 || artifactPose.getX() < 0 || artifactPose.getY() > 72 || artifactPose.getY() < 0){
+            if (artifactPose.getX() > 72 || artifactPose.getX() < -72 || artifactPose.getY() > 72 || artifactPose.getY() < -72){
                 continue;
             }
 
@@ -251,8 +251,8 @@ public class Robot3 extends RobotBase {
 
         if (gateArtifactCount < loadingZoneArtifactCount){
             return Location.GATE;
+        }else{
+            return Location.LOADING_ZONE; // Prefer loading zone - balls might roll there
         }
-
-        return Location.LOADING_ZONE; // Prefer loading zone - balls might roll there
     }
 }
