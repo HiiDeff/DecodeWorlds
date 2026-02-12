@@ -373,6 +373,7 @@ public abstract class RobotBase extends MecanumDrive {
     public void updateLimelight() { // public for teleop usage, auto for motifs
         Log.i("edbug atag type", "HERE");
         if (detectingAprilTags){
+            limelight.updateRobotOrientation(getPose().getHeading() * 180 / Math.PI);
             limelightAprilTagDetector.update();
         }else{
             limelightArtifactDetector.update();
