@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto.visionauto.far;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -17,6 +19,9 @@ import org.firstinspires.ftc.teamcode.task.SleepTask;
 import org.firstinspires.ftc.teamcode.task.Task;
 import org.firstinspires.ftc.teamcode.task.TurretTask;
 import org.firstinspires.ftc.teamcode.task.UnboundedIntakeTask;
+import org.firstinspires.ftc.teamcode.util.limelight.Coords;
+
+import java.util.List;
 
 @Config
 public abstract class FarVisionAuto extends AutoBase {
@@ -26,6 +31,9 @@ public abstract class FarVisionAuto extends AutoBase {
     public static double INTAKE_IDLE_POWER = 0.3;
     public static double INTAKE_VELOCITY_CONSTRAINT = 0.5;
     public static double MAX_PATH_VELOCITY = 0.8;
+    public static int VISION_DELAY_MILLIS = 500;
+    public static int GATE_LOADING_ZONE_CUTOFF_X = -12;
+
     @Override
     protected Location getFirstLocation() { return Location.MID; }
     @Override
@@ -70,6 +78,7 @@ public abstract class FarVisionAuto extends AutoBase {
                         MAX_PATH_VELOCITY
                 )
         );
+        task.add(new SleepTask(VISION_DELAY_MILLIS));
 
         return task;
     }
@@ -81,7 +90,7 @@ public abstract class FarVisionAuto extends AutoBase {
         SeriesTask task = new SeriesTask();
 
         // Vision Part: See where the balls are
-        Location target = robot.getArtifactDensestLocation();
+        Location target = getArtifactDensestLocation();
 
         task.add(
                 new ParallelTask(
@@ -149,6 +158,7 @@ public abstract class FarVisionAuto extends AutoBase {
                         MAX_PATH_VELOCITY
                 )
         );
+        task.add(new SleepTask(VISION_DELAY_MILLIS));
 
         return task;
     }
@@ -169,6 +179,39 @@ public abstract class FarVisionAuto extends AutoBase {
     protected abstract Pose getGateIntakePose();
     protected abstract Pose getLoadingZoneIntakeForwardPose();
     protected abstract Pose getGateIntakeForwardPose();
+
+    public Location getArtifactDensestLocation(){
+        List<Coords> artifactCoords = robot.getArtifactList();
+
+        int gateArtifactCount = 0;
+        int loadingZoneArtifactCount = 0;
+
+        Log.i("adbug artifact position", "start");
+        for (Coords artifact: artifactCoords){
+            Pose artifactPose = robot.coordsToPose(artifact);
+
+            Log.i("adbug artifact position", "\t" + artifactPose.toString());
+
+            // No seeing reflections of artifacts in the field wall
+            if (artifactPose.getX() > 72 || artifactPose.getX() < -72 || artifactPose.getY() > 72 || artifactPose.getY() < -72){
+                continue;
+            }
+
+            if (artifactPose.getX() <= GATE_LOADING_ZONE_CUTOFF_X){
+                loadingZoneArtifactCount += 1;
+            }else{
+                gateArtifactCount += 1;
+            }
+        }
+
+        Log.i("adbug artifact position", gateArtifactCount + " " + loadingZoneArtifactCount);
+
+        if (gateArtifactCount < loadingZoneArtifactCount){
+            return Location.GATE;
+        }else{
+            return Location.LOADING_ZONE; // Prefer loading zone - balls might roll there
+        }
+    }
 
 
 }

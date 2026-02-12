@@ -25,7 +25,7 @@ public abstract class FarVisionAutoPath extends FarVisionAuto {
         GATE_INTAKE_X = -37.107; GATE_INTAKE_Y = -40; GATE_INTAKE_H = -0.547;
         GATE_FORWARD_X = -24.334; GATE_FOWARD_Y = -41; GATE_FOWARD_H = -1.260;
 
-        PARK_X = -8; PARK_Y = -8; PARK_H = -Math.PI/2;
+        PARK_X = -4.980; PARK_Y = -1.086; PARK_H = -1.736;
     }
 
     @Override

@@ -412,7 +412,7 @@ public abstract class RobotBase extends MecanumDrive {
     public Coords getTargetArtifactClusterCoords(){return limelightArtifactDetector.getTargetPosition();}
     public abstract Pose getTargetArtifactClusterPose();
     public abstract List<Pose> getTopThreeTargetPositions();
-    public abstract Location getArtifactDensestLocation();
+    public abstract List<Coords> getArtifactList();
 
     public Pose coordsToPose(Coords coords){
         // x is forward, y is left-right
