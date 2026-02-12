@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.robot3;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
@@ -36,7 +38,6 @@ public class Robot3 extends RobotBase {
     public static double PIVOT_CLOSE = 0.06, PIVOT_MID = 0.36, PIVOT_FAR = 0.47, PIVOT_SORT = 0.47; //all the way down is 0.06, all the way up is 0.49
     public static double PARK_DOWN = 0.80, PARK_UP = 0.20;
     public static double BLOCKER_BLOCKING = 0.39, BLOCKER_NONBLOCKING = 0.539;
-    public static int GATE_LOADING_ZONE_CUTOFF_X = 36;
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()
@@ -228,31 +229,7 @@ public class Robot3 extends RobotBase {
         return result;
     }
 
-    public Location getArtifactDensestLocation(){
-        List<Coords> artifactCoords = limelightArtifactDetector.getArtifactCoords();
-
-        int gateArtifactCount = 0;
-        int loadingZoneArtifactCount = 0;
-
-        for (Coords artifact: artifactCoords){
-            Pose artifactPose = coordsToPose(artifact);
-
-            // No seeing reflections of artifacts in the field wall
-            if (artifactPose.getX() > 72 || artifactPose.getX() < 0 || artifactPose.getY() > 72 || artifactPose.getY() < 0){
-                continue;
-            }
-
-            if (artifactPose.getX() >= GATE_LOADING_ZONE_CUTOFF_X){
-                loadingZoneArtifactCount += 1;
-            }else{
-                gateArtifactCount += 1;
-            }
-        }
-
-        if (gateArtifactCount < loadingZoneArtifactCount){
-            return Location.GATE;
-        }
-
-        return Location.LOADING_ZONE; // Prefer loading zone - balls might roll there
+    public List<Coords> getArtifactList(){
+        return limelightArtifactDetector.getArtifactCoords();
     }
 }
