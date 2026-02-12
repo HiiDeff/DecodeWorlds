@@ -1,11 +1,19 @@
 package org.firstinspires.ftc.teamcode.auto.visionauto.far;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
 import org.firstinspires.ftc.teamcode.drive.RobotFactory;
+import org.firstinspires.ftc.teamcode.util.limelight.Coords;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Config
 public abstract class FarVisionAutoPath extends FarVisionAuto {
@@ -15,7 +23,8 @@ public abstract class FarVisionAutoPath extends FarVisionAuto {
             GATE_INTAKE_X, GATE_INTAKE_Y, GATE_INTAKE_H,
             LOADING_ZONE_FORWARD_X, LOADING_ZONE_FORWARD_Y, LOADING_ZONE_FORWARD_H,
             GATE_FORWARD_X, GATE_FOWARD_Y, GATE_FOWARD_H,
-            PARK_X, PARK_Y, PARK_H;
+            PARK_X, PARK_Y, PARK_H,
+            INTAKE_Y;
 
     static {
         SHOOT_START_X = -11.778; SHOOT_START_Y = 4; SHOOT_START_H = -2.75;
@@ -26,7 +35,11 @@ public abstract class FarVisionAutoPath extends FarVisionAuto {
         GATE_FORWARD_X = -24.334; GATE_FOWARD_Y = -41; GATE_FOWARD_H = -1.260;
 
         PARK_X = -4.980; PARK_Y = -1.086; PARK_H = -1.736;
+
+        INTAKE_Y = -40;
     }
+
+    public static int MAX_CLUSTER_WIDTH_INCH = 10;
 
     @Override
     protected RobotBase createRobot(HardwareMap hardwareMap) {
@@ -55,4 +68,55 @@ public abstract class FarVisionAutoPath extends FarVisionAuto {
     protected Pose getLoadingZoneIntakeForwardPose(){return new Pose(LOADING_ZONE_FORWARD_X, LOADING_ZONE_FORWARD_Y*getSign(), LOADING_ZONE_FORWARD_H*getSign());}
     @Override
     protected Pose getGateIntakeForwardPose(){return new Pose(GATE_FORWARD_X, GATE_FOWARD_Y*getSign(), GATE_FOWARD_H*getSign());}
+
+    @Override
+    public Pose getIntakePose(){
+        List<Pose> artifactPoses = new ArrayList<Pose>();
+
+
+        for (Coords artifactCoord: robot.getArtifactList()){
+            artifactPoses.add(robot.coordsToPose(artifactCoord));
+        }
+
+        Collections.sort(artifactPoses, new Comparator<Pose>() {
+            @Override
+            public int compare (Pose a, Pose b){
+                double diff =  a.getX() - b.getX();
+                if (diff < 0) return -1;
+                else if (diff > 0) return 1;
+                else return 0;
+            }
+        });
+
+        Log.i("adbug ballposes", "x nearest to gate " + artifactPoses.get(0).toString() + "\t x farthest from gate" + artifactPoses.get(artifactPoses.size() - 1).toString());
+
+        int left = 0;
+        int right = 0;
+
+        int bestBallCount = 0;
+        Pose bestPose = new Pose(0, 0, -Math.PI/2);
+
+        while (left < artifactPoses.size()){
+            double diff = artifactPoses.get(right).getX() - artifactPoses.get(left).getX();
+
+            if (diff > MAX_CLUSTER_WIDTH_INCH){
+                left++;
+            }else if (diff <= MAX_CLUSTER_WIDTH_INCH){
+                if (right - left + 1 >= bestBallCount){
+                    bestBallCount = right - left + 1;
+                    bestPose = new Pose((artifactPoses.get(right).getX() + artifactPoses.get(left).getX()) / 2.0, INTAKE_Y * getSign(), getSign() * -Math.PI/2);
+                }
+
+                if (right + 1 < artifactPoses.size()){
+                    right++;
+                }else{
+                    left++;
+                }
+            }
+        }
+
+        Log.i("adbug intakepose", bestBallCount + " " + bestPose.toString());
+
+        return bestPose;
+    }
 }
