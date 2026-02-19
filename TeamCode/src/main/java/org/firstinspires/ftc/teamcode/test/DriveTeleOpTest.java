@@ -9,7 +9,6 @@ import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
-import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -19,12 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.drive.RobotBase;
-import org.firstinspires.ftc.teamcode.drive.RobotFactory;
-import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
-import org.firstinspires.ftc.teamcode.task.BlockerTask;
-import org.firstinspires.ftc.teamcode.task.ParkTask;
-import org.firstinspires.ftc.teamcode.task.PivotTask;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrivePedro;
 import org.firstinspires.ftc.teamcode.util.GamePad;
 
 @Disabled
@@ -74,11 +68,11 @@ public class DriveTeleOpTest extends LinearOpMode {
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0.0,0.0008,0.6,0.045))
             .centripetalScaling(0.003);
 
-    private MecanumDrive robot;
+    private MecanumDrivePedro robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumDrive(hardwareMap, FOLLOWER_CONSTANTS, DRIVE_CONSTANTS,
+        robot = new MecanumDrivePedro(hardwareMap, FOLLOWER_CONSTANTS, DRIVE_CONSTANTS,
                 new PinpointLocalizer(hardwareMap, PINPOINT_CONSTANTS),
                 getPathConstraints()) {
         };

@@ -54,7 +54,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
 
         waitForStart();
 
-        robot.startTeleopDrive();
+//        robot.startTeleopDrive();
         robot.startLimelight();
         robot.setLimelightAllianceColor(isRed());
         sensorUpdateThread.start();
@@ -85,7 +85,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         if(task != null && task.perform()) task = null;
 
         if(gp1.back()&&gp1.onceB()) {
-            robot.setPose(new Pose(0, 0, Math.PI));
+//            robot.setPose(new Pose(0, 0, Math.PI));
         }
 
         robot.updateLimelight();
@@ -101,7 +101,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
                 robot.setBlockerPosition(BlockerTask.Position.CLOSE);
                 robot.setRampPosition(RampTask.Position.DOWN);
                 robot.setFlywheelTargetVelocity(0); FLYWHEEL_TARGET_RPM = 0;
-                robot.startTeleopDrive();
+//                robot.startTeleopDrive();
             }
         } else {
             if(gp1.back() && gp1.onceY()) {
@@ -113,8 +113,8 @@ public abstract class Robot3TeleOp extends LinearOpMode {
             }
         }
 
-        Pose limelightPose = robot.getLimelightRobotPose();
-        multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
+//        Pose limelightPose = robot.getLimelightRobotPose();
+//        multipleTelemetry.addData("robot position using limelight", limelightPose.getX()+" "+limelightPose.getY()+" "+limelightPose.getHeading());
         multipleTelemetry.addData("dist to goal", robot.getVectorToGoal().getMagnitude());
         multipleTelemetry.addData("current rpm", robot.getFlywheelVelocityRpm());
         multipleTelemetry.addData("target rpm", FLYWHEEL_TARGET_RPM);
@@ -200,7 +200,7 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         drivePow = Math.max(Math.sqrt(x * x + y * y), Math.abs(a));
 
         if(state==TeleOpState.DRIVING || state==TeleOpState.OVERRIDE) {
-            robot.setTeleOpDrive(x, y, a, true);
+//            robot.setTeleOpDrive(x, y, a, true);
         }
     }
 

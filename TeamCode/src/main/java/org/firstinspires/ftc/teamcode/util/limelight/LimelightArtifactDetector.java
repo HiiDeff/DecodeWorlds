@@ -5,7 +5,6 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
-import org.firstinspires.ftc.teamcode.auto.Location;
 
 import java.util.ArrayList;
 import java.util.Arrays;

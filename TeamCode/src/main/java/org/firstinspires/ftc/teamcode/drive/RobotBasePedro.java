@@ -3,8 +3,12 @@ package org.firstinspires.ftc.teamcode.drive;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Pose2d;
+import com.pedropathing.follower.FollowerConstants;
+import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
+import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -15,8 +19,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
+import org.firstinspires.ftc.teamcode.auto.Location;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrivePedro;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
@@ -33,7 +37,7 @@ import org.firstinspires.ftc.teamcode.util.pid.VelocityPIDCoefficients;
 import java.util.List;
 
 @Config
-public abstract class RobotBase extends PinpointDrive {
+public abstract class RobotBasePedro extends MecanumDrivePedro {
 
     // Constants
     public static double INTAKE_POWER = 1, OUTTAKE_POWER = -0.8;
@@ -46,10 +50,10 @@ public abstract class RobotBase extends PinpointDrive {
     // Motors
     public final DcMotorEx leftFlywheel;
     public final DcMotorEx rightFlywheel;
-    public final FlywheelPID flywheelPID;
+    public FlywheelPID flywheelPID;
     private boolean flywheelOn;
     public final DcMotorEx turretMotor;
-    public final Turret turret;
+    public Turret turret;
     private boolean turretOn;
     public static PIDCoefficients TURRET_PID_COEFFICIENTS = new PIDCoefficients(0.0, 1.0, 0.004, 0.0, 0.0, 0.00000, 0.0); //new PIDCoefficients(0.0, 1.0, 0.004, 0.0, 0.15, 0.00002, 0.3);
     public final DcMotorEx intake;
@@ -82,10 +86,10 @@ public abstract class RobotBase extends PinpointDrive {
     public static int APRIL_TAG_PIPELINE = 1;
 
     // States
-    public final ArtifactState artifactState;
-    public final ArtifactInventory artifactInventory;
-    public Pose2d limelightRobotPose; // estimated robot pose if limelight sees ATag, otherwise null
-    public Pose2d limelightTransOffset = new Pose2d(0, 0, 0); //offset values based on last seen ATag values
+    public ArtifactState artifactState;
+    public ArtifactInventory artifactInventory;
+    public Pose limelightRobotPose; // estimated robot pose if limelight sees ATag, otherwise null
+    public Pose limelightTransOffset = new Pose(0, 0); //offset values based on last seen ATag values
     private boolean detectingAprilTags = true;
 
     // Cached Encoder Values
@@ -95,8 +99,8 @@ public abstract class RobotBase extends PinpointDrive {
     // Lights
     private final RevBlinkinLedDriver light;
 
-    public RobotBase(HardwareMap hardwareMap) {
-        super(hardwareMap, new Pose2d(0.0, 0.0, 0.0));
+    public RobotBasePedro(HardwareMap hardwareMap, FollowerConstants followerConstants, MecanumConstants driveConstants, PinpointLocalizer localizer, PathConstraints pathConstraints) {
+        super(hardwareMap, followerConstants, driveConstants, localizer, pathConstraints);
         this.hardwareMap = hardwareMap;
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -139,19 +143,21 @@ public abstract class RobotBase extends PinpointDrive {
         limelightAprilTagDetector = new LimelightAprilTagDetector(limelight, LLConfig);
         limelightArtifactDetector = new LimelightArtifactDetector(limelight, LLConfig);
         // Motion Control:
-        flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
-        turret = new Turret(this, TURRET_PID_COEFFICIENTS, TURRET_TICKS_PER_RAD);
-        artifactState = new ArtifactState(this);
-        artifactInventory = new ArtifactInventory(this);
+        //flywheelPID = new FlywheelPID(this, getVelocityPIDCoefficients());
+//        turret = new Turret(this, TURRET_PID_COEFFICIENTS, TURRET_TICKS_PER_RAD);
+//        artifactState = new ArtifactState(this);
+//        artifactInventory = new ArtifactInventory(this);
         // Lights:
         light = hardwareMap.get(RevBlinkinLedDriver.class, "light");
     }
 
     ///////////////////* INIT *///////////////////
     public void teleOpInit() {
+        setMaxPower(1.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
         setParkPosition(ParkTask.Position.UP);
+        setStartingPose(new Pose(100, 0, heading));
         setRampPosition(RampTask.Position.DOWN);
         turret.activateVelocityFeedForward();
     }
@@ -159,6 +165,7 @@ public abstract class RobotBase extends PinpointDrive {
     public void autoInit() {
         resetTurret();
         heading = 0;
+        setMaxPower(1.0);
         setTurretTargetPosition(0.0);
         setPivotPosition(PivotTask.Position.MID);
         setBlockerPosition(BlockerTask.Position.CLOSE);
@@ -177,19 +184,9 @@ public abstract class RobotBase extends PinpointDrive {
 //        updateSensors(); //handled by thread
     }
 
-    // TODO: RR no support :(
-    public Vector getVelocity(){
-        return new Vector(0.0, 0.0);
+    private void updatePoseEstimate() {
+        update();
     }
-
-    public Vector getTranslationalAcceleration(){
-        return new Vector(0.0, 0.0);
-    }
-
-    public double getAngularAcceleration(){
-        return 0.0;
-    }
-
 
     private void updateEncoders() {
         flywheelVelocityTicksPerSecond = rightFlywheel.getVelocity();
@@ -376,7 +373,6 @@ public abstract class RobotBase extends PinpointDrive {
     public void updateLimelight() { // public for teleop usage, auto for motifs
         Log.i("edbug atag type", "HERE");
         if (detectingAprilTags){
-            limelight.updateRobotOrientation(getHeading() * 180 / Math.PI);
             limelightAprilTagDetector.update();
         }else{
             limelightArtifactDetector.update();
@@ -386,24 +382,22 @@ public abstract class RobotBase extends PinpointDrive {
         limelight.stop();
     }
     public void updateRobotPoseUsingLimelight() {
-//        Pose2d limelightFieldPose = limelightAprilTagDetector.getLimelightFieldPose();
-//        if(limelightFieldPose != null) { // if ATag is detected
-//            limelightRobotPose = turret.calcRobotPose(limelightFieldPose); //returns null if angular velocity exceeds threshold
-//        } else {
-//            limelightRobotPose = null;
-//        }
-//        if(limelightRobotPose != null) {
-//            limelightTransOffset = new Pose2d(
-//                limelightRobotPose.getX()-getPose().position.x,
-//                limelightRobotPose.getY()-getPose().position.y,
-//                    0
-//            );
-//        }
-//        limelightAprilTagDetector.updateVectorToGoal(getLimelightRobotPose(), getTranslationalVelocity());
+        Pose limelightFieldPose = limelightAprilTagDetector.getLimelightFieldPose();
+        if(limelightFieldPose != null) { // if ATag is detected
+            limelightRobotPose = turret.calcRobotPose(limelightFieldPose); //returns null if angular velocity exceeds threshold
+        } else {
+            limelightRobotPose = null;
+        }
+        if(limelightRobotPose != null) {
+            limelightTransOffset = new Pose(
+                    limelightRobotPose.getX()-getPose().getX(),
+                    limelightRobotPose.getY()-getPose().getY()
+            );
+        }
+        limelightAprilTagDetector.updateVectorToGoal(getLimelightRobotPose(), getTranslationalVelocity());
     }
-    public Pose2d getLimelightRobotPose() {
-//        return (limelightRobotPose==null) ? getPose().copy().plus(limelightTransOffset) : limelightRobotPose;
-        return getPose();
+    public Pose getLimelightRobotPose() {
+        return (limelightRobotPose==null) ? getPose().copy().plus(limelightTransOffset) : limelightRobotPose;
     }
     public Vector getVectorToGoal() {
         return limelightAprilTagDetector.getVectorToGoal();
@@ -416,15 +410,15 @@ public abstract class RobotBase extends PinpointDrive {
     }
 
     public Coords getTargetArtifactClusterCoords(){return limelightArtifactDetector.getTargetPosition();}
-    public abstract Pose2d getTargetArtifactClusterPose();
-    public abstract List<Pose2d> getTopThreeTargetPositions();
+    public abstract Pose getTargetArtifactClusterPose();
+    public abstract List<Pose> getTopThreeTargetPositions();
     public abstract List<Coords> getArtifactList();
 
-    public Pose2d coordsToPose(Coords coords){
+    public Pose coordsToPose(Coords coords){
         // x is forward, y is left-right
 
-        Pose2d robotPose = getPose();
-        double robotHeading = robotPose.heading.toDouble();
+        Pose robotPose = getPose();
+        double robotHeading = robotPose.getHeading();
 
         // Rotation of coords by robotHeading, then translate by robot position
         // Coords: This means we have to switch x/y, and invert x
@@ -432,9 +426,9 @@ public abstract class RobotBase extends PinpointDrive {
         //  -x robot +x
         //      -y
         //
-        double x = robotPose.position.x + coords.getY() * Math.cos(robotHeading) - (-coords.getX()) * Math.sin(robotHeading);
-        double y = robotPose.position.y + (coords.getY() * Math.sin(robotHeading) - coords.getX() * Math.cos(robotHeading));
+        double x = robotPose.getX() + coords.getY() * Math.cos(robotHeading) - (-coords.getX()) * Math.sin(robotHeading);
+        double y = robotPose.getY() + (coords.getY() * Math.sin(robotHeading) - coords.getX() * Math.cos(robotHeading));
 
-        return new Pose2d(x, y, robotHeading);
+        return new Pose(x, y, robotHeading);
     }
 }

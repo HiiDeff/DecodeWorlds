@@ -20,10 +20,7 @@ dependencies {
     implementation 'com.pedropathing:ftc:2.0.1'
     implementation 'com.pedropathing:telemetry:0.0.6'
     implementation 'com.bylazar:fullpanels:1.0.0'
-
-    implementation 'com.acmerobotics.dashboard:dashboard:0.4.17'
-    implementation "com.acmerobotics.roadrunner:core:1.0.0"
-    implementation "com.acmerobotics.roadrunner:actions:1.0.0"
+    //implementation "com.acmerobotics.roadrunner:ftc:0.1.21" // why was this commented out
 
 }
 

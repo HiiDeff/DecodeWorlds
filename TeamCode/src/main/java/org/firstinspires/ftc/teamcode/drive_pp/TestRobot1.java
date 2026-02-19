@@ -13,10 +13,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.pedropathing.MecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrivePedro;
 
 @Config
-public class TestRobot1 extends MecanumDrive {
+public class TestRobot1 extends MecanumDrivePedro {
 
     // Pedro Constants
     public static FollowerConstants FOLLOWER_CONSTANTS = new FollowerConstants()

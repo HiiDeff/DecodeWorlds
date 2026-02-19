@@ -60,7 +60,7 @@ public class Turret extends PIDModel {
                 return null;
             }
         }
-        Log.i("edbug robot velocity", robot.getVelocity().getMagnitude()+"");
+        //Log.i("edbug robot velocity", robot.getVelocity().getMagnitude()+"");
         if(robot.getVelocity().getMagnitude()>THRESHOLD_ROBOT_VELOCITY) {
             resetMovingAverages();
             return null;

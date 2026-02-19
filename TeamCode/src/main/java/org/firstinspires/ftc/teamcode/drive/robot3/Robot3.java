@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.drive.robot3;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.FollowerConstants;
@@ -12,12 +14,15 @@ import com.pedropathing.ftc.localization.localizers.PinpointLocalizer;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auto.Location;
 import org.firstinspires.ftc.teamcode.drive.RobotBase;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.task.BlockerTask;
 import org.firstinspires.ftc.teamcode.task.ParkTask;
 import org.firstinspires.ftc.teamcode.task.RampTask;
@@ -85,16 +90,13 @@ public class Robot3 extends RobotBase {
     public static int BEZIER_CURVE_SEARCH_LIMIT = 10;
 
     public Robot3(HardwareMap hardwareMap) {
-        super(hardwareMap, FOLLOWER_CONSTANTS, DRIVE_CONSTANTS,
-                new PinpointLocalizer(hardwareMap, PINPOINT_CONSTANTS),
-                getPathConstraints()
-        );
-    }
+        super(hardwareMap);
 
-    private static PathConstraints getPathConstraints() {
-        PathConstraints pc = new PathConstraints(T_VALUE_CONSTRAINT, VELOCITY_CONSTRAINT, TRANSLATIONAL_CONSTRAINT, HEADING_CONSTRAINT, TIMEOUT_CONSTRAINT, BRAKING_STRENGTH, BEZIER_CURVE_SEARCH_LIMIT, BRAKING_START);
-        PathConstraints.setDefaultConstraints(pc);
-        return pc;
+        setDriveParams();
+
+        Log.i("encoder direction", PinpointDrive.PARAMS.xDirection == com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriver.EncoderDirection.FORWARD ? "FORWARD":"REVERSE");
+
+        init(hardwareMap);
     }
 
     @Override
@@ -205,7 +207,7 @@ public class Robot3 extends RobotBase {
 
 
     @Override
-    public Pose getTargetArtifactClusterPose(){
+    public Pose2d getTargetArtifactClusterPose(){
         Coords coordsFromLimelight = limelightArtifactDetector.getTargetPosition();
         Coords coordsFromIntake = new Coords(coordsFromLimelight.getX(), coordsFromLimelight.getY(),
                 coordsFromLimelight.getZ(), coordsFromLimelight.getAngle());
@@ -213,20 +215,64 @@ public class Robot3 extends RobotBase {
         return coordsToPose(coordsFromIntake);
     }
 
-    public List<Pose> getTopThreeTargetPositions(){
-        List<Coords> coordsFromLimelight = limelightArtifactDetector.getTopThreeTargetPositions();
+    public List<Pose2d> getTopThreeTargetPositions(){
+//        List<Coords> coordsFromLimelight = limelightArtifactDetector.getTopThreeTargetPositions();
+//
+//        List<Pose> result = new ArrayList<>();
+//
+//        for (Coords location: coordsFromLimelight){
+//            Coords coordsFromIntake = new Coords(location.getX(), location.getY(),
+//                    location.getZ(), location.getAngle());
+//        }
+//
+//
+//        return result;
+        return new ArrayList<Pose2d>();
+    }
 
-        List<Pose> result = new ArrayList<>();
+    private void setDriveParams() {
 
-        for (Coords location: coordsFromLimelight){
-            Coords coordsFromIntake = new Coords(location.getX(), location.getY(),
-                    location.getZ(), location.getAngle());
+        MecanumDrive.Params p = MecanumDrive.PARAMS;
+        p.logoFacingDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+        p.usbFacingDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
-            result.add(coordsToPose(coordsFromIntake));
-        }
+        // drive model parameters
+        p.inPerTick = 1.0;
+        p.lateralInPerTick = 0.6917565598; // p.inPerTick;
+        p.trackWidthTicks = 14.931922905302441;
+
+        // feedforward parameters (in tick units)
+        p.kS = 1.013712141564385;
+        p.kV = 0.1485274116070321;
+        p.kA = 0.04;
+
+        // path profile parameters (in inches)
+        p.maxWheelVel = 60;
+        p.minProfileAccel = -40;
+        p.maxProfileAccel = 60;
+
+        // turn profile parameters (in radians)
+        p.maxAngVel = Math.PI; // shared with path
+        p.maxAngAccel = Math.PI;
+
+        // path controller gains
+        p.axialGain = 5.0;
+        p.lateralGain = 5.0;
+        p.headingGain = 8.0; // shared with turn
+
+        p.axialVelGain = 0.0;
+        p.lateralVelGain = 0.0;
+        p.headingVelGain = 0.0; // shared with turn
 
 
-        return result;
+        PinpointDrive.Params pinpointParams = PinpointDrive.PARAMS;
+        pinpointParams.xOffset = -6;
+        pinpointParams.yOffset = 3.5;
+
+        pinpointParams.encoderResolution = GoBildaPinpointDriverRR.goBILDA_4_BAR_POD;
+
+        pinpointParams.xDirection = com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        pinpointParams.yDirection = com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriver.EncoderDirection.REVERSED;
     }
 
     public List<Coords> getArtifactList(){
