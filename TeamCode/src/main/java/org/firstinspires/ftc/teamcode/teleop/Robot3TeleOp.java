@@ -195,12 +195,12 @@ public abstract class Robot3TeleOp extends LinearOpMode {
         } else {
             x = -gp1.leftStickY();
             y = -gp1.leftStickX();
-            a = -gp1.rightStickX() * 0.5;
+            a = -gp1.rightStickX() * 1.0;
         }
         drivePow = Math.max(Math.sqrt(x * x + y * y), Math.abs(a));
 
         if(state==TeleOpState.DRIVING || state==TeleOpState.OVERRIDE) {
-            robot.setTeleOpDrive(x, y, a, true);
+            robot.setTeleOpDrive(x, 0, a, true);
         }
     }
 
