@@ -237,28 +237,28 @@ public class Robot3 extends RobotBase {
         p.usbFacingDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        p.inPerTick = 1.0;
-        p.lateralInPerTick = 0.6917565598; // p.inPerTick;
-        p.trackWidthTicks = 14.931922905302441;
+        p.inPerTick = 0.1;
+        p.lateralInPerTick = 0.82300130164; // p.inPerTick;
+        p.trackWidthTicks = 11.086271752519513;
 
         // feedforward parameters (in tick units)
-        p.kS = 1.013712141564385;
-        p.kV = 0.1485274116070321;
-        p.kA = 0.04;
+        p.kS = 1.4185622916188247;
+        p.kV = 0.1311175736849693;
+        p.kA = 0.00005;
 
         // path profile parameters (in inches)
-        p.maxWheelVel = 60;
-        p.minProfileAccel = -40;
-        p.maxProfileAccel = 60;
+        p.maxWheelVel = 50;
+        p.minProfileAccel = -30;
+        p.maxProfileAccel = 30;
 
         // turn profile parameters (in radians)
         p.maxAngVel = Math.PI; // shared with path
         p.maxAngAccel = Math.PI;
 
         // path controller gains
-        p.axialGain = 5.0;
-        p.lateralGain = 5.0;
-        p.headingGain = 8.0; // shared with turn
+        p.axialGain = 6.0;
+        p.lateralGain = 7.0;
+        p.headingGain = 15.0; // shared with turn
 
         p.axialVelGain = 0.0;
         p.lateralVelGain = 0.0;
@@ -266,8 +266,8 @@ public class Robot3 extends RobotBase {
 
 
         PinpointDrive.Params pinpointParams = PinpointDrive.PARAMS;
-        pinpointParams.xOffset = -6;
-        pinpointParams.yOffset = 3.5;
+        pinpointParams.xOffset = -6; // pinpoint 5.534895114657507
+        pinpointParams.yOffset = 3.5; // tuner y-position: 3.665864020873486, y-intercept: 0
 
         pinpointParams.encoderResolution = GoBildaPinpointDriverRR.goBILDA_4_BAR_POD;
 

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.roadrunner.tuning;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -9,6 +11,10 @@ import org.firstinspires.ftc.teamcode.drive.RobotFactory;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
+import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTask;
+import org.firstinspires.ftc.teamcode.task.RuntimeDrivingTaskRR;
+import org.firstinspires.ftc.teamcode.task.SeriesTask;
+import org.firstinspires.ftc.teamcode.task.Task;
 
 public final class SplineTest extends LinearOpMode {
     @Override
@@ -19,11 +25,33 @@ public final class SplineTest extends LinearOpMode {
 
             waitForStart();
 
-            Actions.runBlocking(
-                    drive.actionBuilder(beginPose, 0.0)
+            Task task;
+
+            task = (new RuntimeDrivingTaskRR(
+                    drive,
+                builder -> {
+                    return builder
                             .splineTo(new Vector2d(30, 30), Math.PI / 2)
                             .splineTo(new Vector2d(0, 60), Math.PI)
-                            .build());
+                            .build();
+                }
+
+            ));
+
+
+            while (opModeIsActive()){
+
+                if (task != null && task.perform()){
+                    task = null;
+                }
+                drive.updatePoseEstimate();
+
+                telemetry.addData("adbug robot position", drive.getPose().toString());
+                Log.i("adbug robot position", drive.getPose().toString());
+                telemetry.update();
+
+
+            }
         } else if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = RobotFactory.createRobot(hardwareMap);
 

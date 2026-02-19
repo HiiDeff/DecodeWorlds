@@ -17,6 +17,7 @@ import com.acmerobotics.roadrunner.ftc.LateralRampLogger;
 import com.acmerobotics.roadrunner.ftc.ManualFeedforwardTuner;
 import com.acmerobotics.roadrunner.ftc.MecanumMotorDirectionDebugger;
 import com.acmerobotics.roadrunner.ftc.PinpointEncoder;
+import com.acmerobotics.roadrunner.ftc.PinpointZeroYawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
@@ -68,10 +69,10 @@ public final class TuningOpModes {
 
                 return new DriveView(
                         DriveType.MECANUM,
-                        TestRobotPinpoint.TRUE_PARAMS.inPerTick,
-                        TestRobotPinpoint.TRUE_PARAMS.maxWheelVel,
-                        TestRobotPinpoint.TRUE_PARAMS.minProfileAccel,
-                        TestRobotPinpoint.TRUE_PARAMS.maxProfileAccel,
+                        MecanumDrive.PARAMS.inPerTick,
+                        MecanumDrive.PARAMS.maxWheelVel,
+                        MecanumDrive.PARAMS.minProfileAccel,
+                        MecanumDrive.PARAMS.maxProfileAccel,
                         hardwareMap.getAll(LynxModule.class),
                         Arrays.asList(
                                 pd.leftFront,
@@ -87,9 +88,9 @@ public final class TuningOpModes {
                         perpEncs,
                         pd.lazyImu,
                         pd.voltageSensor,
-                        () -> new MotorFeedforward(TestRobotPinpoint.TRUE_PARAMS.kS,
-                                TestRobotPinpoint.TRUE_PARAMS.kV / TestRobotPinpoint.TRUE_PARAMS.inPerTick,
-                                TestRobotPinpoint.TRUE_PARAMS.kA / TestRobotPinpoint.TRUE_PARAMS.inPerTick)
+                        () -> new MotorFeedforward(MecanumDrive.PARAMS.kS,
+                                MecanumDrive.PARAMS.kV / MecanumDrive.PARAMS.inPerTick,
+                                MecanumDrive.PARAMS.kA / MecanumDrive.PARAMS.inPerTick)
                 );
             };
         } else if (DRIVE_CLASS.equals(MecanumDrive.class)) {

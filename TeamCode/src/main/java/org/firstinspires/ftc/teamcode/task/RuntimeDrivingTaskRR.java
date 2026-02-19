@@ -1,0 +1,36 @@
+package org.firstinspires.ftc.teamcode.task;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+
+import org.firstinspires.ftc.teamcode.common.TrajectoryActioner;
+import org.firstinspires.ftc.teamcode.drive.RobotBase;
+import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
+
+public class RuntimeDrivingTaskRR implements Task {
+
+    private final PinpointDrive robot;
+    private final TrajectoryActioner actioner;
+    private boolean started = false, endEarly = false;
+    private double beginEndVelo = 0.0, endEarlyAbsDist = 0.0;
+    private Action action;
+
+    public RuntimeDrivingTaskRR(PinpointDrive robot, TrajectoryActioner actioner) {
+        this.robot = robot;
+        this.actioner = actioner;
+    }
+    public RuntimeDrivingTaskRR(PinpointDrive robot, TrajectoryActioner actioner, double beginEndVelo) {
+        this.robot = robot;
+        this.actioner = actioner;
+        this.beginEndVelo = beginEndVelo;
+    }
+
+    @Override
+    public boolean perform() {
+        if (!started) {
+            started = true;
+            action = actioner.trajectory2Action(robot.actionBuilder(robot.pose, beginEndVelo));
+        }
+        return !action.run(new TelemetryPacket());
+    }
+}
